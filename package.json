@@ -1,0 +1,62 @@
+{
+  "name": "futuremachine",
+  "author": "Nathan Memmott <nathanmemmott@gmail.com>",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "build": "eslint . --max-warnings 0 && tsc -b",
+    "test": "npm test --workspaces",
+    "test:coverage": "c8 npm test --workspaces",
+    "format": "prettier --write .",
+    "clean": "npm run clean --workspaces",
+    "prepare": "npm run build && husky",
+    "check:circular": "npx madge --circular --extensions ts,tsx packages/",
+    "check:versions": "syncpack lint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stryker-mutator/core": "^9.6.0",
+    "@stryker-mutator/typescript-checker": "^9.6.0",
+    "@types/node": "^25.5.0",
+    "c8": "^11.0.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.1",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "rimraf": "^6.1.3",
+    "syncpack": "^14.3.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.0"
+  },
+  "c8": {
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "exclude": [
+      "**/test/**"
+    ]
+  },
+  "madge": {
+    "detectiveOptions": {
+      "ts": {
+        "skipTypeImports": true
+      },
+      "tsx": {
+        "skipTypeImports": true
+      }
+    },
+    "excludeRegExp": [
+      "\\.stryker-tmp",
+      "node_modules",
+      "\\out/"
+    ]
+  }
+}

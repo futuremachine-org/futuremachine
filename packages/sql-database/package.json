@@ -1,0 +1,35 @@
+{
+  "name": "@futuremachine/sql-database",
+  "version": "0.1.0",
+  "author": "Nathan Memmott <nathanmemmott@gmail.com>",
+  "license": "ISC",
+  "description": "The node:sqlite storage implementation for FutureMachine. Provides a persistent database backend for @futuremachine/core with on-demand garbage collection for unreachable Futures and containers.",
+  "keywords": [
+    "sqlite",
+    "sql",
+    "persistence-layer",
+    "futuremachine-adapter",
+    "database-backend",
+    "query-serialization",
+    "disk-storage"
+  ],
+  "type": "module",
+  "main": "out/src/sql_future_database.js",
+  "types": "out/src/sql_future_database.d.ts",
+  "files": [
+    "out/",
+    "!out/**/*.map",
+    "!out/**/*.tsbuildinfo",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rimraf out",
+    "build": "tsc -b",
+    "test": "tsc -b && rimraf db && node --test --expose-gc",
+    "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
+  },
+  "dependencies": {
+    "@futuremachine/core": "0.1.0"
+  }
+}

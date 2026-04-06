@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if ! git diff --quiet; then
+  echo "❌ Error: You have unstaged changes. Please stage or stash them."
+  exit 1
+fi
+
+
+set -e
+echo "Checking circular dependencies..."
+npm run check:circular -s -- --no-spinner
+
+echo "Checking package versions..."
+npm run check:versions -s
+
+echo "Linting..."
+npm run lint -s
+
+echo "Running tests..."
+npm test -s -- -- --test-reporter=dot
+
+rm -f .test_output
+echo "All checks passed. Committing..."

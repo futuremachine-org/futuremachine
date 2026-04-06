@@ -1,0 +1,53 @@
+{
+  "name": "@futuremachine/core",
+  "version": "0.1.0",
+  "author": "Nathan Memmott <nathanmemmott@gmail.com>",
+  "license": "ISC",
+  "description": "A TypeScript library for Futures—persistent Promises that survive process restarts and can be resolved by ID.",
+  "keywords": [
+    "persistent-promises",
+    "futures",
+    "typescript",
+    "durable-execution",
+    "resumable-workflows",
+    "state-management",
+    "async-persistence",
+    "process-recovery",
+    "long-running-tasks",
+    "persistent-collections"
+  ],
+  "type": "module",
+  "main": "out/src/index.js",
+  "types": "out/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./out/src/index.d.ts",
+      "import": "./out/src/index.js"
+    },
+    "./testing": {
+      "types": "./out/test/index.d.ts",
+      "import": "./out/test/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "testing": [
+        "out/test/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "out/",
+    "!out/**/*.map",
+    "!out/**/*.tsbuildinfo",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rimraf out",
+    "build": "tsc -b",
+    "test": "tsc -b && node --test",
+    "test:stryker": "node --test out/test/**/*.test.js",
+    "fuzzer": "tsc -b && node out/fuzzer/fuzzer.js"
+  }
+}
