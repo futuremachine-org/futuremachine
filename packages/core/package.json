@@ -4,6 +4,14 @@
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
   "description": "A TypeScript library for Futures—persistent Promises that survive process restarts and can be resolved by ID.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futuremachine-org/futuremachine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/futuremachine-org/futuremachine/issues"
+  },
+  "homepage": "https://github.com/futuremachine-org/futuremachine",
   "keywords": [
     "persistent-promises",
     "futures",
