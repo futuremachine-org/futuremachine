@@ -52,7 +52,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "clean": "rimraf out",
+    "clean": "tsc -b --clean",
     "build": "tsc -b",
     "test": "tsc -b && node --test",
     "test:stryker": "node --test out/test/**/*.test.js",

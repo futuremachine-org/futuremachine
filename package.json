@@ -13,10 +13,14 @@
     "test": "npm test --workspaces",
     "test:coverage": "c8 npm test --workspaces",
     "format": "prettier --write .",
-    "clean": "npm run clean --workspaces",
+    "clean": "tsc -b --clean",
     "prepare": "npm run build && husky",
     "check:circular": "npx madge --circular --extensions ts,tsx packages/",
-    "check:versions": "syncpack lint"
+    "check:versions": "syncpack lint",
+    "check:worktree-clean": "test -z \"$(git status --porcelain)\" || (echo 'Error: Working tree is dirty. Commit your changes before shipping.' && exit 1)",
+    "pre-ship": "npm run check:worktree-clean -s && npm run clean && npm run build && npm run test",
+    "ship:core": "npm run pre-ship && cd packages/core && npm publish --access public",
+    "ship:node-sqlite": "npm run pre-ship && cd packages/node-sqlite && npm publish --access public"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

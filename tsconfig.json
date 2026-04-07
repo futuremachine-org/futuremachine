@@ -2,6 +2,6 @@
   "files": [],
   "references": [
     { "path": "./packages/core" },
-    { "path": "./packages/sql-database" }
+    { "path": "./packages/node-sqlite" }
   ]
 }

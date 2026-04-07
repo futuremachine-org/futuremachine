@@ -1,5 +1,5 @@
 {
-  "name": "@futuremachine/sql-database",
+  "name": "@futuremachine/node-sqlite",
   "version": "0.1.0",
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
@@ -25,14 +25,14 @@
   "main": "out/src/sql_future_database.js",
   "types": "out/src/sql_future_database.d.ts",
   "files": [
-    "out/",
-    "!out/**/*.map",
-    "!out/**/*.tsbuildinfo",
+    "out/src",
+    "!out/src/**/*.map",
+    "!out/src/**/*.tsbuildinfo",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "clean": "rimraf out",
+    "clean": "tsc -b --clean",
     "build": "tsc -b",
     "test": "tsc -b && rimraf db && node --test --expose-gc",
     "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
