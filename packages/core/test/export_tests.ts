@@ -1,5 +1,5 @@
 import type { TestContext } from 'node:test';
-import type { FutureDatabase } from '../src/database/future_database.js';
+import type { FutureDatabase } from '../src/index.js';
 import container from './suites/container.js';
 import exception from './suites/exception.js';
 import future from './suites/future.js';

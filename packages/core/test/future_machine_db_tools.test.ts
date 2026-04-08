@@ -1,8 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { createMethodMachine } from '../src/core/future_machine.js';
-import { SimpleFutureDatabase } from '../src/database/simple_future_database.js';
+import { createMethodMachine, SimpleFutureDatabase } from '../src/index.js';
 
 describe('FutureMachineDBTools', () => {
   describe('onDone', () => {

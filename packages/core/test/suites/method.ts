@@ -1,11 +1,8 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { List } from '../../src/containers/list.js';
-import type { Future } from '../../src/core/future.js';
-import type { FutureId } from '../../src/core/future_impl.js';
-import { createMethodMachine } from '../../src/core/future_machine.js';
-import { Method } from '../../src/core/method.js';
+import type { Future, FutureId } from '../../src/index.js';
+import { createMethodMachine, List, Method } from '../../src/index.js';
 import type { TestSettings } from '../export_tests.js';
 import { createMethod } from '../test_helpers.js';
 

@@ -1,6 +1,5 @@
 import type { TestContext } from 'node:test';
-import type { FutureDatabase } from '../src/database/future_database.js';
-import { SimpleFutureDatabase } from '../src/database/simple_future_database.js';
+import { SimpleFutureDatabase, type FutureDatabase } from '../src/index.js';
 import { runTests, type DBHolder } from './export_tests.js';
 import { assertFutureDatabaseEmpty } from './test_helpers.js';
 

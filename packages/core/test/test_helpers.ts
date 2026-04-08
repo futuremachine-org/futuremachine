@@ -1,12 +1,15 @@
 import { strict as assert } from 'node:assert';
 import { assert_unreached } from '../src/asserts.js';
-import type { FutureSettledResult } from '../src/containers/future_settled_result.js';
-import type { List } from '../src/containers/list.js';
-import type { Methods } from '../src/core/future_machine.js';
-import type { Method, MethodName } from '../src/core/method.js';
-import type { Serializable } from '../src/database/future_database.js';
-import type { SimpleFutureDatabase } from '../src/database/simple_future_database.js';
-import { AggregateException } from '../src/exceptions/aggregate_exception.js';
+import type {
+  FutureSettledResult,
+  List,
+  Method,
+  MethodName,
+  Methods,
+  Serializable,
+  SimpleFutureDatabase,
+} from '../src/index.js';
+import { AggregateException } from '../src/index.js';
 
 type createMethodReturnType<Params, Return extends Serializable> = {
   method: Method<(params: Params) => Return>;

@@ -1,19 +1,24 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { Dictionary } from '../../src/containers/dictionary.js';
-import { Entity } from '../../src/containers/entity.js';
-import { List } from '../../src/containers/list.js';
-import { Struct } from '../../src/containers/struct.js';
-import { createMethodMachine } from '../../src/core/future_machine.js';
-import { type Method } from '../../src/core/method.js';
+import {
+  createMethodMachine,
+  Dictionary,
+  Entity,
+  Exception,
+  Future,
+  List,
+  Struct,
+} from '../../src/index.js';
 
-import { type StateBuilder } from '../../src/containers/entity_impl.js';
-import type { FutureSettledResult } from '../../src/containers/future_settled_result.js';
-import { Future, type FutureId } from '../../src/core/future.js';
-import type { Serializable } from '../../src/database/future_database.js';
-import type { AggregateException } from '../../src/exceptions/aggregate_exception.js';
-import { Exception } from '../../src/exceptions/exception.js';
+import type {
+  AggregateException,
+  FutureId,
+  FutureSettledResult,
+  Method,
+  Serializable,
+  StateBuilder,
+} from '../../src/index.js';
 import { type TestSettings } from '../export_tests.js';
 
 export default (testSettings: TestSettings) => {

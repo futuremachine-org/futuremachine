@@ -2,21 +2,18 @@ import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
 import type { Serializable } from 'node:child_process';
-import type { Dictionary } from '../../src/containers/dictionary.js';
-import type { List } from '../../src/containers/list.js';
-import {
-  Future,
-  type FutureId,
-  type ResolveCallback,
-} from '../../src/core/future.js';
+import type { Dictionary, List } from '../../src/index.js';
 import {
   createMethodMachine,
+  Exception,
+  Future,
+  Method,
+  SerializableException,
+  TypeException,
+  type FutureId,
   type FutureMachine,
-} from '../../src/core/future_machine.js';
-import { Method } from '../../src/core/method.js';
-import { Exception } from '../../src/exceptions/exception.js';
-import { SerializableException } from '../../src/exceptions/serializable_exception.js';
-import { TypeException } from '../../src/exceptions/type_exception.js';
+  type ResolveCallback,
+} from '../../src/index.js';
 import type { TestSettings } from '../export_tests.js';
 import {
   assertPromiseRejects,

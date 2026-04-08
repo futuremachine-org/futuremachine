@@ -1,21 +1,23 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import type { Dictionary } from '../../src/containers/dictionary.js';
-import { Entity } from '../../src/containers/entity.js';
-import type { StateBuilder } from '../../src/containers/entity_impl.js';
-import type { FutureSettledResult } from '../../src/containers/future_settled_result.js';
-import type { List } from '../../src/containers/list.js';
-import type { Struct } from '../../src/containers/struct.js';
-import type { FutureId } from '../../src/core/future.js';
+import type {
+  AggregateException,
+  Dictionary,
+  FutureId,
+  FutureMachine,
+  FutureSettledResult,
+  List,
+  MethodMachine,
+  Serializable,
+  StateBuilder,
+  Struct,
+} from '../../src/index.js';
 import {
   createMethodMachine,
-  type FutureMachine,
-  type MethodMachine,
-} from '../../src/core/future_machine.js';
-import type { Serializable } from '../../src/database/future_database.js';
-import type { AggregateException } from '../../src/exceptions/aggregate_exception.js';
-import { SerializableException } from '../../src/exceptions/serializable_exception.js';
+  Entity,
+  SerializableException,
+} from '../../src/index.js';
 import type { TestSettings } from '../export_tests.js';
 import {
   assertFutureSettledResultEquals,

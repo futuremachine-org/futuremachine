@@ -1,22 +1,22 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { createMethodMachine } from '../../src/core/future_machine.js';
+import { createMethodMachine } from '../../src/index.js';
 
-import type { StateBuilder } from '../../src/containers/entity_impl.js';
-import type { List } from '../../src/containers/list.js';
-import type { FutureId } from '../../src/core/future_impl.js';
-import type { Serializable } from '../../src/database/future_database.js';
+import type {
+  AggregateExceptionState,
+  ExceptionState,
+  FutureId,
+  List,
+  Serializable,
+  StateBuilder,
+} from '../../src/index.js';
 import {
   AggregateException,
-  type AggregateExceptionState,
-} from '../../src/exceptions/aggregate_exception.js';
-import {
   Exception,
-  type ExceptionState,
-} from '../../src/exceptions/exception.js';
-import { SerializableException } from '../../src/exceptions/serializable_exception.js';
-import { TypeException } from '../../src/exceptions/type_exception.js';
+  SerializableException,
+  TypeException,
+} from '../../src/index.js';
 import { type TestSettings } from '../export_tests.js';
 
 export default (testSettings: TestSettings) => {

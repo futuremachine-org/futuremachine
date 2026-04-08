@@ -1,13 +1,13 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import type { FutureId } from '../src/core/future_impl.js';
-import { createMethodMachine } from '../src/core/future_machine.js';
 import {
+  createMethodMachine,
+  GetFutureDatabase,
   SimpleFutureDatabase,
+  type FutureId,
   type SimpleFutureDatabaseState,
-} from '../src/database/simple_future_database.js';
-import { GetFutureDatabase } from '../src/symbols.js';
+} from '../src/index.js';
 
 describe('SimpleFutureDatabase', () => {
   test("flush is a no-op if it hasn't been passed to a MethodMachine constructor yet", async () => {
