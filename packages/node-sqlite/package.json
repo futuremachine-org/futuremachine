@@ -6,7 +6,8 @@
   "description": "The node:sqlite storage implementation for FutureMachine. Provides a persistent database backend for @futuremachine/core with on-demand garbage collection for unreachable Futures and containers.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/futuremachine-org/futuremachine.git"
+    "url": "git+https://github.com/futuremachine-org/futuremachine.git",
+    "directory": "packages/node-sqlite"
   },
   "bugs": {
     "url": "https://github.com/futuremachine-org/futuremachine/issues"
