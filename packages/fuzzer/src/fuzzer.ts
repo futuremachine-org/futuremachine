@@ -45,6 +45,9 @@ const AggregateErrorVisitor: Visitor = {
 
 const AllSettledVisitor: Visitor = {
   visit<T extends VisitorObject>(obj: T, key: keyof T): void {
+    if (obj[key] === null || typeof obj[key] !== 'object') {
+      return;
+    }
     const allSettledResult = obj[key] as {
       status_: 'fulfilled' | 'rejected' | undefined;
       value_: unknown;

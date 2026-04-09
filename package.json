@@ -10,8 +10,11 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "build": "eslint . --max-warnings 0 && tsc -b",
-    "test": "npm test --workspaces",
-    "test:coverage": "c8 npm test --workspaces",
+    "test": "npm test --workspace=@futuremachine/core --workspace=@futuremachine/node-sqlite",
+    "test:coverage": "c8 npm run test",
+    "test:core": "cd packages/core && npm run test",
+    "test:node-sqlite": "cd packages/core && npm run test",
+    "test:fuzzer": "cd packages/fuzzer && npm run fuzz",
     "format": "prettier --write .",
     "clean": "tsc -b --clean",
     "prepare": "npm run build && husky",

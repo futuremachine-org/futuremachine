@@ -1,18 +1,16 @@
-import type { Dictionary } from '../containers/dictionary.js';
-import {
-  Future,
-  type FutureId,
-  type RejectCallback,
-  type ResolveCallback,
-} from '../core/future.js';
 import {
   createMethodMachine,
+  Future,
+  SimpleFutureDatabase,
   type Containers,
+  type Dictionary,
+  type FutureId,
   type FutureMachine,
-} from '../core/future_machine.js';
-import type { Method } from '../core/method.js';
-import type { Serializable } from '../database/future_database.js';
-import { SimpleFutureDatabase } from '../database/simple_future_database.js';
+  type Method,
+  type RejectCallback,
+  type ResolveCallback,
+  type Serializable,
+} from '@futuremachine/core';
 import {
   ActionType,
   FuzzerPlan,

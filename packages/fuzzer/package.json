@@ -1,0 +1,24 @@
+{
+  "name": "@futuremachine/fuzzer",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Nathan Memmott <nathanmemmott@gmail.com>",
+  "license": "ISC",
+  "description": "A fuzzer for @futuremachine/core.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futuremachine-org/futuremachine.git",
+    "directory": "packages/fuzzer"
+  },
+  "type": "module",
+  "main": "out/src/sql_future_database.js",
+  "types": "out/src/sql_future_database.d.ts",
+  "scripts": {
+    "clean": "tsc -b --clean",
+    "build": "tsc -b",
+    "fuzz": "tsc -b && node out/fuzzer.js"
+  },
+  "dependencies": {
+    "@futuremachine/core": "0.1.0"
+  }
+}
