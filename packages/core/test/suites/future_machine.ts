@@ -69,7 +69,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(methodMachine));
+          future.next(method.bindArgs(methodMachine));
           await dbHolder.close(futureDatabase);
         }
 
@@ -237,7 +237,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(testClassHolder.bind(testClassInstance));
+          future.next(testClassHolder.bindArgs(testClassInstance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -355,7 +355,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine));
+          future.next(method.bindArgs(futureMachine));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1317,7 +1317,7 @@ export default (testSettings: TestSettings) => {
           const { future: f3, id: id3 } = futureMachine.withResolvers<void>();
           futureId = id3;
 
-          f3.next(onException.bind(await promise));
+          f3.next(onException.bindArgs(await promise));
 
           await dbHolder.close(futureDatabase);
         }
@@ -2009,7 +2009,7 @@ export default (testSettings: TestSettings) => {
           const { future: f3, id: id3 } = futureMachine.withResolvers<void>();
           holderFutureId = id3;
 
-          f3.next(method.bind(await promise));
+          f3.next(method.bindArgs(await promise));
 
           await dbHolder.close(futureDatabase);
         }
@@ -2089,7 +2089,7 @@ export default (testSettings: TestSettings) => {
           const { future: f3, id: id3 } = futureMachine.withResolvers<void>();
           holderFutureId = id3;
 
-          f3.next(holder.bind(await getterPromise));
+          f3.next(holder.bindArgs(await getterPromise));
 
           await dbHolder.close(futureDatabase);
         }
@@ -2245,7 +2245,7 @@ export default (testSettings: TestSettings) => {
 
           allSettledFuture.next(method);
 
-          future.next(method.bind(await promise));
+          future.next(method.bindArgs(await promise));
           await dbHolder.close(futureDatabase);
         }
 

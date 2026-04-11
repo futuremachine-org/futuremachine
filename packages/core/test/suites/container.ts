@@ -94,7 +94,7 @@ export default (testSettings: TestSettings) => {
 
       const { future, resolve } = futureMachine.withResolvers<string>();
 
-      const valueFuture = future.next(method.bind(dictionary));
+      const valueFuture = future.next(method.bindArgs(dictionary));
 
       const key = 'Hello';
       const value = 1234;
@@ -144,7 +144,7 @@ export default (testSettings: TestSettings) => {
         const dictionary = containers.createDictionary<number>();
         dictionary.set(key, value);
 
-        future.next(method.bind(dictionary));
+        future.next(method.bindArgs(dictionary));
         await dbHolder.close(futureDatabase);
       }
 
@@ -194,7 +194,7 @@ export default (testSettings: TestSettings) => {
         const dictionary = containers.createDictionary<Future<number>>();
         dictionary.set(key, futureMachine.resolve(value));
 
-        future.next(method.bind(dictionary));
+        future.next(method.bindArgs(dictionary));
         await dbHolder.close(futureDatabase);
       }
 
@@ -230,11 +230,11 @@ export default (testSettings: TestSettings) => {
 
       const { future, id } = futureMachine.withResolvers<void>();
 
-      const boundMethod = method.bind(1);
+      const boundMethod = method.bindArgs(1);
       const original = containers.createDictionary<Method<() => void>>();
       original.set('key', boundMethod);
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -265,7 +265,7 @@ export default (testSettings: TestSettings) => {
       const original = containers.createDictionary<Future<number>>();
       original.set('key', future);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -307,7 +307,7 @@ export default (testSettings: TestSettings) => {
       const original = containers.createDictionary<TestClass>();
       original.set('key', test);
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -338,7 +338,7 @@ export default (testSettings: TestSettings) => {
       const original = containers.createDictionary<List<number[]>>();
       original.set('key', list);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -370,7 +370,7 @@ export default (testSettings: TestSettings) => {
       const original = containers.createDictionary<Struct<structType>>();
       original.set('key', value);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -401,7 +401,7 @@ export default (testSettings: TestSettings) => {
       const original = containers.createDictionary<Dictionary<number>>();
       original.set('key', value);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -457,9 +457,9 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const dictionary = containers.createDictionary<Method<() => number>>();
-        dictionary.set(key, thunk.bind(value));
+        dictionary.set(key, thunk.bindArgs(value));
 
-        future.next(holder.bind(dictionary));
+        future.next(holder.bindArgs(dictionary));
         await dbHolder.close(futureDatabase);
       }
 
@@ -513,7 +513,7 @@ export default (testSettings: TestSettings) => {
         const dictionary = containers.createDictionary<number>();
         dictionary.set(key, value);
 
-        future.next(method.bind(futureMachine.resolve(dictionary)));
+        future.next(method.bindArgs(futureMachine.resolve(dictionary)));
         await dbHolder.close(futureDatabase);
       }
 
@@ -823,8 +823,8 @@ export default (testSettings: TestSettings) => {
 
         const dictionary = containers.createDictionary<number>();
 
-        future1.next(method.bind(dictionary));
-        future2.next(updateMethod.bind(dictionary, key));
+        future1.next(method.bindArgs(dictionary));
+        future2.next(updateMethod.bindArgs(dictionary, key));
         await dbHolder.close(futureDatabase);
       }
 
@@ -969,7 +969,7 @@ export default (testSettings: TestSettings) => {
         structEntry.A = structValue1;
         entityEntry[entityKey1] = entityValue1;
 
-        future.next(method.bind(dictionary));
+        future.next(method.bindArgs(dictionary));
         await dbHolder.close(futureDatabase);
       }
 
@@ -1056,7 +1056,7 @@ export default (testSettings: TestSettings) => {
         dictionary.set('number', numberValue);
         dictionary.set('dict', dictionary);
 
-        future.next(method.bind(dictionary));
+        future.next(method.bindArgs(dictionary));
         await dbHolder.close(futureDatabase);
       }
 
@@ -1319,7 +1319,7 @@ export default (testSettings: TestSettings) => {
       const { future, resolve } =
         futureMachine.withResolvers<keyof structType>();
 
-      const valueFuture = future.next(method.bind(struct));
+      const valueFuture = future.next(method.bindArgs(struct));
 
       struct.Hello = value1;
 
@@ -1371,7 +1371,7 @@ export default (testSettings: TestSettings) => {
           World: value2,
         });
 
-        future.next(method.bind(struct));
+        future.next(method.bindArgs(struct));
         await dbHolder.close(futureDatabase);
       }
 
@@ -1425,7 +1425,7 @@ export default (testSettings: TestSettings) => {
           Hello: futureMachine.resolve(value),
         });
 
-        future.next(method.bind(struct));
+        future.next(method.bindArgs(struct));
         await dbHolder.close(futureDatabase);
       }
 
@@ -1461,12 +1461,12 @@ export default (testSettings: TestSettings) => {
 
       const { future, id } = futureMachine.withResolvers<void>();
 
-      const boundMethod = method.bind(1);
+      const boundMethod = method.bindArgs(1);
       const original = containers.createStruct<structType>({
         boundMethod,
       });
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -1499,7 +1499,7 @@ export default (testSettings: TestSettings) => {
         future,
       });
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -1543,7 +1543,7 @@ export default (testSettings: TestSettings) => {
         test,
       });
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -1576,7 +1576,7 @@ export default (testSettings: TestSettings) => {
         list,
       });
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -1609,7 +1609,7 @@ export default (testSettings: TestSettings) => {
       const value = containers.createStruct<structType>({ num: 1 });
       const original = containers.createStruct<structHolderType>({ value });
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -1640,7 +1640,7 @@ export default (testSettings: TestSettings) => {
       const value = containers.createDictionary<number>();
       const original = containers.createStruct<structType>({ value });
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -1699,10 +1699,10 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const struct = containers.createStruct<structType>({
-          Hello: thunk.bind(value),
+          Hello: thunk.bindArgs(value),
         });
 
-        future.next(holder.bind(struct));
+        future.next(holder.bindArgs(struct));
         await dbHolder.close(futureDatabase);
       }
 
@@ -1761,7 +1761,7 @@ export default (testSettings: TestSettings) => {
           World: value2,
         });
 
-        future.next(method.bind(futureMachine.resolve(struct)));
+        future.next(method.bindArgs(futureMachine.resolve(struct)));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2102,8 +2102,8 @@ export default (testSettings: TestSettings) => {
           World: value2,
         });
 
-        future1.next(method.bind(struct));
-        future2.next(updateMethod.bind(struct, 'Hello'));
+        future1.next(method.bindArgs(struct));
+        future2.next(updateMethod.bindArgs(struct, 'Hello'));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2249,7 +2249,7 @@ export default (testSettings: TestSettings) => {
         structEntry.A = structValue1;
         entityEntry[entityKey1] = entityValue1;
 
-        future.next(method.bind(struct));
+        future.next(method.bindArgs(struct));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2330,7 +2330,7 @@ export default (testSettings: TestSettings) => {
         });
         struct.Hello = struct;
 
-        future.next(method.bind(struct));
+        future.next(method.bindArgs(struct));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2476,7 +2476,7 @@ export default (testSettings: TestSettings) => {
 
       const mapMethod = methods
         .create('mapMethod', (str: string, num: number) => str + num.toString())
-        .bind('Hello: ');
+        .bindArgs('Hello: ');
 
       methods.build();
 
@@ -2536,7 +2536,7 @@ export default (testSettings: TestSettings) => {
 
       const { future, resolve } = futureMachine.withResolvers<number>();
 
-      const valueFuture = future.next(method.bind(list));
+      const valueFuture = future.next(method.bindArgs(list));
 
       const elements = [1234, 88, 438, 574];
 
@@ -2585,7 +2585,7 @@ export default (testSettings: TestSettings) => {
         const list = containers.createList<number[]>();
         list.push(...elements);
 
-        future.next(method.bind(list));
+        future.next(method.bindArgs(list));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2634,7 +2634,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolve(value)
         );
 
-        future.next(method.bind(list));
+        future.next(method.bindArgs(list));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2670,10 +2670,10 @@ export default (testSettings: TestSettings) => {
 
       const { future, id } = futureMachine.withResolvers<void>();
 
-      const boundMethod = method.bind(1);
+      const boundMethod = method.bindArgs(1);
       const original = containers.createList<listType>(boundMethod);
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -2704,7 +2704,7 @@ export default (testSettings: TestSettings) => {
       const { future } = futureMachine.withResolvers<number>();
       const original = containers.createList<listType>(future);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -2746,7 +2746,7 @@ export default (testSettings: TestSettings) => {
       const test = createTest();
       const original = containers.createList<listType>(test);
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -2777,7 +2777,7 @@ export default (testSettings: TestSettings) => {
       const list = containers.createList<number[]>();
       const original = containers.createList<listType>(list);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -2810,7 +2810,7 @@ export default (testSettings: TestSettings) => {
       const value = containers.createStruct<structType>({ num: 1 });
       const original = containers.createList<listType>(value);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -2841,7 +2841,7 @@ export default (testSettings: TestSettings) => {
       const value = containers.createDictionary<number>();
       const original = containers.createList<listType>(value);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -2895,10 +2895,10 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const list = containers.createList<Method<() => number>[]>(
-          thunk.bind(value)
+          thunk.bindArgs(value)
         );
 
-        future.next(holder.bind(list));
+        future.next(holder.bindArgs(list));
         await dbHolder.close(futureDatabase);
       }
 
@@ -2950,7 +2950,7 @@ export default (testSettings: TestSettings) => {
         const list = containers.createList<number[]>();
         list.push(...elements);
 
-        future.next(method.bind(futureMachine.resolve(list)));
+        future.next(method.bindArgs(futureMachine.resolve(list)));
         await dbHolder.close(futureDatabase);
       }
 
@@ -3298,7 +3298,7 @@ export default (testSettings: TestSettings) => {
         structEntry.A = structValue1;
         entityEntry[entityKey1] = entityValue1;
 
-        future.next(method.bind(list));
+        future.next(method.bindArgs(list));
         await dbHolder.close(futureDatabase);
       }
 
@@ -3369,7 +3369,7 @@ export default (testSettings: TestSettings) => {
         const list = containers.createList<listType[]>();
         list.push(list);
 
-        future.next(method.bind(list));
+        future.next(method.bindArgs(list));
         await dbHolder.close(futureDatabase);
       }
 
@@ -3604,7 +3604,7 @@ export default (testSettings: TestSettings) => {
         futureMachine.withResolvers<keyof stateType<number>>();
 
       const valueFuture = future.next(
-        method.bind(instance) as Method<
+        method.bindArgs(instance) as Method<
           (key: keyof stateType<number>) => number | undefined
         >
       );
@@ -3692,7 +3692,7 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const instance = createTest<boolean>(value1_1);
-        future.next(method.bind(instance));
+        future.next(method.bindArgs(instance));
 
         instance[key1] = value1_2;
 
@@ -3771,7 +3771,7 @@ export default (testSettings: TestSettings) => {
 
         const entity = createTest(futureMachine.resolve(value));
 
-        future.next(method.bind(entity));
+        future.next(method.bindArgs(entity));
         await dbHolder.close(futureDatabase);
       }
 
@@ -3825,10 +3825,10 @@ export default (testSettings: TestSettings) => {
 
       const { future, id } = futureMachine.withResolvers<void>();
 
-      const boundMethod = method.bind(1);
+      const boundMethod = method.bindArgs(1);
       const original = createTest(boundMethod);
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -3877,7 +3877,7 @@ export default (testSettings: TestSettings) => {
       const { future } = futureMachine.withResolvers<number>();
       const original = createTest(future);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -3933,7 +3933,7 @@ export default (testSettings: TestSettings) => {
       const test = createTest();
       const original = createHolder(test);
 
-      future.next(holder.bind(original));
+      future.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -3980,7 +3980,7 @@ export default (testSettings: TestSettings) => {
       const list = containers.createList<number[]>();
       const original = createTest(list);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -4029,7 +4029,7 @@ export default (testSettings: TestSettings) => {
       const value = containers.createStruct<structType>({ num: 1 });
       const original = createTest(value);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -4076,7 +4076,7 @@ export default (testSettings: TestSettings) => {
       const value = containers.createDictionary<number>();
       const original = createTest(value);
 
-      holdingFuture.next(holder.bind(original));
+      holdingFuture.next(holder.bindArgs(original));
 
       futureMachine.resolveFutureById(id);
 
@@ -4151,9 +4151,9 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const entity = createTest(thunk.bind(value));
+        const entity = createTest(thunk.bindArgs(value));
 
-        future.next(holder.bind(entity));
+        future.next(holder.bindArgs(entity));
         await dbHolder.close(futureDatabase);
       }
 
@@ -4241,7 +4241,7 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const instance = createTest(containers.createList(...value1));
-        future.next(method.bind(instance));
+        future.next(method.bindArgs(instance));
 
         await dbHolder.close(futureDatabase);
       }
@@ -4336,7 +4336,7 @@ export default (testSettings: TestSettings) => {
         const instance = createTest<boolean>(value1_1);
         instance[key1] = value1_2;
 
-        future.next(method.bind(futureMachine.resolve(instance)));
+        future.next(method.bindArgs(futureMachine.resolve(instance)));
         await dbHolder.close(futureDatabase);
       }
 
@@ -4766,7 +4766,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        future.next(method.bind(createTest));
+        future.next(method.bindArgs(createTest));
 
         await dbHolder.close(futureDatabase);
       }
@@ -4886,8 +4886,8 @@ export default (testSettings: TestSettings) => {
 
         const instance = createTest(value1_1);
 
-        future1.next(method.bind(instance));
-        future2.next(updateMethod.bind(instance, key1));
+        future1.next(method.bindArgs(instance));
+        future2.next(updateMethod.bindArgs(instance, key1));
         await dbHolder.close(futureDatabase);
       }
 
@@ -4982,7 +4982,7 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const instance = createTest(value1_1);
-        future.next(method.bind(instance)).catch(catcher);
+        future.next(method.bindArgs(instance)).catch(catcher);
 
         await dbHolder.close(futureDatabase);
       }
@@ -5077,7 +5077,7 @@ export default (testSettings: TestSettings) => {
         futureId = id;
 
         const instance = createTest(value1_1);
-        future.next(method.bind(boundMethod.bind(instance)));
+        future.next(method.bindArgs(boundMethod.bindArgs(instance)));
 
         await dbHolder.close(futureDatabase);
       }
@@ -5258,7 +5258,7 @@ export default (testSettings: TestSettings) => {
         dictionaryEntry.set(dictKey, dictValue);
         structEntry.A = structValue1;
 
-        future.next(method.bind(entity));
+        future.next(method.bindArgs(entity));
         await dbHolder.close(futureDatabase);
       }
 
@@ -5363,7 +5363,7 @@ export default (testSettings: TestSettings) => {
 
         const entity = createTest();
 
-        future.next(method.bind(entity));
+        future.next(method.bindArgs(entity));
         await dbHolder.close(futureDatabase);
       }
 

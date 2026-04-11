@@ -55,7 +55,7 @@ export function importInternalMethods(futureMachineImpl: FutureMachineImpl) {
     ): Future<T> => {
       const result = onFinally();
       const future = futureMachineImpl.resolve(result);
-      return future.next(thunk.bind(value)) as Future<T>;
+      return future.next(thunk.bindArgs(value)) as Future<T>;
     }
   );
   const catchFinally = futureMachineImpl.createInternalMethod(
@@ -66,7 +66,7 @@ export function importInternalMethods(futureMachineImpl: FutureMachineImpl) {
     ): Future<T> => {
       const result = onFinally();
       const future = futureMachineImpl.resolve(result);
-      return future.next(thrower.bind(value));
+      return future.next(thrower.bindArgs(value));
     }
   );
   const allResolveElement = futureMachineImpl.createInternalMethod(

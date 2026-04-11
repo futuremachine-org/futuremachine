@@ -61,7 +61,7 @@ class MethodClass<Impl extends AnyMethodImpl> implements SerializableObject {
     return this.impl.getName();
   }
 
-  public bind<
+  public bindArgs<
     A extends Serializable[],
     B extends unknown[],
     R extends ValidResult<Serializable>,
@@ -70,7 +70,7 @@ class MethodClass<Impl extends AnyMethodImpl> implements SerializableObject {
     ...args: A
   ): Method<(...args: B) => R> {
     const method = new Method<(...args: B) => R>(
-      this.impl.bind(...args)
+      this.impl.bindArgs(...args)
     ) as Method<(...args: B) => R>;
 
     method.impl.getMethodDb().setFacade(method);

@@ -226,7 +226,9 @@ export default (testSettings: TestSettings) => {
         const { future: future1, resolve: futureResolve1 } =
           futureMachine.withResolvers<void>();
 
-        future1.next(futureReturningMethod.bind(futureMachine)).next(method);
+        future1
+          .next(futureReturningMethod.bindArgs(futureMachine))
+          .next(method);
 
         const result = 2222;
         futureResolve1();
@@ -481,7 +483,7 @@ export default (testSettings: TestSettings) => {
         const { future, resolve: futureResolve } =
           futureMachine.withResolvers<number>();
 
-        future.next(throwMethod.bind(exception)).catch(catchMethod);
+        future.next(throwMethod.bindArgs(exception)).catch(catchMethod);
 
         futureResolve(specialNum);
 
@@ -519,7 +521,7 @@ export default (testSettings: TestSettings) => {
 
         futureResolve(specialNum);
 
-        future.next(throwMethod.bind(exception)).catch(catchMethod);
+        future.next(throwMethod.bindArgs(exception)).catch(catchMethod);
 
         assert.deepStrictEqual(await catchPromise, exception);
 
@@ -763,9 +765,9 @@ export default (testSettings: TestSettings) => {
 
         const { future: f1, resolve: r1 } =
           futureMachine.withResolvers<string>();
-        f1.next(method.bind('f1.next'));
-        const f2 = f1.catch(method.bind('f1.catch'));
-        f2.next(method.bind('f2.next'), method.bind('f2.catch')).next(
+        f1.next(method.bindArgs('f1.next'));
+        const f2 = f1.catch(method.bindArgs('f1.catch'));
+        f2.next(method.bindArgs('f2.next'), method.bindArgs('f2.catch')).next(
           resultMethod
         );
         r1('Hello');
@@ -994,7 +996,9 @@ export default (testSettings: TestSettings) => {
           futureMachine.withResolvers<number>();
 
         const result = 2222;
-        resultFuture.finally(onFinally.bind(futureMachine)).next(afterFinally);
+        resultFuture
+          .finally(onFinally.bindArgs(futureMachine))
+          .next(afterFinally);
         futureResolve(result);
 
         const innerResolve = await onFinallyPromise;
@@ -1051,8 +1055,8 @@ export default (testSettings: TestSettings) => {
 
         const result = 2222;
         resultFuture
-          .finally(onFinally.bind(results))
-          .next(afterFinally.bind(results));
+          .finally(onFinally.bindArgs(results))
+          .next(afterFinally.bindArgs(results));
         futureResolve(result);
 
         const innerResolve = await onFinallyPromise;
@@ -1177,7 +1181,7 @@ export default (testSettings: TestSettings) => {
           return {
             exceptions,
             futureDatabase,
-            futureHolderMethod: futureHolderMethod.bind(
+            futureHolderMethod: futureHolderMethod.bindArgs(
               exceededFutureCountException
             ),
             futureMachine,
@@ -1200,7 +1204,7 @@ export default (testSettings: TestSettings) => {
           for (let i = 0; i < futureCount; i++) {
             const { future, id } = futureMachine.withResolvers<void>();
             futureIdHolders.push(id);
-            future.next(futureHolderMethod.bind(heldFuture));
+            future.next(futureHolderMethod.bindArgs(heldFuture));
           }
 
           await dbHolder.close(futureDatabase);
@@ -1812,7 +1816,7 @@ export default (testSettings: TestSettings) => {
           holderFutureId = holdingId;
 
           heldFuture.next(method);
-          holdingFuture.next(resolverHolder.bind(resolve));
+          holdingFuture.next(resolverHolder.bindArgs(resolve));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1835,7 +1839,7 @@ export default (testSettings: TestSettings) => {
 
           resultFutureId = resultId;
           resolveHeldFuture(resultFuture);
-          holdingFuture.next(resolverHolder.bind(resolveHeldFuture));
+          holdingFuture.next(resolverHolder.bindArgs(resolveHeldFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1874,7 +1878,7 @@ export default (testSettings: TestSettings) => {
 
         const future = futureMachine.create<number>(() => {});
 
-        holdingFuture.next(holder.bind(future));
+        holdingFuture.next(holder.bindArgs(future));
 
         futureMachine.resolveFutureById(id);
         const heldFuture = await promise;
@@ -1903,7 +1907,7 @@ export default (testSettings: TestSettings) => {
 
         const { future } = futureMachine.withResolvers<number>();
 
-        holdingFuture.next(holder.bind(future));
+        holdingFuture.next(holder.bindArgs(future));
 
         futureMachine.resolveFutureById(id);
         const heldFuture = await promise;
@@ -1933,7 +1937,7 @@ export default (testSettings: TestSettings) => {
         const { future: firstFuture } = futureMachine.withResolvers<number>();
         const future = firstFuture.next();
 
-        holdingFuture.next(holder.bind(future));
+        holdingFuture.next(holder.bindArgs(future));
 
         futureMachine.resolveFutureById(id);
         const heldFuture = await promise;
@@ -1962,7 +1966,7 @@ export default (testSettings: TestSettings) => {
 
         const future = futureMachine.resolve<number>(1);
 
-        holdingFuture.next(holder.bind(future));
+        holdingFuture.next(holder.bindArgs(future));
 
         futureMachine.resolveFutureById(id);
         const heldFuture = await promise;
@@ -2454,7 +2458,7 @@ export default (testSettings: TestSettings) => {
         const { future, reject: futureReject } =
           futureMachine.withResolvers<number>();
 
-        future.catch(throwMethod.bind(exception)).catch(catchMethod);
+        future.catch(throwMethod.bindArgs(exception)).catch(catchMethod);
 
         futureReject(specialNum);
 
@@ -2492,7 +2496,7 @@ export default (testSettings: TestSettings) => {
 
         futureReject(specialNum);
 
-        future.catch(throwMethod.bind(exception)).catch(catchMethod);
+        future.catch(throwMethod.bindArgs(exception)).catch(catchMethod);
 
         assert.deepStrictEqual(await catchPromise, exception);
 
@@ -2575,7 +2579,9 @@ export default (testSettings: TestSettings) => {
         const { future: future1, reject: futureReject1 } =
           futureMachine.withResolvers<void>();
 
-        future1.catch(futureReturningMethod.bind(futureMachine)).next(method);
+        future1
+          .catch(futureReturningMethod.bindArgs(futureMachine))
+          .next(method);
 
         const result = 2222;
         futureReject1();
@@ -2725,12 +2731,12 @@ export default (testSettings: TestSettings) => {
 
         const { future: f1, reject: e1 } =
           futureMachine.withResolvers<string>();
-        const f2 = f1.next(method.bind(results, 'f1.next'));
-        f1.catch(method.bind(results, 'f1.catch'));
-        f2.next(method.bind(results, 'f2.next'))
-          .catch(method.bind(results, 'f3.catch'))
+        const f2 = f1.next(method.bindArgs(results, 'f1.next'));
+        f1.catch(method.bindArgs(results, 'f1.catch'));
+        f2.next(method.bindArgs(results, 'f2.next'))
+          .catch(method.bindArgs(results, 'f3.catch'))
           .next(resultMethod);
-        f2.catch(method.bind(results, 'f2.catch'));
+        f2.catch(method.bindArgs(results, 'f2.catch'));
         e1('Hello');
         // f1.catch Hello
         // f2.catch Hello
@@ -2985,7 +2991,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
 
           futureId = id;
-          future.next(caller.bind(boundMethod)).catch(catcher);
+          future.next(caller.bindArgs(boundMethod)).catch(catcher);
           await dbHolder.close(futureDatabase);
         }
 
@@ -3206,7 +3212,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
           const boundFuture = futureMachine.reject<string>(rejectValue);
 
-          future.next(method.bind(boundFuture));
+          future.next(method.bindArgs(boundFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3273,7 +3279,7 @@ export default (testSettings: TestSettings) => {
             .resolve(dictionary)
             .next(thrower);
 
-          future.next(method.bind(rejectedFuture));
+          future.next(method.bindArgs(rejectedFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3330,7 +3336,7 @@ export default (testSettings: TestSettings) => {
           const rejectedFuture =
             futureMachine.reject<Dictionary<number>>(dictionary);
 
-          future.next(method.bind(rejectedFuture));
+          future.next(method.bindArgs(rejectedFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3399,7 +3405,7 @@ export default (testSettings: TestSettings) => {
 
           const rejectedFuture = futureMachine.try(thrower, dictionary);
 
-          future.next(method.bind(rejectedFuture));
+          future.next(method.bindArgs(rejectedFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3457,7 +3463,7 @@ export default (testSettings: TestSettings) => {
             .resolve(futureMachine)
             .next(thrower);
 
-          future.next(method.bind(rejectedFuture));
+          future.next(method.bindArgs(rejectedFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3506,7 +3512,7 @@ export default (testSettings: TestSettings) => {
             futureMachine.resolve(value)
           );
 
-          future.next(method.bind(rejectedFuture));
+          future.next(method.bindArgs(rejectedFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3558,10 +3564,10 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const rejectedFuture = futureMachine.reject<number>(
-            thunk.bind(value)
+            thunk.bindArgs(value)
           );
 
-          future.next(method.bind(rejectedFuture));
+          future.next(method.bindArgs(rejectedFuture));
           await dbHolder.close(futureDatabase);
         }
 
@@ -3600,7 +3606,7 @@ export default (testSettings: TestSettings) => {
 
         const future = futureMachine.reject<number>('');
 
-        holdingFuture.next(holder.bind(future));
+        holdingFuture.next(holder.bindArgs(future));
 
         futureMachine.resolveFutureById(id);
         const heldFuture = await promise;

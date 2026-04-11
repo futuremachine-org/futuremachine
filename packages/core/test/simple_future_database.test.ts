@@ -40,7 +40,7 @@ describe('SimpleFutureDatabase', () => {
       const { future, id } = futureMachine.withResolvers<void>();
       futureId = id;
 
-      future.next(method.bind(value));
+      future.next(method.bindArgs(value));
       await futureDatabase.flush();
       futureDatabaseState = futureDatabase.getState();
     }

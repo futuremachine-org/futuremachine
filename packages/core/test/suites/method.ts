@@ -82,15 +82,15 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual(method(1, 'Hello'), '1: Hello');
 
-        const boundedMethod = method.bind(2);
+        const boundedMethod = method.bindArgs(2);
 
         assert.deepStrictEqual(boundedMethod('world'), '2: world');
 
-        const fullyBoundedMethod = boundedMethod.bind('fizz');
+        const fullyBoundedMethod = boundedMethod.bindArgs('fizz');
 
         assert.deepStrictEqual(fullyBoundedMethod(), '2: fizz');
 
-        const fullyBoundedMethod2 = method.bind(3, 'buzz');
+        const fullyBoundedMethod2 = method.bindArgs(3, 'buzz');
 
         assert.deepStrictEqual(fullyBoundedMethod2(), '3: buzz');
         await dbHolder.close(futureDatabase);
@@ -122,7 +122,7 @@ export default (testSettings: TestSettings) => {
         const { future, resolve: futureResolve } =
           futureMachine.withResolvers<number>();
 
-        future.next(method.bind(callbackMethod));
+        future.next(method.bindArgs(callbackMethod));
 
         const result = 4343;
         futureResolve(result);
@@ -156,7 +156,9 @@ export default (testSettings: TestSettings) => {
         const { future, resolve: futureResolve } =
           futureMachine.withResolvers<number>();
 
-        future.next(method.bind(method.bind(method.bind(callbackMethod))));
+        future.next(
+          method.bindArgs(method.bindArgs(method.bindArgs(callbackMethod)))
+        );
 
         const result = 4343;
         futureResolve(result);
@@ -202,7 +204,9 @@ export default (testSettings: TestSettings) => {
             await createMethods();
           const { future, id } = futureMachine.withResolvers<number>();
           futureId = id;
-          future.next(method.bind(method.bind(method.bind(callbackMethod))));
+          future.next(
+            method.bindArgs(method.bindArgs(method.bindArgs(callbackMethod)))
+          );
           await dbHolder.close(futureDatabase);
         }
 
@@ -240,7 +244,7 @@ export default (testSettings: TestSettings) => {
         {
           const { future, resolve } = futureMachine.withResolvers<string>();
 
-          future.next(method.bind(1)).next(method2);
+          future.next(method.bindArgs(1)).next(method2);
 
           resolve('Hello');
 
@@ -250,7 +254,7 @@ export default (testSettings: TestSettings) => {
         {
           const { future, resolve } = futureMachine.withResolvers();
 
-          future.next(method.bind(2, 'World')).next(method3);
+          future.next(method.bindArgs(2, 'World')).next(method3);
 
           resolve('Hello');
 
@@ -305,7 +309,7 @@ export default (testSettings: TestSettings) => {
           const { future: boundFuture, id: boundedId } =
             futureMachine.withResolvers<number>();
           boundedFutureId = boundedId;
-          future.next(method.bind(boundFuture, callbackMethod));
+          future.next(method.bindArgs(boundFuture, callbackMethod));
           await dbHolder.close(futureDatabase);
         }
 
@@ -364,7 +368,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
           const boundFuture = futureMachine.resolve<number>(result);
-          future.next(method.bind(boundFuture, callbackMethod));
+          future.next(method.bindArgs(boundFuture, callbackMethod));
           await dbHolder.close(futureDatabase);
         }
 
@@ -398,7 +402,7 @@ export default (testSettings: TestSettings) => {
 
         const { future, id } = futureMachine.withResolvers<void>();
 
-        future.next(holder.bind(method));
+        future.next(holder.bindArgs(method));
 
         futureMachine.resolveFutureById(id);
 
@@ -430,9 +434,9 @@ export default (testSettings: TestSettings) => {
 
         const { future, id } = futureMachine.withResolvers<void>();
 
-        const boundMethod = method.bind(1);
+        const boundMethod = method.bindArgs(1);
 
-        future.next(holder.bind(boundMethod));
+        future.next(holder.bindArgs(boundMethod));
 
         futureMachine.resolveFutureById(id);
 
@@ -464,7 +468,7 @@ export default (testSettings: TestSettings) => {
 
         const { future, id } = futureMachine.withResolvers<void>();
 
-        future.next(holder.bind(method));
+        future.next(holder.bindArgs(method));
 
         futureMachine.resolveFutureById(id);
 
@@ -507,7 +511,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(holder.bind(method));
+          future.next(holder.bindArgs(method));
 
           await dbHolder.close(futureDatabase);
         }

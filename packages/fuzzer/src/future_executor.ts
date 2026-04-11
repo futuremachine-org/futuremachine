@@ -54,12 +54,12 @@ export class FutureExecutor {
     futureMachine: FutureMachine,
     containers: Containers,
     methodName: string
-  ) {
+  ): Method<(...args: Serializable[]) => Serializable> {
     const method = this.methods.get(methodName);
     if (!method) {
       throw new Error('Method not found');
     }
-    return method.method.bind(
+    return method.method.bindArgs(
       futureMachine,
       ...method.boundArgs.map((value: AnyValue) =>
         this.valueToReal(futureMachine, containers, value)

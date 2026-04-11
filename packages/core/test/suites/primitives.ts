@@ -42,7 +42,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(undefined));
+          future.next(method.bindArgs(undefined));
           await dbHolder.close(futureDatabase);
         }
 
@@ -91,7 +91,7 @@ export default (testSettings: TestSettings) => {
           const dictionary = containers.createDictionary<undefined>();
           dictionary.set(key, undefined);
 
-          future.next(method.bind(dictionary));
+          future.next(method.bindArgs(dictionary));
           await dbHolder.close(futureDatabase);
         }
 
@@ -143,7 +143,7 @@ export default (testSettings: TestSettings) => {
             Hello: undefined,
           });
 
-          future.next(method.bind(struct));
+          future.next(method.bindArgs(struct));
           await dbHolder.close(futureDatabase);
         }
 
@@ -187,7 +187,7 @@ export default (testSettings: TestSettings) => {
           const list = containers.createList<undefined[]>();
           list.push(undefined);
 
-          future.next(method.bind(list));
+          future.next(method.bindArgs(list));
           await dbHolder.close(futureDatabase);
         }
 
@@ -251,7 +251,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const instance = createTest();
-          future.next(method.bind(instance));
+          future.next(method.bindArgs(instance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -298,7 +298,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine.resolve(undefined)));
+          future.next(method.bindArgs(futureMachine.resolve(undefined)));
           await dbHolder.close(futureDatabase);
         }
 
@@ -412,7 +412,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(null));
+          future.next(method.bindArgs(null));
           await dbHolder.close(futureDatabase);
         }
 
@@ -461,7 +461,7 @@ export default (testSettings: TestSettings) => {
           const dictionary = containers.createDictionary<null>();
           dictionary.set(key, null);
 
-          future.next(method.bind(dictionary));
+          future.next(method.bindArgs(dictionary));
           await dbHolder.close(futureDatabase);
         }
 
@@ -513,7 +513,7 @@ export default (testSettings: TestSettings) => {
             Hello: null,
           });
 
-          future.next(method.bind(struct));
+          future.next(method.bindArgs(struct));
           await dbHolder.close(futureDatabase);
         }
 
@@ -556,7 +556,7 @@ export default (testSettings: TestSettings) => {
           const list = containers.createList<null[]>();
           list.push(null);
 
-          future.next(method.bind(list));
+          future.next(method.bindArgs(list));
           await dbHolder.close(futureDatabase);
         }
 
@@ -620,7 +620,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const instance = createTest();
-          future.next(method.bind(instance));
+          future.next(method.bindArgs(instance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -666,7 +666,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine.resolve(null)));
+          future.next(method.bindArgs(futureMachine.resolve(null)));
           await dbHolder.close(futureDatabase);
         }
 
@@ -780,7 +780,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(true));
+          future.next(method.bindArgs(true));
           await dbHolder.close(futureDatabase);
         }
 
@@ -829,7 +829,7 @@ export default (testSettings: TestSettings) => {
           const dictionary = containers.createDictionary<boolean>();
           dictionary.set(key, true);
 
-          future.next(method.bind(dictionary));
+          future.next(method.bindArgs(dictionary));
           await dbHolder.close(futureDatabase);
         }
 
@@ -881,7 +881,7 @@ export default (testSettings: TestSettings) => {
             Hello: true,
           });
 
-          future.next(method.bind(struct));
+          future.next(method.bindArgs(struct));
           await dbHolder.close(futureDatabase);
         }
 
@@ -924,7 +924,7 @@ export default (testSettings: TestSettings) => {
           const list = containers.createList<boolean[]>();
           list.push(true);
 
-          future.next(method.bind(list));
+          future.next(method.bindArgs(list));
           await dbHolder.close(futureDatabase);
         }
 
@@ -988,7 +988,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const instance = createTest();
-          future.next(method.bind(instance));
+          future.next(method.bindArgs(instance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -1034,7 +1034,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine.resolve(true)));
+          future.next(method.bindArgs(futureMachine.resolve(true)));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1150,7 +1150,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(value));
+          future.next(method.bindArgs(value));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1201,7 +1201,7 @@ export default (testSettings: TestSettings) => {
           const dictionary = containers.createDictionary<number>();
           dictionary.set(key, value);
 
-          future.next(method.bind(dictionary));
+          future.next(method.bindArgs(dictionary));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1255,7 +1255,7 @@ export default (testSettings: TestSettings) => {
             Hello: value,
           });
 
-          future.next(method.bind(struct));
+          future.next(method.bindArgs(struct));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1300,7 +1300,7 @@ export default (testSettings: TestSettings) => {
           const list = containers.createList<number[]>();
           list.push(value);
 
-          future.next(method.bind(list));
+          future.next(method.bindArgs(list));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1365,7 +1365,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const instance = createTest();
-          future.next(method.bind(instance));
+          future.next(method.bindArgs(instance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -1413,7 +1413,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine.resolve(value)));
+          future.next(method.bindArgs(futureMachine.resolve(value)));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1458,7 +1458,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(value));
+          future.next(method.bindArgs(value));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1509,7 +1509,7 @@ export default (testSettings: TestSettings) => {
           const dictionary = containers.createDictionary<bigint>();
           dictionary.set(key, value);
 
-          future.next(method.bind(dictionary));
+          future.next(method.bindArgs(dictionary));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1563,7 +1563,7 @@ export default (testSettings: TestSettings) => {
             Hello: value,
           });
 
-          future.next(method.bind(struct));
+          future.next(method.bindArgs(struct));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1608,7 +1608,7 @@ export default (testSettings: TestSettings) => {
           const list = containers.createList<bigint[]>();
           list.push(value);
 
-          future.next(method.bind(list));
+          future.next(method.bindArgs(list));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1673,7 +1673,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const instance = createTest();
-          future.next(method.bind(instance));
+          future.next(method.bindArgs(instance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -1721,7 +1721,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine.resolve(value)));
+          future.next(method.bindArgs(futureMachine.resolve(value)));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1766,7 +1766,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(value));
+          future.next(method.bindArgs(value));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1817,7 +1817,7 @@ export default (testSettings: TestSettings) => {
           const dictionary = containers.createDictionary<string>();
           dictionary.set(key, value);
 
-          future.next(method.bind(dictionary));
+          future.next(method.bindArgs(dictionary));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1871,7 +1871,7 @@ export default (testSettings: TestSettings) => {
             Hello: value,
           });
 
-          future.next(method.bind(struct));
+          future.next(method.bindArgs(struct));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1916,7 +1916,7 @@ export default (testSettings: TestSettings) => {
           const list = containers.createList<string[]>();
           list.push(value);
 
-          future.next(method.bind(list));
+          future.next(method.bindArgs(list));
           await dbHolder.close(futureDatabase);
         }
 
@@ -1981,7 +1981,7 @@ export default (testSettings: TestSettings) => {
           futureId = id;
 
           const instance = createTest();
-          future.next(method.bind(instance));
+          future.next(method.bindArgs(instance));
 
           await dbHolder.close(futureDatabase);
         }
@@ -2029,7 +2029,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(futureMachine.resolve(value)));
+          future.next(method.bindArgs(futureMachine.resolve(value)));
           await dbHolder.close(futureDatabase);
         }
 

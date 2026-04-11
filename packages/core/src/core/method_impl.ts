@@ -47,7 +47,7 @@ export class MethodImpl<Impl extends AnyMethodImpl> {
     ) as ReturnType<Impl>;
   }
 
-  public bind<
+  public bindArgs<
     A extends Serializable[],
     B extends unknown[],
     R extends ValidResult<Serializable>,

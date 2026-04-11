@@ -189,7 +189,7 @@ export class FutureMachineImpl {
         methodDb.getName()
       );
       if (unboundMethod === undefined) {
-        return this.internalMethods.thrower.bind(
+        return this.internalMethods.thrower.bindArgs(
           this.createException(
             `Method with name ${methodDb.getName()} not found`
           )
@@ -290,10 +290,10 @@ export class FutureMachineImpl {
     // `createFuture`, but it it won't be defined when returned by a `next` or
     // `catch` call.
     if (executor) {
-      const resolve = this.internalMethods.resolve.bind(
+      const resolve = this.internalMethods.resolve.bindArgs(
         futureDb.getId() as FutureId<Serializable>
       );
-      const reject = this.internalMethods.reject.bind(futureDb.getId());
+      const reject = this.internalMethods.reject.bindArgs(futureDb.getId());
       try {
         executor(futureDb.getId() as FutureId<T>, resolve, reject);
       } catch (e) {
@@ -598,8 +598,8 @@ export class FutureMachineImpl {
     onFinally: OnFinallyMethod
   ): Future<T> {
     return future.next(
-      this.internalMethods.nextFinally.bind(onFinally),
-      this.internalMethods.catchFinally.bind(onFinally)
+      this.internalMethods.nextFinally.bindArgs(onFinally),
+      this.internalMethods.catchFinally.bindArgs(onFinally)
     ) as Future<T>;
   }
 
@@ -641,7 +641,7 @@ export class FutureMachineImpl {
     try {
       for (const value of values) {
         const nextFuture = this.resolve(value);
-        const onFulfilled = this.internalMethods.allResolveElement.bind(
+        const onFulfilled = this.internalMethods.allResolveElement.bindArgs(
           id,
           // TODO: Find a better solution. `bind` doesn't allow pre-serialized
           // values. This works and doesn't cause any issues, but it breaks the
@@ -681,7 +681,7 @@ export class FutureMachineImpl {
     try {
       for (const value of values) {
         const nextFuture = this.resolve(value);
-        const onRejected = this.internalMethods.anyRejectElement.bind(
+        const onRejected = this.internalMethods.anyRejectElement.bindArgs(
           id,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           aggregateDb as any,
@@ -737,18 +737,20 @@ export class FutureMachineImpl {
     try {
       for (const value of values) {
         const nextFuture = this.resolve(value);
-        const onFulfilled = this.internalMethods.allSettledResolveElement.bind(
-          id as FutureId<List<Serializable[]>>,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          aggregateDb as any,
-          index
-        );
-        const onRejected = this.internalMethods.allSettledRejectElement.bind(
-          id,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          aggregateDb as any,
-          index
-        );
+        const onFulfilled =
+          this.internalMethods.allSettledResolveElement.bindArgs(
+            id as FutureId<List<Serializable[]>>,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            aggregateDb as any,
+            index
+          );
+        const onRejected =
+          this.internalMethods.allSettledRejectElement.bindArgs(
+            id,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            aggregateDb as any,
+            index
+          );
         nextFuture.next(onFulfilled, onRejected);
         index++;
       }

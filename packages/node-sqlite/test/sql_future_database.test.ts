@@ -152,7 +152,7 @@ describe('SQLFutureDatabase', () => {
       assert.strictEqual(futureDatabaseImpl.getFuturesCountForTesting(), 0);
 
       // Binding it to a method won't write it to the database either.
-      const boundMethod = method.bind(rejectedFuture);
+      const boundMethod = method.bindArgs(rejectedFuture);
       assert.strictEqual(futureDatabaseImpl.getFuturesCountForTesting(), 0);
 
       // Even flushing shouldn't write a resolved future if it's not referenced
@@ -214,7 +214,7 @@ describe('SQLFutureDatabase', () => {
         const list = containers.createList(...values);
         const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
 
-        f1.next(method.bind(list));
+        f1.next(method.bindArgs(list));
 
         await futureDatabase.flush();
 
@@ -225,7 +225,7 @@ describe('SQLFutureDatabase', () => {
         const { future: f2, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        f2.next(method.bind(list));
+        f2.next(method.bindArgs(list));
 
         await futureDatabase.close();
       }
@@ -285,7 +285,7 @@ describe('SQLFutureDatabase', () => {
         const { future: f1, id: id1 } = futureMachine.withResolvers<void>();
         futureId1 = id1;
 
-        f1.next(method1.bind(list));
+        f1.next(method1.bindArgs(list));
 
         await futureDatabase.flush();
 
@@ -294,7 +294,7 @@ describe('SQLFutureDatabase', () => {
         const { future: f2, id: id2 } = futureMachine.withResolvers<void>();
         futureId2 = id2;
 
-        f2.next(method2.bind(list));
+        f2.next(method2.bindArgs(list));
 
         await futureDatabase.close();
       }
@@ -351,7 +351,7 @@ describe('SQLFutureDatabase', () => {
 
         const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
 
-        const boundMethod = method.bind(value);
+        const boundMethod = method.bindArgs(value);
 
         f1.next(boundMethod);
 
@@ -409,7 +409,7 @@ describe('SQLFutureDatabase', () => {
 
         const { future: f1 } = futureMachine.withResolvers<void>();
 
-        const boundMethod = method.bind(value);
+        const boundMethod = method.bindArgs(value);
 
         f1.next(boundMethod);
 
@@ -465,7 +465,7 @@ describe('SQLFutureDatabase', () => {
 
         const boundFuture = futureMachine.resolve<number>(value);
 
-        f1.next(method.bind(boundFuture));
+        f1.next(method.bindArgs(boundFuture));
 
         await futureDatabase.flush();
 
@@ -476,7 +476,7 @@ describe('SQLFutureDatabase', () => {
         const { future: f2, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        f2.next(method.bind(boundFuture));
+        f2.next(method.bindArgs(boundFuture));
 
         await futureDatabase.close();
       }
@@ -528,7 +528,7 @@ describe('SQLFutureDatabase', () => {
           futureMachine.withResolvers<number>();
         boundFutureId = boundId;
 
-        f1.next(method.bind(boundFuture));
+        f1.next(method.bindArgs(boundFuture));
 
         await futureDatabase.flush();
 
@@ -539,7 +539,7 @@ describe('SQLFutureDatabase', () => {
         const { future: f2, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        f2.next(method.bind(boundFuture));
+        f2.next(method.bindArgs(boundFuture));
 
         await futureDatabase.close();
       }
@@ -600,7 +600,7 @@ describe('SQLFutureDatabase', () => {
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
         const { future, resolve: rF } = futureMachine.withResolvers<void>();
-        future.next(method.bind(obj));
+        future.next(method.bindArgs(obj));
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
         await futureDatabase.flush();
@@ -642,7 +642,7 @@ describe('SQLFutureDatabase', () => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bind(obj));
+          future.next(method.bindArgs(obj));
           assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
           await futureDatabase.flush();
@@ -707,7 +707,7 @@ describe('SQLFutureDatabase', () => {
           const { future: f2, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const boundMethod = method.bind(obj);
+          const boundMethod = method.bindArgs(obj);
 
           f1.next(boundMethod);
           f2.next(boundMethod);
@@ -835,7 +835,7 @@ describe('SQLFutureDatabase', () => {
         const { future } = futureMachine.withResolvers<void>();
 
         const holder = containers.createDictionary<HolderMethod>();
-        const boundMethod = method.bind(holder);
+        const boundMethod = method.bindArgs(holder);
         holder.set('boundMethod', boundMethod);
 
         future.next(boundMethod);
@@ -881,7 +881,7 @@ describe('SQLFutureDatabase', () => {
           struct1 = containers.createStruct({
             unique_world: 3,
           });
-          future.next(method.bind(struct1));
+          future.next(method.bindArgs(struct1));
         })();
 
         // Two futures in the db cache: one for the `futureId` and one for its

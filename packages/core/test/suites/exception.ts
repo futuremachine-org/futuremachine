@@ -210,7 +210,7 @@ export default (testSettings: TestSettings) => {
 
         stack = exception.stack;
 
-        future.next(method.bind(exception));
+        future.next(method.bindArgs(exception));
         await dbHolder.close(futureDatabase);
       }
 
@@ -455,7 +455,7 @@ export default (testSettings: TestSettings) => {
         }
         const exception = createTypeException();
 
-        future.next(method.bind(exception));
+        future.next(method.bindArgs(exception));
         await dbHolder.close(futureDatabase);
       }
 
@@ -634,7 +634,7 @@ export default (testSettings: TestSettings) => {
         }
         const exception = createAggregateException();
 
-        future.next(method.bind(exception));
+        future.next(method.bindArgs(exception));
         await dbHolder.close(futureDatabase);
       }
 
@@ -796,7 +796,7 @@ export default (testSettings: TestSettings) => {
         }
         const exception = createSerializableException();
 
-        future.next(method.bind(exception));
+        future.next(method.bindArgs(exception));
         await dbHolder.close(futureDatabase);
       }
 
