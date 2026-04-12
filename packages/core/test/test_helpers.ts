@@ -84,10 +84,11 @@ export type AnyFutureSettledResult<T extends Serializable> = {
   reason?: Serializable;
 };
 
-export function assertFutureSettledResultEquals<
-  T extends AnyFutureSettledResult<Serializable>,
->(actual: FutureSettledResult<Serializable>, expected: T) {
-  const { status, value, reason } = actual;
+export function assertFutureSettledResultEquals<T extends Serializable>(
+  actual: FutureSettledResult<T>,
+  expected: AnyFutureSettledResult<T>
+) {
+  const { status, value, reason } = actual as AnyFutureSettledResult<T>;
   const copy: AnyFutureSettledResult<Serializable> = { status };
   if (value !== undefined) {
     copy.value = value;
@@ -98,11 +99,12 @@ export function assertFutureSettledResultEquals<
   assert.deepStrictEqual(copy, expected);
 }
 
-export function assertFutureSettledResultListEquals<
-  T extends AnyFutureSettledResult<Serializable>[],
->(actual: List<FutureSettledResult<Serializable>[]>, expected: T) {
+export function assertFutureSettledResultListEquals<T extends Serializable>(
+  actual: List<FutureSettledResult<T>[]>,
+  expected: AnyFutureSettledResult<T>[]
+) {
   const actualCopies = [...actual].map((actual) => {
-    const { status, value, reason } = actual;
+    const { status, value, reason } = actual as AnyFutureSettledResult<T>;
     const copy: AnyFutureSettledResult<Serializable> = { status };
     if (value !== undefined) {
       copy.value = value;

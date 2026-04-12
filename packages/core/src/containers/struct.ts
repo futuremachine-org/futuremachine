@@ -72,3 +72,7 @@ class StructClass<
 }
 
 export const Struct = StructClass;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RawStruct<T extends Struct<any>> =
+  T extends Struct<infer R> ? R : never;

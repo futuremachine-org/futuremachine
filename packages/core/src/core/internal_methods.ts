@@ -1,14 +1,14 @@
 import type { StateBuilder } from '../containers/entity_impl.js';
-import { FutureSettledResult } from '../containers/future_settled_result.js';
-import type { FutureSettledResultState } from '../containers/future_settled_result_impl.js';
+import { type FutureSettledResult } from '../containers/future_settled_result.js';
 import type { List } from '../containers/list.js';
+import type { RawStruct } from '../containers/struct.js';
 import type {
   AggregateDB,
   Serializable,
   SerializableDB,
   ToSerializableDB,
 } from '../database/future_database.js';
-import { serialize, type ToRecordDB } from '../database/serialize_utils.js';
+import { serialize } from '../database/serialize_utils.js';
 import { AggregateException } from '../exceptions/aggregate_exception.js';
 import { Exception, type ExceptionOptions } from '../exceptions/exception.js';
 import { SerializableException } from '../exceptions/serializable_exception.js';
@@ -109,36 +109,43 @@ export function importInternalMethods(futureMachineImpl: FutureMachineImpl) {
     }
   );
 
-  const FutureSettledResultDBName = 'FutureSettledResult';
-
-  // Directly creates the DB version of FutureSettledResult.
-  function createFutureSettledResultDB(
+  function createFutureSettledResult(
     status: 'fulfilled' | 'rejected',
     value: Serializable
   ) {
-    return futureMachineImpl.createEntityDB<
-      ToRecordDB<FutureSettledResultState<'fulfilled' | 'rejected'>>
-    >(FutureSettledResultDBName, {
-      status,
-      value: serialize(value),
-    });
+    if (status === 'fulfilled') {
+      return futureMachineImpl.createStruct<
+        RawStruct<FutureSettledResult<Serializable>>
+      >({
+        status,
+        value,
+      });
+    } else {
+      return futureMachineImpl.createStruct<
+        RawStruct<FutureSettledResult<Serializable>>
+      >({
+        status,
+        reason: value,
+      });
+    }
   }
 
   const allSettledResolveElement = futureMachineImpl.createInternalMethod(
     'allSettledResolveElement',
     <T extends Serializable, U extends T>(
       futureAllId: FutureId<List<T[]>>,
-      futureAllDb: AggregateDB<
-        ToSerializableDB<FutureSettledResult<T, 'fulfilled' | 'rejected'>>
-      >,
+      futureAllDb: AggregateDB<ToSerializableDB<FutureSettledResult<T>>>,
       index: number,
       result: U
     ) => {
-      const futureSettledResultDB = createFutureSettledResultDB(
+      const futureSettledResult = createFutureSettledResult(
         'fulfilled',
         result
       );
-      const values = futureAllDb.settleElement(index, futureSettledResultDB);
+      const values = futureAllDb.settleElement(
+        index,
+        serialize(futureSettledResult)
+      );
       if (values !== undefined) {
         futureMachineImpl.resolveFutureById(
           futureAllId,
@@ -151,17 +158,15 @@ export function importInternalMethods(futureMachineImpl: FutureMachineImpl) {
     'allSettledRejectElement',
     <T extends Serializable>(
       futureAllId: FutureId<List<T[]>>,
-      futureAllDb: AggregateDB<
-        ToSerializableDB<FutureSettledResult<T, 'fulfilled' | 'rejected'>>
-      >,
+      futureAllDb: AggregateDB<ToSerializableDB<FutureSettledResult<T>>>,
       index: number,
       reason: Serializable
     ) => {
-      const futureSettledResultDB = createFutureSettledResultDB(
-        'rejected',
-        reason
+      const futureSettledResult = createFutureSettledResult('rejected', reason);
+      const values = futureAllDb.settleElement(
+        index,
+        serialize(futureSettledResult)
       );
-      const values = futureAllDb.settleElement(index, futureSettledResultDB);
       if (values !== undefined) {
         futureMachineImpl.resolveFutureById(
           futureAllId,
@@ -169,25 +174,6 @@ export function importInternalMethods(futureMachineImpl: FutureMachineImpl) {
         );
       }
     }
-  );
-
-  futureMachineImpl.registerInternalEntity(
-    FutureSettledResultDBName,
-    FutureSettledResult,
-    // TODO: Since we always create the EntityDB directly, the Method returned
-    // by this never gets called. Should we just have an internal method to just
-    // register the name and class. Or we could expose the createAggregateException.
-    /* c8 ignore start */
-    (stateBuilder: StateBuilder) =>
-      (status: 'fulfilled' | 'rejected', value: Serializable) => {
-        return new FutureSettledResult(
-          stateBuilder.build({
-            status,
-            value,
-          })
-        );
-      }
-    /* c8 ignore end */
   );
 
   const createException = futureMachineImpl.registerInternalEntity(

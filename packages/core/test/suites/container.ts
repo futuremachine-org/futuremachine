@@ -13,6 +13,7 @@ import {
 
 import type {
   AggregateException,
+  FutureFulfilledResult,
   FutureId,
   FutureSettledResult,
   Method,
@@ -677,10 +678,16 @@ export default (testSettings: TestSettings) => {
           await promise;
 
         assert.strictEqual(dictionaries.at(0).status, 'fulfilled');
-        assert.strictEqual(dictionaries.at(0).value!.get(key1_1), value1_1);
-        assert.strictEqual(dictionaries.at(0).value!.get(key1_2), value1_2);
+        const result0 = dictionaries.at(0) as FutureFulfilledResult<
+          Dictionary<number>
+        >;
+        assert.strictEqual(result0.value!.get(key1_1), value1_1);
+        assert.strictEqual(result0.value!.get(key1_2), value1_2);
         assert.strictEqual(dictionaries.at(1).status, 'fulfilled');
-        assert.strictEqual(dictionaries.at(1).value!.get(key2_1), value2_1);
+        const result1 = dictionaries.at(1) as FutureFulfilledResult<
+          Dictionary<number>
+        >;
+        assert.strictEqual(result1.value!.get(key2_1), value2_1);
         await dbHolder.close(futureDatabase);
       }
     });
@@ -1937,11 +1944,17 @@ export default (testSettings: TestSettings) => {
           await promise;
 
         assert.strictEqual(structs.at(0).status, 'fulfilled');
-        assert.strictEqual(structs.at(0).value!.Hello, value1_1);
-        assert.strictEqual(structs.at(0).value!.World, value1_2);
+        const result0 = structs.at(0) as FutureFulfilledResult<
+          Struct<structType>
+        >;
+        assert.strictEqual(result0.value!.Hello, value1_1);
+        assert.strictEqual(result0.value!.World, value1_2);
         assert.strictEqual(structs.at(1).status, 'fulfilled');
-        assert.strictEqual(structs.at(1).value!.Hello, undefined);
-        assert.strictEqual(structs.at(1).value!.World, value2_2);
+        const result1 = structs.at(1) as FutureFulfilledResult<
+          Struct<structType>
+        >;
+        assert.strictEqual(result1.value!.Hello, undefined);
+        assert.strictEqual(result1.value!.World, value2_2);
         await dbHolder.close(futureDatabase);
       }
     });
@@ -3101,9 +3114,11 @@ export default (testSettings: TestSettings) => {
           await promise;
 
         assert.deepStrictEqual(lists.at(0).status, 'fulfilled');
-        assert.deepStrictEqual([...lists.at(0).value!], elements1);
+        const result0 = lists.at(0) as FutureFulfilledResult<List<number[]>>;
+        assert.deepStrictEqual([...result0.value!], elements1);
         assert.deepStrictEqual(lists.at(1).status, 'fulfilled');
-        assert.deepStrictEqual([...lists.at(1).value!], elements2);
+        const result1 = lists.at(1) as FutureFulfilledResult<List<number[]>>;
+        assert.deepStrictEqual([...result1.value!], elements2);
         await dbHolder.close(futureDatabase);
       }
     });
@@ -4565,11 +4580,13 @@ export default (testSettings: TestSettings) => {
         const instances: List<FutureSettledResult<TestClass>[]> = await promise;
 
         assert.deepStrictEqual(instances.at(0).status, 'fulfilled');
-        assert.deepStrictEqual(instances.at(0).value![key1], value1_1);
-        assert.deepStrictEqual(instances.at(0).value![key2], value1_2);
+        const result0 = instances.at(0) as FutureFulfilledResult<TestClass>;
+        assert.deepStrictEqual(result0.value![key1], value1_1);
+        assert.deepStrictEqual(result0.value![key2], value1_2);
         assert.deepStrictEqual(instances.at(1).status, 'fulfilled');
-        assert.deepStrictEqual(instances.at(1).value![key1], undefined);
-        assert.deepStrictEqual(instances.at(1).value![key2], value2_2);
+        const result1 = instances.at(1) as FutureFulfilledResult<TestClass>;
+        assert.deepStrictEqual(result1.value![key1], undefined);
+        assert.deepStrictEqual(result1.value![key2], value2_2);
         await dbHolder.close(futureDatabase);
       }
     });

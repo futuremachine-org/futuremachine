@@ -4,6 +4,7 @@ import { describe, test } from 'node:test';
 import type {
   AggregateException,
   Dictionary,
+  FutureFulfilledResult,
   FutureId,
   FutureMachine,
   FutureSettledResult,
@@ -1794,16 +1795,10 @@ export default (testSettings: TestSettings) => {
           const { methods } = createMethodMachine(futureDatabase);
 
           const { promise, resolve } =
-            Promise.withResolvers<
-              List<[FutureSettledResult<string>, FutureSettledResult<number>]>
-            >();
+            Promise.withResolvers<List<FutureSettledResult<string>[]>>();
           const method = methods.create(
             'method',
-            (
-              result: List<
-                [FutureSettledResult<string>, FutureSettledResult<number>]
-              >
-            ) => {
+            (result: List<FutureSettledResult<string>[]>) => {
               resolve(result);
             }
           );
@@ -1825,7 +1820,7 @@ export default (testSettings: TestSettings) => {
           const { future: f1, id: id1_ } =
             futureMachine.withResolvers<string>();
           const { future: f2, id: id2_ } =
-            futureMachine.withResolvers<number>();
+            futureMachine.withResolvers<string>();
           id1 = id1_;
           id2 = id2_;
 
@@ -1846,7 +1841,7 @@ export default (testSettings: TestSettings) => {
             },
             {
               status: 'rejected',
-              reason: '1234',
+              reason: 1234,
             },
           ];
 
@@ -1967,16 +1962,10 @@ export default (testSettings: TestSettings) => {
           const { methods } = createMethodMachine(futureDatabase);
 
           const { promise, resolve } =
-            Promise.withResolvers<
-              List<[FutureSettledResult<string>, FutureSettledResult<number>]>
-            >();
+            Promise.withResolvers<List<FutureSettledResult<string>[]>>();
           const method = methods.create(
             'method',
-            (
-              result: List<
-                [FutureSettledResult<string>, FutureSettledResult<number>]
-              >
-            ) => {
+            (result: List<FutureSettledResult<string>[]>) => {
               resolve(result);
             }
           );
@@ -1997,7 +1986,7 @@ export default (testSettings: TestSettings) => {
           const { future: f1, resolve: r1 } =
             futureMachine.withResolvers<string>();
           const { future: f2, reject: r2 } =
-            futureMachine.withResolvers<number>();
+            futureMachine.withResolvers<string>();
 
           const allSettledFuture = futureMachine.allSettled([f1, f2] as const);
 
@@ -2256,20 +2245,28 @@ export default (testSettings: TestSettings) => {
 
           const results: resultsType = await promise;
 
-          const dictionaryEntry = results.at(0).value!;
+          const dictionaryEntry = (
+            results.at(0) as FutureFulfilledResult<Dictionary<number>>
+          ).value!;
           assert.strictEqual(dictionaryEntry.get(dictKey), dictValue);
 
-          const listEntry = results.at(1).value!;
+          const listEntry = (
+            results.at(1) as FutureFulfilledResult<List<string[]>>
+          ).value!;
           assert.notStrictEqual(listEntry, undefined);
           assert.strictEqual(listEntry.at(0), listItem0);
           assert.strictEqual(listEntry.at(1), listItem1);
 
-          const structEntry = results.at(2).value!;
+          const structEntry = (
+            results.at(2) as FutureFulfilledResult<Struct<structType>>
+          ).value!;
           assert.notStrictEqual(structEntry, undefined);
           assert.strictEqual(structEntry.A, structValue1);
           assert.strictEqual(structEntry.B, structValue2);
 
-          const entityEntry = results.at(3).value!;
+          const entityEntry = (
+            results.at(3) as FutureFulfilledResult<TestClass>
+          ).value!;
           assert.notStrictEqual(entityEntry, undefined);
           assert.strictEqual(entityEntry[entityKey1], entityValue1);
           assert.strictEqual(entityEntry[entityKey2], entityValue2);

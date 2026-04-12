@@ -35,7 +35,7 @@ import {
   State,
   StateBuilder,
 } from '../containers/entity_impl.js';
-import { FutureSettledResult } from '../containers/future_settled_result.js';
+import type { FutureSettledResult } from '../containers/future_settled_result.js';
 import { List } from '../containers/list.js';
 import { ListImpl } from '../containers/list_impl.js';
 import { Struct } from '../containers/struct.js';
@@ -729,9 +729,7 @@ export class FutureMachineImpl {
 
     const aggregateDb =
       this.database.createAggregateDB<
-        ToSerializableDB<
-          FutureSettledResult<Serializable, 'fulfilled' | 'rejected'>
-        >
+        ToSerializableDB<FutureSettledResult<Serializable>>
       >();
     let index = 0;
     try {
@@ -776,6 +774,8 @@ export class FutureMachineImpl {
     return dictionary;
   }
 
+  // TODO: If T is a Struct, we should unwrap it. This would let us get rid of
+  // `RawStruct`.
   public createStruct<T extends Record<string, Serializable>>(
     obj: T
   ): Struct<T> {

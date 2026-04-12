@@ -5,6 +5,7 @@ import { assert_equal } from '../../src/asserts.js';
 import type {
   Dictionary,
   FutureId,
+  FutureRejectedResult,
   FutureSettledResult,
   List,
   StateBuilder,
@@ -325,7 +326,7 @@ export default (testSettings: TestSettings) => {
           const resolver = methods.create(
             'resolver',
             (list: List<FutureSettledResult<number | void>[]>) => {
-              const value = list.at(0);
+              const value = list.at(0) as FutureRejectedResult;
               assert_equal(
                 value.status,
                 'rejected',
@@ -693,7 +694,7 @@ export default (testSettings: TestSettings) => {
           const resolver = methods.create(
             'resolver',
             (list: List<FutureSettledResult<number | void>[]>) => {
-              const value = list.at(0);
+              const value = list.at(0) as FutureRejectedResult;
               assert_equal(
                 value.status,
                 'rejected',
@@ -1061,7 +1062,7 @@ export default (testSettings: TestSettings) => {
           const resolver = methods.create(
             'resolver',
             (list: List<FutureSettledResult<number | void>[]>) => {
-              const value = list.at(0);
+              const value = list.at(0) as FutureRejectedResult;
               assert_equal(
                 value.status,
                 'rejected',
