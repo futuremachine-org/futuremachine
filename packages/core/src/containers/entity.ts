@@ -12,21 +12,21 @@ export abstract class Entity<
 > implements SerializableObject {
   [SerializableObjectBranding] = undefined;
 
-  private impl: EntityImpl<T>;
+  #impl: EntityImpl<T>;
   constructor(state: State<T>) {
-    this.impl = state[StateGetEntityImpl]();
-    this.impl.getEntityDB().setFacade(this);
+    this.#impl = state[StateGetEntityImpl]();
+    this.#impl.getEntityDB().setFacade(this);
   }
 
   public [EntityGetImpl]() {
-    return this.impl;
+    return this.#impl;
   }
 
   protected get<U extends keyof T & string>(prop: U): T[U] {
-    return this.impl.get(prop);
+    return this.#impl.get(prop);
   }
 
   protected set<U extends keyof T & string>(key: U, value: T[U]) {
-    this.impl.set(key, value);
+    this.#impl.set(key, value);
   }
 }

@@ -16,21 +16,21 @@ export abstract class ExceptionEntity<T extends Record<string, Serializable>>
 {
   [SerializableObjectBranding] = undefined;
 
-  private impl: EntityImpl<T>;
+  #impl: EntityImpl<T>;
   constructor(state: State<T>) {
     super();
-    this.impl = state[StateGetEntityImpl]();
+    this.#impl = state[StateGetEntityImpl]();
   }
 
   public [EntityGetImpl]() {
-    return this.impl;
+    return this.#impl;
   }
 
   protected get<U extends keyof T & string>(prop: U): T[U] {
-    return this.impl.get(prop);
+    return this.#impl.get(prop);
   }
 
   protected set<U extends keyof T & string>(key: U, value: T[U]) {
-    this.impl.set(key, value);
+    this.#impl.set(key, value);
   }
 }
