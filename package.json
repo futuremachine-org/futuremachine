@@ -65,5 +65,8 @@
       "node_modules",
       "\\out/"
     ]
+  },
+  "dependencies": {
+    "@eslint/compat": "^2.0.5"
   }
 }

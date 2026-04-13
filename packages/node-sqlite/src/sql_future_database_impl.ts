@@ -701,10 +701,15 @@ export class SQLFutureDatabaseImpl extends FutureDatabaseImpl {
             value: value.getOrCreateId().toString(),
           };
         }
+        /* c8 ignore next 2 */
+        assert_unreached('Not supported.');
+        break;
       }
+      /* c8 ignore next 3 */
+      case 'symbol':
+      case 'function':
+        assert_unreached('Not supported');
     }
-    /* c8 ignore next 2 */
-    assert_unreached('Not supported');
   }
 
   public fromInternalValue(

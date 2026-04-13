@@ -1,17 +1,15 @@
+import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import { defineConfig } from 'eslint/config';
+import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
-  {
-    ignores: [
-      '**/out/**',
-      '**/dist/**',
-      'node_modules/**',
-      '*.tsbuildinfo',
-      '**/.stryker-tmp/**',
-    ],
-  },
+// eslint-disable-next-line no-undef
+const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
+
+export default defineConfig([
+  includeIgnoreFile(gitignorePath, 'Imported '),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
@@ -30,5 +28,22 @@ export default tseslint.config(
       'prettier/prettier': 'warn',
       eqeqeq: ['error', 'always'],
     },
-  }
-);
+  },
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      '@typescript-eslint/switch-exhaustiveness-check': [
+        'error',
+        {
+          considerDefaultExhaustiveForUnions: true,
+        },
+      ],
+    },
+  },
+]);
