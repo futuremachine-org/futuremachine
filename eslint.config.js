@@ -28,6 +28,7 @@ export default tseslint.config(
       ],
       '@typescript-eslint/no-explicit-any': 'error',
       'prettier/prettier': 'warn',
+      eqeqeq: ['error', 'always'],
     },
   }
 );

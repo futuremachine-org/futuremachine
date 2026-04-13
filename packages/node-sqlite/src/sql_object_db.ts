@@ -109,7 +109,8 @@ export abstract class SQLObjectDB extends ObjectDB implements PendingWrite {
     );
     if (this.objectId !== undefined) {
       if (
-        this.garbageCollectionCount == this.database.getGarbageCollectionCount()
+        this.garbageCollectionCount ===
+        this.database.getGarbageCollectionCount()
       ) {
         return this.objectId;
       }

@@ -161,7 +161,7 @@ class FutureGraph {
     for (const bounded of methodDb.getBounded()) {
       if (
         bounded instanceof ObjectDB &&
-        bounded.getObjectType() == ObjectDBType.Method
+        bounded.getObjectType() === ObjectDBType.Method
       ) {
         const node = this.methodNode(bounded as MethodDB);
         const port = this.idGen.get();
@@ -172,7 +172,7 @@ class FutureGraph {
 
       if (
         bounded instanceof ObjectDB &&
-        bounded.getObjectType() == ObjectDBType.Future
+        bounded.getObjectType() === ObjectDBType.Future
       ) {
         const node = this.getFutureNode(
           (bounded as FutureDB<SerializableDB>).getId()

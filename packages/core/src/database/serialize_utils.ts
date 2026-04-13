@@ -111,7 +111,7 @@ export function serialize<T extends Serializable>(
       // Stryker disable all
       assert_true(
         serializable instanceof ObjectDB &&
-          serializable.getObjectType() == ObjectDBType.Aggregate,
+          serializable.getObjectType() === ObjectDBType.Aggregate,
         'Attempted to serialize object that was not serializable.'
       );
       // Stryker restore all

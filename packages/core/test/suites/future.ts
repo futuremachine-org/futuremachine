@@ -468,7 +468,7 @@ export default (testSettings: TestSettings) => {
         const throwMethod = methods.create(
           'throw',
           (exception: Exception, arg: number) => {
-            if (arg == specialNum) {
+            if (arg === specialNum) {
               throw exception;
             }
           }

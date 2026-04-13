@@ -400,7 +400,7 @@ export class SqlDatabaseIntf {
 
   public flipCurrentMark() {
     this.currentMark =
-      this.currentMark == MarkSet.Set1 ? MarkSet.Set2 : MarkSet.Set1;
+      this.currentMark === MarkSet.Set1 ? MarkSet.Set2 : MarkSet.Set1;
     this.setCurrentMarkStatement.run(this.currentMark);
   }
 

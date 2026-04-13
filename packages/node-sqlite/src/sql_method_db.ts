@@ -62,7 +62,8 @@ export class SQLMethodDB extends ObjectDB implements MethodDB {
     );
     if (this.id !== undefined) {
       if (
-        this.garbageCollectionCount == this.database.getGarbageCollectionCount()
+        this.garbageCollectionCount ===
+        this.database.getGarbageCollectionCount()
       ) {
         return this.id;
       }

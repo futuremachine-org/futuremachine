@@ -13,7 +13,7 @@ export class ExceptionBoundary implements Disposable {
   [Symbol.dispose]() {
     const entryCount = exception_boundary_map_global.get(this.boundary);
     assert_defined(entryCount, 'entryCount was not defined');
-    if (entryCount == 1) {
+    if (entryCount === 1) {
       exception_boundary_map_global.delete(this.boundary);
     } else {
       exception_boundary_map_global.set(this.boundary, entryCount - 1);

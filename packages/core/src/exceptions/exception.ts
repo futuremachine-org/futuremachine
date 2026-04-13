@@ -74,10 +74,10 @@ export class Exception<
   }
 
   public toString() {
-    if (this.name == '') {
+    if (this.name === '') {
       return this.message;
     }
-    if (this.message == '') {
+    if (this.message === '') {
       return this.name;
     }
     return `${this.name}: ${this.message}`;

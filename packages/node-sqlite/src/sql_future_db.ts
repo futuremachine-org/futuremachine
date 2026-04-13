@@ -173,7 +173,7 @@ export class SQLFutureDB<T extends SerializableDB>
 
   private wasGarbageCollected() {
     return (
-      this.garbageCollectionCount !=
+      this.garbageCollectionCount !==
         this.database.getGarbageCollectionCount() &&
       !this.database.futuresHasId(this.internalId!)
     );
