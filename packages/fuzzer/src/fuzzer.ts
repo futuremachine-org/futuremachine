@@ -1,16 +1,17 @@
 import { strict as assert } from 'node:assert';
-import { FutureExecutor } from './future_executor.js';
+import { ExecutorBase } from './executor_base.js';
+import { FutureExecutor } from './executors/future_executor.js';
+import { PromiseExecutor } from './executors/promise_executor.js';
 import { FuzzerPlan } from './fuzzer_plan.js';
-import { PromiseExecutor } from './promise_executor.js';
 import { RandGenXorshift } from './rand_gen_xorshift.js';
 
 const seed = Math.random();
 console.log(`Seed: ${seed}`);
 const randGen = new RandGenXorshift(seed);
 const plan = new FuzzerPlan(randGen, 100);
-const promiseExecutor = new PromiseExecutor();
+const promiseExecutor = new ExecutorBase(new PromiseExecutor());
 await promiseExecutor.run(plan);
-const futureExecutor = new FutureExecutor();
+const futureExecutor = new ExecutorBase(new FutureExecutor());
 await futureExecutor.run(plan);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
