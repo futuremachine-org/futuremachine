@@ -1,17 +1,19 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import {
-  createMethodMachine,
+import type {
   Dictionary,
   Future,
-  FutureState,
-  GetFutureDatabase,
+  FutureId,
   List,
   Method,
+  Serializable,
   Struct,
-  type FutureId,
-  type Serializable,
+} from '@futuremachine/core';
+import {
+  createMethodMachine,
+  FutureState,
+  GetFutureDatabase,
 } from '@futuremachine/core';
 import { ValueType } from '../src/sql_database_intf.js';
 import { SQLFutureDatabase } from '../src/sql_future_database.js';

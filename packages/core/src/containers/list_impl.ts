@@ -1,5 +1,5 @@
 import type { FutureMachineImpl } from '../core/future_machine_impl.js';
-import { Method } from '../core/method.js';
+import type { Method } from '../core/method.js';
 import type {
   ListDB,
   ListElement,

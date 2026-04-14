@@ -1,12 +1,12 @@
-import {
+import type {
   List,
-  ObjectDBType,
-  type ListDB,
-  type ListElement,
-  type ObjectDB,
-  type Serializable,
-  type SerializableDB,
+  ListDB,
+  ListElement,
+  ObjectDB,
+  Serializable,
+  SerializableDB,
 } from '@futuremachine/core';
+import { ObjectDBType } from '@futuremachine/core';
 import {
   ValueType,
   type FutureIdDb,

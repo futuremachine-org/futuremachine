@@ -1,14 +1,12 @@
-import {
+import type {
+  FromSerializableDB,
   Future,
-  FutureState,
-  ObjectDB,
-  ObjectDBType,
-  type FromSerializableDB,
-  type FutureDB,
-  type FutureId,
-  type Reaction,
-  type SerializableDB,
+  FutureDB,
+  FutureId,
+  Reaction,
+  SerializableDB,
 } from '@futuremachine/core';
+import { FutureState, ObjectDB, ObjectDBType } from '@futuremachine/core';
 import { assert_defined, assert_true } from './asserts.js';
 import type { FutureIdDb } from './sql_database_intf.js';
 import type {

@@ -1,19 +1,18 @@
-import {
-  type DictionaryDB,
-  type EntityDB,
-  type FromSerializableDB,
+import type {
+  DictionaryDB,
+  EntityDB,
+  FromSerializableDB,
   FutureDatabaseImpl,
-  type FutureDB,
-  FutureState,
-  type ListDB,
-  type MethodDB,
-  MethodType,
-  type Reaction,
-  type Serializable,
-  type SerializableDB,
-  type StructDB,
-  type ToSerializableDB,
+  FutureDB,
+  ListDB,
+  MethodDB,
+  Reaction,
+  Serializable,
+  SerializableDB,
+  StructDB,
+  ToSerializableDB,
 } from '../database/future_database.js';
+import { FutureState, MethodType } from '../database/future_database.js';
 import type {
   FutureExecutor,
   FutureId,
@@ -143,9 +142,7 @@ export class FutureMachineImpl {
     if (this.ongoingCalls === 0) {
       return Promise.resolve<void>(undefined);
     }
-    if (this.onDonePromiseWithResolvers === undefined) {
-      this.onDonePromiseWithResolvers = Promise.withResolvers();
-    }
+    this.onDonePromiseWithResolvers ??= Promise.withResolvers();
     return this.onDonePromiseWithResolvers.promise;
   }
 
@@ -226,16 +223,14 @@ export class FutureMachineImpl {
     futureDb: FutureDB<ToSerializableDB<T>>
   ): Future<T> {
     let future = futureDb.getFacade() as Future<T> | undefined;
-    if (future === undefined) {
-      future = this.createFutureImpl(futureDb);
-    }
+    future ??= this.createFutureImpl(futureDb);
     return future;
   }
 
   public getDictionaryFromDictionaryDB<T extends Serializable>(
     dictionaryDb: DictionaryDB<ToSerializableDB<T>>
   ): Dictionary<T> {
-    let dictionary = dictionaryDb.getFacade() as Dictionary<T>;
+    let dictionary = dictionaryDb.getFacade() as Dictionary<T> | undefined;
     if (dictionary === undefined) {
       dictionary = Dictionary[DictionaryCreate](
         new DictionaryImpl(this, dictionaryDb)
@@ -263,7 +258,7 @@ export class FutureMachineImpl {
   public getListFromListDB<T extends Serializable[]>(
     listDb: ListDB<ToArrayDB<T>>
   ): List<T> {
-    let list = listDb.getFacade() as List<T>;
+    let list = listDb.getFacade() as List<T> | undefined;
     if (list === undefined) {
       list = List[ListCreate](new ListImpl(this, listDb));
       listDb.setFacade(list);

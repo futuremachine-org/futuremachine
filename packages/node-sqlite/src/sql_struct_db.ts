@@ -1,11 +1,11 @@
-import {
-  ObjectDBType,
+import type {
+  ObjectDB,
+  Serializable,
+  SerializableDB,
   Struct,
-  type ObjectDB,
-  type Serializable,
-  type SerializableDB,
-  type StructDB,
+  StructDB,
 } from '@futuremachine/core';
+import { ObjectDBType } from '@futuremachine/core';
 import {
   ValueType,
   type FutureIdDb,

@@ -1,11 +1,11 @@
-import {
+import type {
   Entity,
-  ObjectDBType,
-  type EntityDB,
-  type ObjectDB,
-  type Serializable,
-  type SerializableDB,
+  EntityDB,
+  ObjectDB,
+  Serializable,
+  SerializableDB,
 } from '@futuremachine/core';
+import { ObjectDBType } from '@futuremachine/core';
 import {
   ValueType,
   type FutureIdDb,

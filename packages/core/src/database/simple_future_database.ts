@@ -7,27 +7,29 @@ import type { Future, FutureId } from '../core/future.js';
 import type { Method } from '../core/method.js';
 import { type AnyMethodImpl, type MethodName } from '../core/method_impl.js';
 import type { Database } from '../tools/dot.js';
+import type {
+  AggregateDB,
+  DictionaryDB,
+  EntityDB,
+  FromSerializableDB,
+  FutureDatabase,
+  FutureDB,
+  ListDB,
+  ListElement,
+  MethodDB,
+  MethodType,
+  Reaction,
+  Serializable,
+  SerializableDB,
+  StructDB,
+  ToSerializableDB,
+} from './future_database.js';
 import {
-  type AggregateDB,
-  type DictionaryDB,
-  type EntityDB,
-  type FromSerializableDB,
-  type FutureDatabase,
   FutureDatabaseImpl,
-  type FutureDB,
   FutureState,
   GetFutureDatabase,
-  type ListDB,
-  type ListElement,
-  type MethodDB,
-  MethodType,
   ObjectDB,
   ObjectDBType,
-  type Reaction,
-  type Serializable,
-  type SerializableDB,
-  type StructDB,
-  type ToSerializableDB,
 } from './future_database.js';
 import type { FutureMachineDBTools } from './future_machine_db_tools.js';
 

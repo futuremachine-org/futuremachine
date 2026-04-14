@@ -1,23 +1,22 @@
-import {
-  type AggregateDB,
-  type DictionaryDB,
-  type EntityDB,
-  type FromSerializableDB,
-  FutureDatabaseImpl,
-  type FutureDB,
-  type FutureId,
-  type FutureMachineDBTools,
-  FutureState,
-  type MethodDB,
-  type MethodName,
+import type {
+  AggregateDB,
+  DictionaryDB,
+  EntityDB,
+  FromSerializableDB,
+  FutureDB,
+  FutureId,
+  FutureMachineDBTools,
+  MethodDB,
+  MethodName,
   MethodType,
   ObjectDB,
-  type Reaction,
-  type Serializable,
-  type SerializableDB,
-  type StructDB,
-  type ToSerializableDB,
+  Reaction,
+  Serializable,
+  SerializableDB,
+  StructDB,
+  ToSerializableDB,
 } from '@futuremachine/core';
+import { FutureDatabaseImpl, FutureState } from '@futuremachine/core';
 import {
   assert_defined,
   assert_not_equal,
@@ -320,7 +319,7 @@ export class SQLFutureDatabaseImpl extends FutureDatabaseImpl {
     }
     const { name, type, bounded: boundedDb } = this.databaseIntf.getMethod(id);
     if (boundedDb.length === 0) {
-      const methodDb = this.unboundMethodMap.get(name)!;
+      const methodDb = this.unboundMethodMap.get(name);
       if (methodDb !== undefined) {
         return methodDb;
       }

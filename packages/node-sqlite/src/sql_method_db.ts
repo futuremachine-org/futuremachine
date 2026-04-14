@@ -1,14 +1,13 @@
-import {
+import type {
   Method,
+  MethodDB,
+  MethodName,
   MethodType,
-  ObjectDB,
-  ObjectDBType,
-  type MethodDB,
-  type MethodName,
-  type Serializable,
-  type SerializableDB,
-  type ValidResult,
+  Serializable,
+  SerializableDB,
+  ValidResult,
 } from '@futuremachine/core';
+import { ObjectDB, ObjectDBType } from '@futuremachine/core';
 import { assert_defined, assert_true } from './asserts.js';
 import type { MethodIdDb } from './sql_database_intf.js';
 import type { SQLFutureDatabaseImpl } from './sql_future_database_impl.js';

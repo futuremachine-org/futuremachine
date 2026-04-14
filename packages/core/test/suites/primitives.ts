@@ -4,6 +4,7 @@ import { describe, test } from 'node:test';
 import { assert_equal } from '../../src/asserts.js';
 import type {
   Dictionary,
+  Future,
   FutureId,
   FutureRejectedResult,
   FutureSettledResult,
@@ -11,8 +12,8 @@ import type {
   StateBuilder,
   Struct,
 } from '../../src/index.js';
-import { createMethodMachine, Entity, Future } from '../../src/index.js';
-import { type TestSettings } from '../export_tests.js';
+import { createMethodMachine, Entity } from '../../src/index.js';
+import type { TestSettings } from '../export_tests.js';
 
 export default (testSettings: TestSettings) => {
   describe('primitives', () => {

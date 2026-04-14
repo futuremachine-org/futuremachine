@@ -1,12 +1,10 @@
-import {
-  ActionType,
+import type {
+  AnyValue,
   FuzzerPlan,
-  MethodActionType,
-  ValueTypes,
-  type AnyValue,
-  type MethodInstructions,
-  type PrimitiveRawTypes,
+  MethodInstructions,
+  PrimitiveRawTypes,
 } from './fuzzer_plan.js';
+import { ActionType, MethodActionType, ValueTypes } from './fuzzer_plan.js';
 
 export interface TestObject {
   value: number;

@@ -9,7 +9,7 @@ import tseslint from 'typescript-eslint';
 const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
 export default defineConfig([
-  includeIgnoreFile(gitignorePath, 'Imported '),
+  includeIgnoreFile(gitignorePath, 'Imported .gitignore rules.'),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,
@@ -27,6 +27,7 @@ export default defineConfig([
       '@typescript-eslint/no-explicit-any': 'error',
       'prettier/prettier': 'warn',
       eqeqeq: ['error', 'always'],
+      'no-param-reassign': 'error',
     },
   },
   {
@@ -44,6 +45,11 @@ export default defineConfig([
           considerDefaultExhaustiveForUnions: true,
         },
       ],
+      '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/no-unnecessary-condition': 'error',
     },
   },
 ]);

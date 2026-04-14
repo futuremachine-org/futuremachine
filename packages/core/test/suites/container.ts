@@ -3,19 +3,19 @@ import { describe, test } from 'node:test';
 
 import {
   createMethodMachine,
-  Dictionary,
   Entity,
   Exception,
-  Future,
-  List,
   Struct,
 } from '../../src/index.js';
 
 import type {
   AggregateException,
+  Dictionary,
+  Future,
   FutureFulfilledResult,
   FutureId,
   FutureSettledResult,
+  List,
   Method,
   Serializable,
   StateBuilder,

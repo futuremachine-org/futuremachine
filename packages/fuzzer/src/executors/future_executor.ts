@@ -1,14 +1,16 @@
+import type {
+  FutureId,
+  FutureMachine,
+  Method,
+  MethodMachine,
+  Serializable,
+  StateBuilder,
+} from '@futuremachine/core';
 import {
   createMethodMachine,
   Entity,
   Future,
   SimpleFutureDatabase,
-  StateBuilder,
-  type FutureId,
-  type FutureMachine,
-  type Method,
-  type MethodMachine,
-  type Serializable,
 } from '@futuremachine/core';
 import {
   type DeferredResolvers,
