@@ -1,4 +1,4 @@
-# @futuremachine/node-sqlite
+# @futuremachine/db-sqlite-node
 
 The node:sqlite storage implementation for FutureMachine. Provides a persistent
 database backend for @futuremachine/core with on-demand garbage collection for

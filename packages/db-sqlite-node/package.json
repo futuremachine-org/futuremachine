@@ -1,5 +1,5 @@
 {
-  "name": "@futuremachine/node-sqlite",
+  "name": "@futuremachine/db-sqlite-node",
   "version": "0.1.0",
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/futuremachine-org/futuremachine.git",
-    "directory": "packages/node-sqlite"
+    "directory": "packages/db-sqlite-node"
   },
   "bugs": {
     "url": "https://github.com/futuremachine-org/futuremachine/issues"

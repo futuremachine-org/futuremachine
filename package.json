@@ -10,10 +10,10 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "build": "eslint . --max-warnings 0 && tsc -b",
-    "test": "npm test --workspace=@futuremachine/core --workspace=@futuremachine/node-sqlite",
+    "test": "npm test --workspace=@futuremachine/core --workspace=@futuremachine/db-sqlite-node",
     "test:coverage": "c8 npm run test",
     "test:core": "cd packages/core && npm run test",
-    "test:node-sqlite": "cd packages/core && npm run test",
+    "test:db-sqlite-node": "cd packages/core && npm run test",
     "test:fuzzer": "cd packages/fuzzer && npm run fuzz",
     "format": "prettier --write .",
     "clean": "tsc -b --clean",
@@ -23,7 +23,7 @@
     "check:worktree-clean": "test -z \"$(git status --porcelain)\" || (echo 'Error: Working tree is dirty. Commit your changes before shipping.' && exit 1)",
     "pre-ship": "npm run check:worktree-clean -s && npm run clean && npm run build && npm run test",
     "ship:core": "npm run pre-ship && cd packages/core && npm publish --access public",
-    "ship:node-sqlite": "npm run pre-ship && cd packages/node-sqlite && npm publish --access public"
+    "ship:db-sqlite-node": "npm run pre-ship && cd packages/db-sqlite-node && npm publish --access public"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
