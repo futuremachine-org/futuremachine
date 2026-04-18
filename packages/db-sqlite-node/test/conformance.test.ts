@@ -1,6 +1,8 @@
 import { GetFutureDatabase, type FutureDatabase } from '@futuremachine/core';
-import { runTests, type DBHolder } from '@futuremachine/core/testing';
-import { strict as assert } from 'node:assert';
+import {
+  runConformanceTests,
+  type DBHolder,
+} from '@futuremachine/db-conformance-tests';
 import type { TestContext } from 'node:test';
 import { SQLFutureDatabase } from '../src/sql_future_database.js';
 import { cleanupDbFiles, randomDatabasePath } from './test_helpers.js';
@@ -15,24 +17,24 @@ class SQLDBHolder implements DBHolder {
       cleanupDbFiles(this.dbPath);
     });
   }
-  async assertEmpty(database: SQLFutureDatabase): Promise<void> {
+  async isEmpty(database: SQLFutureDatabase): Promise<boolean> {
     await database.gc();
-    assert.strictEqual(
-      database[GetFutureDatabase]().getFuturesCountForTesting(),
-      0
-    );
-    assert.strictEqual(
-      database[GetFutureDatabase]().getReactionsCountForTesting(),
-      0
-    );
-    assert.strictEqual(
-      database[GetFutureDatabase]().getMethodsCountForTesting(),
-      0
-    );
-    assert.strictEqual(
-      database[GetFutureDatabase]().getObjectsCountForTesting(),
-      0
-    );
+    if (database[GetFutureDatabase]().getFuturesCountForTesting() !== 0) {
+      return false;
+    }
+
+    if (database[GetFutureDatabase]().getReactionsCountForTesting() !== 0) {
+      return false;
+    }
+
+    if (database[GetFutureDatabase]().getMethodsCountForTesting() !== 0) {
+      return false;
+    }
+
+    if (database[GetFutureDatabase]().getObjectsCountForTesting() !== 0) {
+      return false;
+    }
+    return true;
   }
   close(database: SQLFutureDatabase): Promise<void> {
     return database.gc().then(() => database.close());
@@ -42,7 +44,7 @@ class SQLDBHolder implements DBHolder {
   }
 }
 
-runTests({
+runConformanceTests({
   async createDbHolder() {
     return new SQLDBHolder();
   },

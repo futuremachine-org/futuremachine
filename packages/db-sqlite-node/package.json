@@ -33,12 +33,13 @@
     "LICENSE"
   ],
   "scripts": {
-    "clean": "tsc -b --clean",
+    "clean": "rimraf out",
     "build": "tsc -b",
     "test": "tsc -b && rimraf db && node --test --expose-gc",
     "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
   },
   "dependencies": {
-    "@futuremachine/core": "0.1.0"
+    "@futuremachine/core": "0.1.0",
+    "@futuremachine/db-conformance-tests": "0.1.0"
   }
 }

@@ -1,5 +1,3 @@
-import { strict as assert } from 'node:assert';
-import { assert_unreached } from '../src/asserts.js';
 import type {
   FutureSettledResult,
   List,
@@ -7,8 +5,10 @@ import type {
   MethodName,
   Methods,
   Serializable,
-} from '../src/index.js';
-import { AggregateException } from '../src/index.js';
+  SimpleFutureDatabase,
+} from '@futuremachine/core';
+import { AggregateException } from '@futuremachine/core';
+import { strict as assert } from 'node:assert';
 
 type createMethodReturnType<Params, Return extends Serializable> = {
   method: Method<(params: Params) => Return>;
@@ -58,6 +58,11 @@ export function createMethodWithName<Params, Return extends Serializable>(
     return retValue as Return;
   });
   return { method, promise };
+}
+
+export function isFutureDatabaseEmpty(futureDatabase: SimpleFutureDatabase) {
+  const state = futureDatabase.getState();
+  return state.futureMap.size === 0;
 }
 
 export async function assertPromiseRejects<T>(
@@ -118,7 +123,7 @@ export async function getPromiseRejectReason(
   } catch (e) {
     return e;
   }
-  assert_unreached("Promise didn't reject");
+  throw new Error("Promise didn't reject");
 }
 
 export function assertIsAggregateException(

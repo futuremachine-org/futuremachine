@@ -1,29 +1,28 @@
 {
-  "name": "@futuremachine/core",
+  "name": "@futuremachine/db-conformance-tests",
   "version": "0.1.0",
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
-  "description": "A TypeScript library for Futures, persistent Promises that survive process restarts and can be resolved by ID.",
+  "description": "Verifies a @futuremachine/core FutureDatabase implementation.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/futuremachine-org/futuremachine.git",
-    "directory": "packages/core"
+    "directory": "packages/db-conformance-tests"
   },
   "bugs": {
     "url": "https://github.com/futuremachine-org/futuremachine/issues"
   },
   "homepage": "https://github.com/futuremachine-org/futuremachine",
   "keywords": [
-    "persistent-promises",
-    "futures",
+    "futuremachine",
+    "conformance-testing",
+    "test-suite",
+    "database-adapter-tests",
+    "futuremachine-provider",
+    "specification-testing",
     "typescript",
-    "durable-execution",
-    "resumable-workflows",
-    "state-management",
-    "async-persistence",
-    "process-recovery",
-    "long-running-tasks",
-    "persistent-collections"
+    "interface-verification",
+    "integration-testing"
   ],
   "type": "module",
   "main": "out/src/index.js",
@@ -38,7 +37,12 @@
   "scripts": {
     "clean": "rimraf out",
     "build": "tsc -b",
-    "test": "tsc -b && node --test",
-    "test:stryker": "node --test out/test/**/*.test.js"
+    "test": "tsc -b && node --test"
+  },
+  "devDependencies": {
+    "@futuremachine/core": "0.1.0"
+  },
+  "peerDependencies": {
+    "@futuremachine/core": "0.1.0"
   }
 }

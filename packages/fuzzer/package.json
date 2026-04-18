@@ -14,7 +14,7 @@
   "main": "out/src/sql_future_database.js",
   "types": "out/src/sql_future_database.d.ts",
   "scripts": {
-    "clean": "tsc -b --clean",
+    "clean": "rimraf out",
     "build": "tsc -b",
     "fuzz": "tsc -b && node out/fuzzer.js"
   },

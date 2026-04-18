@@ -1,7 +1,7 @@
+import { SimpleFutureDatabase, type FutureDatabase } from '@futuremachine/core';
 import type { TestContext } from 'node:test';
-import { SimpleFutureDatabase, type FutureDatabase } from '../src/index.js';
-import { runTests, type DBHolder } from './export_tests.js';
-import { assertFutureDatabaseEmpty } from './test_helpers.js';
+import { runConformanceTests, type DBHolder } from '../src/index.js';
+import { isFutureDatabaseEmpty } from '../src/test_helpers.js';
 
 class SimpleDBHolder implements DBHolder {
   futureDatabase = new SimpleFutureDatabase();
@@ -13,15 +13,15 @@ class SimpleDBHolder implements DBHolder {
   public close(database: SimpleFutureDatabase): Promise<void> {
     return database.close();
   }
-  public async assertEmpty(): Promise<void> {
-    assertFutureDatabaseEmpty(this.futureDatabase);
+  public async isEmpty(): Promise<boolean> {
+    return isFutureDatabaseEmpty(this.futureDatabase);
   }
   public flush(database: SimpleFutureDatabase): Promise<void> {
     return database.flush();
   }
 }
 
-runTests({
+runConformanceTests({
   async createDbHolder() {
     return new SimpleDBHolder();
   },

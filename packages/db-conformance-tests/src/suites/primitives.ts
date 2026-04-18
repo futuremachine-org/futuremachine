@@ -1,7 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { assert_equal } from '../../src/asserts.js';
 import type {
   Dictionary,
   Future,
@@ -11,9 +10,9 @@ import type {
   List,
   StateBuilder,
   Struct,
-} from '../../src/index.js';
-import { createMethodMachine, Entity } from '../../src/index.js';
-import type { TestSettings } from '../export_tests.js';
+} from '@futuremachine/core';
+import { createMethodMachine, Entity } from '@futuremachine/core';
+import type { TestSettings } from '../test_settings.js';
 
 export default (testSettings: TestSettings) => {
   describe('primitives', () => {
@@ -328,11 +327,7 @@ export default (testSettings: TestSettings) => {
             'resolver',
             (list: List<FutureSettledResult<number | void>[]>) => {
               const value = list.at(0) as FutureRejectedResult;
-              assert_equal(
-                value.status,
-                'rejected',
-                'Should have been rejected.'
-              );
+              assert.strictEqual(value.status, 'rejected');
               resolve(value.reason);
             }
           );
@@ -696,11 +691,7 @@ export default (testSettings: TestSettings) => {
             'resolver',
             (list: List<FutureSettledResult<number | void>[]>) => {
               const value = list.at(0) as FutureRejectedResult;
-              assert_equal(
-                value.status,
-                'rejected',
-                'Should have been rejected.'
-              );
+              assert.strictEqual(value.status, 'rejected');
               resolve(value.reason);
             }
           );
@@ -1064,11 +1055,7 @@ export default (testSettings: TestSettings) => {
             'resolver',
             (list: List<FutureSettledResult<number | void>[]>) => {
               const value = list.at(0) as FutureRejectedResult;
-              assert_equal(
-                value.status,
-                'rejected',
-                'Should have been rejected.'
-              );
+              assert.strictEqual(value.status, 'rejected');
               resolve(value.reason);
             }
           );

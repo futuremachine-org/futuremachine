@@ -1,8 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import type { Serializable } from 'node:child_process';
-import type { Dictionary, List } from '../../src/index.js';
+import type { Dictionary, List, Serializable } from '@futuremachine/core';
 import {
   createMethodMachine,
   Exception,
@@ -13,14 +12,14 @@ import {
   type FutureId,
   type FutureMachine,
   type ResolveCallback,
-} from '../../src/index.js';
-import type { TestSettings } from '../export_tests.js';
+} from '@futuremachine/core';
 import {
   assertPromiseRejects,
   createMethod,
   createMethodWithName,
   getPromiseRejectReason,
 } from '../test_helpers.js';
+import type { TestSettings } from '../test_settings.js';
 
 export default (testSettings: TestSettings) => {
   describe('Future', () => {
@@ -53,7 +52,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise2, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -74,7 +73,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual((await promise).constructor, TypeException);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -96,7 +95,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -122,7 +121,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -167,7 +166,7 @@ export default (testSettings: TestSettings) => {
 
           assert.strictEqual(await promise, 'hello');
 
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -196,7 +195,7 @@ export default (testSettings: TestSettings) => {
         futureResolve2(result);
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -236,7 +235,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -260,7 +259,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -298,7 +297,7 @@ export default (testSettings: TestSettings) => {
         assert.strictEqual(await promise1, result);
         assert.strictEqual(await promise2, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -327,7 +326,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -356,7 +355,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -391,7 +390,7 @@ export default (testSettings: TestSettings) => {
         assert.strictEqual(await promise1, result);
         assert.strictEqual(await promise2, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -428,7 +427,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise2, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -453,7 +452,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -489,7 +488,7 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual(await catchPromise, exception);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -525,7 +524,7 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual(await catchPromise, exception);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -550,7 +549,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -575,7 +574,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -604,7 +603,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -624,7 +623,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -641,7 +640,7 @@ export default (testSettings: TestSettings) => {
           undefined
         );
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -664,7 +663,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -687,7 +686,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -711,7 +710,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await resultPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -739,7 +738,7 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual([...(await resultPromise)], [result1, result2]);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -779,7 +778,7 @@ export default (testSettings: TestSettings) => {
           ['f1.next: Hello', 'f2.next: Hello']
         );
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -820,7 +819,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -865,7 +864,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -899,7 +898,7 @@ export default (testSettings: TestSettings) => {
         assert.deepStrictEqual(await onFinallyPromise, []);
         assert.strictEqual(await afterFinallyPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -958,7 +957,7 @@ export default (testSettings: TestSettings) => {
           assert.deepStrictEqual(await onFinallyPromise, []);
           assert.strictEqual(await afterFinallyPromise, result);
 
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1012,7 +1011,7 @@ export default (testSettings: TestSettings) => {
           ['onFinally', `afterFinally: ${result}`]
         );
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1070,7 +1069,7 @@ export default (testSettings: TestSettings) => {
           ['onFinally', `afterFinally: ${result}`]
         );
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1094,7 +1093,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await afterFinallyPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1117,7 +1116,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1140,7 +1139,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1252,7 +1251,7 @@ export default (testSettings: TestSettings) => {
 
           // TODO: This check fails.
           //
-          // await dbHolder.assertEmpty(futureDatabase);
+          // assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1277,7 +1276,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(promise1, promise2);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1297,7 +1296,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await future.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1338,7 +1337,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolveFutureById(futureId, 123);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1360,7 +1359,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await future.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1401,7 +1400,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.rejectFutureById(futureId, 123);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1427,7 +1426,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f1.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1484,7 +1483,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolveFutureById(futureId2, result);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1509,7 +1508,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1537,7 +1536,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f1.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1594,7 +1593,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolveFutureById(futureId2, result);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1622,7 +1621,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1646,7 +1645,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f2.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1670,7 +1669,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f2.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1696,7 +1695,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f2.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1720,7 +1719,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await f1.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -1762,7 +1761,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolveFutureById(futureId, result);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -1854,7 +1853,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolveFutureById(resultFutureId, result);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -2006,7 +2005,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise2, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2028,7 +2027,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2054,7 +2053,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, 1);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2085,7 +2084,7 @@ export default (testSettings: TestSettings) => {
         // TODO: This should be true:
         // assert.strictEqual(exception.stack, exception.toString());
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2120,7 +2119,7 @@ export default (testSettings: TestSettings) => {
         // TODO: This should be true:
         // assert.strictEqual(exception.stack, exception.toString());
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2151,7 +2150,7 @@ export default (testSettings: TestSettings) => {
         // TODO: This should be true:
         // assert.strictEqual(exception.stack, exception.toString());
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2197,7 +2196,7 @@ export default (testSettings: TestSettings) => {
 
           assert.strictEqual(await promise, 'hello');
 
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -2222,7 +2221,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2246,7 +2245,7 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual(await promise, exception);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2268,7 +2267,7 @@ export default (testSettings: TestSettings) => {
         assert.doesNotMatch(exception.stack, /create/);
         assert.notStrictEqual(exception.stack, exception.toString());
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2324,7 +2323,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2349,7 +2348,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2374,7 +2373,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2403,7 +2402,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2428,7 +2427,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2464,7 +2463,7 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual(await catchPromise, exception);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2500,7 +2499,7 @@ export default (testSettings: TestSettings) => {
 
         assert.deepStrictEqual(await catchPromise, exception);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2520,7 +2519,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2549,7 +2548,7 @@ export default (testSettings: TestSettings) => {
           undefined
         );
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2589,7 +2588,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await promise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2616,7 +2615,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await resultPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2645,7 +2644,7 @@ export default (testSettings: TestSettings) => {
         // assert.doesNotMatch(exception.stack, /try/);
         assert.notStrictEqual(exception.stack, exception.toString());
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2674,7 +2673,7 @@ export default (testSettings: TestSettings) => {
         assert.match(exception.stack, /try/);
         assert.notStrictEqual(exception.stack, exception.toString());
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2704,7 +2703,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await resultPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2749,7 +2748,7 @@ export default (testSettings: TestSettings) => {
           ['f1.catch: Hello', 'f2.catch: Hello', 'f3.catch: Hello']
         );
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2783,7 +2782,7 @@ export default (testSettings: TestSettings) => {
         assert.deepStrictEqual(await onFinallyPromise, []);
         assert.strictEqual(await afterFinallyPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2807,7 +2806,7 @@ export default (testSettings: TestSettings) => {
 
         assert.strictEqual(await afterFinallyPromise, result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2830,7 +2829,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2853,7 +2852,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(promise, resultString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2884,7 +2883,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(promise, errorString);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2915,7 +2914,7 @@ export default (testSettings: TestSettings) => {
         // TODO: What should the stack look like here?
         assert.ok(exception instanceof SerializableException);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -2954,7 +2953,7 @@ export default (testSettings: TestSettings) => {
 
           assert.ok((await catcherPromise) instanceof Exception);
 
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -3005,7 +3004,7 @@ export default (testSettings: TestSettings) => {
 
           assert.ok((await catcherPromise) instanceof Exception);
 
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -3026,7 +3025,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(future.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -3067,7 +3066,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.rejectFutureById(futureId, 123);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -3089,7 +3088,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(future.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -3130,7 +3129,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.resolveFutureById(futureId, 123);
 
           assert.strictEqual(await promise, result);
-          await dbHolder.assertEmpty(futureDatabase);
+          assert.ok(await dbHolder.isEmpty(futureDatabase));
           await dbHolder.close(futureDatabase);
         }
       });
@@ -3155,7 +3154,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(f2.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 
@@ -3179,7 +3178,7 @@ export default (testSettings: TestSettings) => {
 
         await assertPromiseRejects(f2.getPromise(), result);
 
-        await dbHolder.assertEmpty(futureDatabase);
+        assert.ok(await dbHolder.isEmpty(futureDatabase));
         await dbHolder.close(futureDatabase);
       });
 

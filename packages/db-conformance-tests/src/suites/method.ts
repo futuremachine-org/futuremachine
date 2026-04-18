@@ -1,10 +1,10 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import type { Future, FutureId, List } from '../../src/index.js';
-import { createMethodMachine, Method } from '../../src/index.js';
-import type { TestSettings } from '../export_tests.js';
+import type { Future, FutureId, List } from '@futuremachine/core';
+import { createMethodMachine, Method } from '@futuremachine/core';
 import { createMethod } from '../test_helpers.js';
+import type { TestSettings } from '../test_settings.js';
 
 export default (testSettings: TestSettings) => {
   describe('Method', () => {

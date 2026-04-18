@@ -1,8 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { createMethodMachine } from '../../src/index.js';
-
 import type {
   AggregateExceptionState,
   ExceptionState,
@@ -10,14 +8,15 @@ import type {
   List,
   Serializable,
   StateBuilder,
-} from '../../src/index.js';
+} from '@futuremachine/core';
 import {
   AggregateException,
+  createMethodMachine,
   Exception,
   SerializableException,
   TypeException,
-} from '../../src/index.js';
-import { type TestSettings } from '../export_tests.js';
+} from '@futuremachine/core';
+import type { TestSettings } from '../test_settings.js';
 
 export default (testSettings: TestSettings) => {
   describe('Exception', () => {

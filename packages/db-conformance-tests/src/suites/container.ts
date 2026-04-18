@@ -6,7 +6,7 @@ import {
   Entity,
   Exception,
   Struct,
-} from '../../src/index.js';
+} from '@futuremachine/core';
 
 import type {
   AggregateException,
@@ -19,8 +19,8 @@ import type {
   Method,
   Serializable,
   StateBuilder,
-} from '../../src/index.js';
-import { type TestSettings } from '../export_tests.js';
+} from '@futuremachine/core';
+import type { TestSettings } from '../test_settings.js';
 
 export default (testSettings: TestSettings) => {
   describe('Dictionary', () => {
