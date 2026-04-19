@@ -27,7 +27,7 @@ class IdGenerator {
 
   constructor(private prefix: string) {}
 
-  get() {
+  public get() {
     return `${this.prefix}${this.idCounter++}`;
   }
 }
@@ -41,7 +41,7 @@ class FutureGraph {
     this.build();
   }
 
-  get(): string {
+  public get(): string {
     return this.lines.join('\n');
   }
 

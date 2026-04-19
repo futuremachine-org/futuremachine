@@ -45,7 +45,7 @@ export enum ReactionType {
 }
 
 export class FutureImpl<T extends Serializable> {
-  public constructor(
+  constructor(
     private futureMachine: FutureMachineImpl,
     private futureDb: FutureDB<ToSerializableDB<T>>
   ) {}

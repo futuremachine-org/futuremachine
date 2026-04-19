@@ -10,7 +10,7 @@ export class FutureMachineDBTools {
     return new FutureMachineDBTools(futureMachineImpl);
   }
 
-  onActivitySettled(): Promise<void> {
+  public onActivitySettled(): Promise<void> {
     return this.futureMachineImpl.onActivitySettled();
   }
 }

@@ -14,7 +14,7 @@ export type Struct<T extends Record<string, Serializable>> = StructClass<T> & T;
 class StructClass<
   T extends Record<string, Serializable>,
 > implements SerializableObject {
-  [SerializableObjectBranding] = undefined;
+  public [SerializableObjectBranding] = undefined;
 
   private [StructImplMember]: StructImpl<T>;
 

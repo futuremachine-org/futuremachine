@@ -52,7 +52,7 @@ export class StateBuilder {
     private futureMachine: FutureMachineImpl,
     private entityName: string
   ) {}
-  build<T extends Record<string, Serializable>>(state: T): State<T> {
+  public build<T extends Record<string, Serializable>>(state: T): State<T> {
     return State[StateCreate](
       this.futureMachine,
       this.futureMachine.createEntityDB(this.entityName, serializeRecord(state))

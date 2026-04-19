@@ -8,16 +8,16 @@ import { SQLFutureDatabase } from '../src/sql_future_database.js';
 import { cleanupDbFiles, randomDatabasePath } from './test_helpers.js';
 
 class SQLDBHolder implements DBHolder {
-  dbPath = randomDatabasePath();
-  async createDbInstance(): Promise<FutureDatabase> {
+  private dbPath = randomDatabasePath();
+  public async createDbInstance(): Promise<FutureDatabase> {
     return new SQLFutureDatabase(this.dbPath);
   }
-  async addCleanup(t: TestContext): Promise<void> {
+  public async addCleanup(t: TestContext): Promise<void> {
     t.after(() => {
       cleanupDbFiles(this.dbPath);
     });
   }
-  async isEmpty(database: SQLFutureDatabase): Promise<boolean> {
+  public async isEmpty(database: SQLFutureDatabase): Promise<boolean> {
     await database.gc();
     if (database[GetFutureDatabase]().getFuturesCountForTesting() !== 0) {
       return false;
@@ -36,10 +36,11 @@ class SQLDBHolder implements DBHolder {
     }
     return true;
   }
-  close(database: SQLFutureDatabase): Promise<void> {
-    return database.gc().then(() => database.close());
+  public async close(database: SQLFutureDatabase): Promise<void> {
+    await database.gc();
+    await database.close();
   }
-  flush(database: SQLFutureDatabase): Promise<void> {
+  public flush(database: SQLFutureDatabase): Promise<void> {
     return database.flush();
   }
 }

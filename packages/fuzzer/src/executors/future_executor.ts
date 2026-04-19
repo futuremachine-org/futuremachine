@@ -29,7 +29,7 @@ class FutureExecutorContext
   extends Entity<FutureExecutorContextState>
   implements ExecutorContext<Future<Serializable>, FutureId<Serializable>>
 {
-  getFutureMachine(): FutureMachine {
+  public getFutureMachine(): FutureMachine {
     if (this.get('futureMachine') === undefined) {
       throw new Error('Need to call build before calling getFutureMachine.');
     }
@@ -37,17 +37,17 @@ class FutureExecutorContext
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createMethod<T extends (...args: any[]) => any>(
+  public createMethod<T extends (...args: any[]) => any>(
     methodName: string,
     methodExecutor: T
   ): T {
     return this.get('methodMachine').methods.create(methodName, methodExecutor);
   }
-  build(): void {
+  public build(): void {
     this.set('futureMachine', this.get('methodMachine').methods.build());
   }
 
-  bindArgs = (<
+  public bindArgs = (<
     A extends Serializable[],
     B extends unknown[],
     R extends Serializable,
@@ -61,19 +61,19 @@ class FutureExecutorContext
     ...args: A
   ) => (...args: B) => R;
 
-  createTestObject(): TestObject {
+  public createTestObject(): TestObject {
     return this.get('methodMachine').containers.createStruct({
       value: 0,
     });
   }
-  ignoreErrors(_deferred: Future<Serializable>): void {}
-  getDeferredClass(): new (...args: unknown[]) => Future<Serializable> {
+  public ignoreErrors(_deferred: Future<Serializable>): void {}
+  public getDeferredClass(): new (...args: unknown[]) => Future<Serializable> {
     return Future as unknown as new (
       ...args: unknown[]
     ) => Future<Serializable>;
   }
 
-  withResolvers(): DeferredResolvers<
+  public withResolvers(): DeferredResolvers<
     Future<Serializable>,
     FutureId<Serializable>
   > {
@@ -87,17 +87,17 @@ class FutureExecutorContext
       id,
     };
   }
-  resolve(value: Serializable): Future<Serializable> {
+  public resolve(value: Serializable): Future<Serializable> {
     // TODO: I've had to cast this to any, because Serializable can't be passed
     // into resolve. Need to fix that.
     //
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.getFutureMachine().resolve(value as any);
   }
-  reject(value: Serializable): Future<Serializable> {
+  public reject(value: Serializable): Future<Serializable> {
     return this.getFutureMachine().reject(value);
   }
-  resolveFutureById(id: FutureId<Serializable>, value: unknown): void {
+  public resolveFutureById(id: FutureId<Serializable>, value: unknown): void {
     this.getFutureMachine().resolveFutureById(
       id,
       // TODO: I've had to cast this to any, because Serializable can't be
@@ -107,44 +107,47 @@ class FutureExecutorContext
       value as any
     );
   }
-  rejectFutureById(id: FutureId<Serializable>, reason: Serializable): void {
+  public rejectFutureById(
+    id: FutureId<Serializable>,
+    reason: Serializable
+  ): void {
     this.getFutureMachine().rejectFutureById(id, reason);
   }
-  race(value: Iterable<Serializable>): Future<Serializable> {
+  public race(value: Iterable<Serializable>): Future<Serializable> {
     return this.getFutureMachine().race(value);
   }
-  all(value: Iterable<Serializable>): Future<Serializable> {
+  public all(value: Iterable<Serializable>): Future<Serializable> {
     return this.getFutureMachine().all(value) as Future<Serializable>;
   }
-  any(value: Iterable<Serializable>): Future<Serializable> {
+  public any(value: Iterable<Serializable>): Future<Serializable> {
     return this.getFutureMachine().any(value);
   }
-  allSettled(value: Iterable<Serializable>): Future<Serializable> {
+  public allSettled(value: Iterable<Serializable>): Future<Serializable> {
     return this.getFutureMachine().allSettled(value) as Future<Serializable>;
   }
-  try(
+  public try(
     func: Method<(...args: unknown[]) => Serializable>
   ): Future<Serializable> {
     return this.getFutureMachine().try(func);
   }
-  flush(): Promise<void> {
+  public flush(): Promise<void> {
     return this.get('flushDatabase')(this.getFutureMachine()).getPromise();
   }
 
-  deferredNext(
+  public deferredNext(
     deferred: Future<Serializable>,
     onFulfilled?: Method<(value: unknown) => Serializable>,
     onRejected?: Method<(value: unknown) => Serializable>
   ): Future<Serializable> {
     return deferred.next(onFulfilled, onRejected);
   }
-  deferredCatch(
+  public deferredCatch(
     deferred: Future<Serializable>,
     onRejected?: Method<(value: unknown) => Serializable>
   ): Future<Serializable> {
     return deferred.catch(onRejected);
   }
-  deferredFinally(
+  public deferredFinally(
     deferred: Future<Serializable>,
     onFinally?: Method<() => void>
   ): Future<Serializable> {
@@ -159,7 +162,7 @@ export class FutureExecutor implements Executor<
 > {
   private database = new SimpleFutureDatabase();
 
-  createContext(): FutureExecutorContext {
+  public createContext(): FutureExecutorContext {
     const methodMachine = createMethodMachine(this.database);
     const flushDatabase = methodMachine.methods.create(
       'flushDatabase',

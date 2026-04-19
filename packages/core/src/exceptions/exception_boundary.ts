@@ -10,7 +10,7 @@ export class ExceptionBoundary implements Disposable {
     const entryCount = exception_boundary_map_global.get(this.boundary);
     exception_boundary_map_global.set(this.boundary, (entryCount ?? 0) + 1);
   }
-  [Symbol.dispose]() {
+  public [Symbol.dispose]() {
     const entryCount = exception_boundary_map_global.get(this.boundary);
     assert_defined(entryCount, 'entryCount was not defined');
     if (entryCount === 1) {

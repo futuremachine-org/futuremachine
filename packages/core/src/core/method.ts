@@ -26,7 +26,7 @@ export type Method<Impl extends AnyMethodImpl> = MethodClass<Impl> &
   };
 
 class MethodClass<Impl extends AnyMethodImpl> implements SerializableObject {
-  [SerializableObjectBranding] = undefined;
+  public [SerializableObjectBranding] = undefined;
 
   private constructor(private impl: MethodImpl<Impl>) {
     const func = (...args: Parameters<Impl>) => {

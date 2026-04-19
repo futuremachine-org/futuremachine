@@ -10,7 +10,7 @@ import type { EntityImpl, State } from './entity_impl.js';
 export abstract class Entity<
   T extends Record<string, Serializable>,
 > implements SerializableObject {
-  [SerializableObjectBranding] = undefined;
+  public [SerializableObjectBranding] = undefined;
 
   #impl: EntityImpl<T>;
   constructor(state: State<T>) {

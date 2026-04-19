@@ -9,7 +9,7 @@ import {
 import type { ListImpl } from './list_impl.js';
 
 export class List<T extends Serializable[]> implements SerializableObject {
-  [SerializableObjectBranding] = undefined;
+  public [SerializableObjectBranding] = undefined;
 
   private constructor(private impl: ListImpl<T>) {}
 

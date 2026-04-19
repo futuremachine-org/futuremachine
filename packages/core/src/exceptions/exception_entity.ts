@@ -14,7 +14,7 @@ export abstract class ExceptionEntity<T extends Record<string, Serializable>>
   extends Error
   implements SerializableObject
 {
-  [SerializableObjectBranding] = undefined;
+  public [SerializableObjectBranding] = undefined;
 
   #impl: EntityImpl<T>;
   constructor(state: State<T>) {

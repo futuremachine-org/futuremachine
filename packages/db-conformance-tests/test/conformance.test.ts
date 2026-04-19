@@ -4,7 +4,7 @@ import { runConformanceTests, type DBHolder } from '../src/index.js';
 import { isFutureDatabaseEmpty } from '../src/test_helpers.js';
 
 class SimpleDBHolder implements DBHolder {
-  futureDatabase = new SimpleFutureDatabase();
+  private futureDatabase = new SimpleFutureDatabase();
 
   public async createDbInstance(): Promise<FutureDatabase> {
     return this.futureDatabase;

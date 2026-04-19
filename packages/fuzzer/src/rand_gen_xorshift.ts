@@ -17,7 +17,7 @@ export class RandGenXorshift implements RandomGenerator {
     }
   }
 
-  random(): number {
+  public random(): number {
     this.state ^= this.state << 13n;
     this.state &= RandGenXorshift.MASK;
     this.state ^= this.state >> 7n;

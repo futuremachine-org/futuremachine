@@ -21,7 +21,7 @@ export type {
 } from './future_impl.js';
 
 export class Future<T extends Serializable> implements SerializableObject {
-  [SerializableObjectBranding] = undefined;
+  public [SerializableObjectBranding] = undefined;
 
   private constructor(private impl: FutureImpl<T>) {}
 

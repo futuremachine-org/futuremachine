@@ -15,34 +15,34 @@ class PromiseExecutorContext implements ExecutorContext<
   PromiseId
 > {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createMethod<T extends (...args: any[]) => any>(
+  public createMethod<T extends (...args: any[]) => any>(
     methodName: string,
     methodExecutor: T
   ): T {
     return methodExecutor;
   }
-  build(): void {}
+  public build(): void {}
 
-  bindArgs<A extends unknown[], B extends unknown[], R>(
+  public bindArgs<A extends unknown[], B extends unknown[], R>(
     func: (...args: [...A, ...B]) => R,
     ...args: A
   ): (...args: B) => R {
     return (...unboundArgs: B) => func(...args, ...unboundArgs);
   }
 
-  createTestObject(): TestObject {
+  public createTestObject(): TestObject {
     return {
       value: 0,
     };
   }
-  ignoreErrors(deferred: Promise<unknown>): void {
+  public ignoreErrors(deferred: Promise<unknown>): void {
     deferred.catch(() => {});
   }
-  getDeferredClass(): new (...args: unknown[]) => Promise<unknown> {
+  public getDeferredClass(): new (...args: unknown[]) => Promise<unknown> {
     return Promise as new (...args: unknown[]) => Promise<unknown>;
   }
 
-  withResolvers(): DeferredResolvers<Promise<unknown>, PromiseId> {
+  public withResolvers(): DeferredResolvers<Promise<unknown>, PromiseId> {
     const { promise, resolve, reject } = Promise.withResolvers();
 
     return {
@@ -52,31 +52,31 @@ class PromiseExecutorContext implements ExecutorContext<
       id: { resolve, reject },
     };
   }
-  resolve(value: unknown): Promise<unknown> {
+  public resolve(value: unknown): Promise<unknown> {
     return Promise.resolve(value);
   }
-  reject(value: unknown): Promise<unknown> {
+  public reject(value: unknown): Promise<unknown> {
     return Promise.reject(value);
   }
-  resolveFutureById(id: PromiseId, value: unknown): void {
+  public resolveFutureById(id: PromiseId, value: unknown): void {
     id.resolve(value);
   }
-  rejectFutureById(id: PromiseId, reason: unknown): void {
+  public rejectFutureById(id: PromiseId, reason: unknown): void {
     id.reject(reason);
   }
-  race(value: Iterable<unknown>): Promise<unknown> {
+  public race(value: Iterable<unknown>): Promise<unknown> {
     return Promise.race(value);
   }
-  all(value: Iterable<unknown>): Promise<unknown> {
+  public all(value: Iterable<unknown>): Promise<unknown> {
     return Promise.all(value);
   }
-  any(value: Iterable<unknown>): Promise<unknown> {
+  public any(value: Iterable<unknown>): Promise<unknown> {
     return Promise.any(value);
   }
-  allSettled(value: Iterable<unknown>): Promise<unknown> {
+  public allSettled(value: Iterable<unknown>): Promise<unknown> {
     return Promise.allSettled(value);
   }
-  try(func: (...args: unknown[]) => unknown): Promise<unknown> {
+  public try(func: (...args: unknown[]) => unknown): Promise<unknown> {
     const { promise, resolve, reject } = Promise.withResolvers();
     promise.catch(() => {});
     try {
@@ -86,7 +86,7 @@ class PromiseExecutorContext implements ExecutorContext<
     }
     return promise;
   }
-  flush(): Promise<void> {
+  public flush(): Promise<void> {
     // Schedule a macrotask which is guaranteed to be triggered after all
     // microtasks.
     const { promise, resolve } = Promise.withResolvers<void>();
@@ -96,20 +96,20 @@ class PromiseExecutorContext implements ExecutorContext<
     return promise;
   }
 
-  deferredNext(
+  public deferredNext(
     deferred: Promise<unknown>,
     onFulfilled?: (value: unknown) => unknown,
     onRejected?: (value: unknown) => unknown
   ): Promise<unknown> {
     return deferred.then(onFulfilled, onRejected);
   }
-  deferredCatch(
+  public deferredCatch(
     deferred: Promise<unknown>,
     onRejected?: (value: unknown) => unknown
   ): Promise<unknown> {
     return deferred.catch(onRejected);
   }
-  deferredFinally(
+  public deferredFinally(
     deferred: Promise<unknown>,
     onFinally?: () => void
   ): Promise<unknown> {
@@ -122,7 +122,7 @@ export class PromiseExecutor implements Executor<
   PromiseId,
   PromiseExecutorContext
 > {
-  createContext(): PromiseExecutorContext {
+  public createContext(): PromiseExecutorContext {
     return new PromiseExecutorContext();
   }
 }

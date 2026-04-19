@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-member-accessibility */
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 

@@ -60,8 +60,8 @@ export type FromSerializableDB<T extends SerializableDB> = T extends ObjectDB
 // Needed so that implementers have to extend ObjectDB.
 const ObjectDBBranding = Symbol();
 export abstract class ObjectDB {
-  [ObjectDBBranding]: undefined;
-  abstract getObjectType(): ObjectDBType;
+  public [ObjectDBBranding]: undefined;
+  public abstract getObjectType(): ObjectDBType;
 }
 
 export type Reaction<T extends SerializableDB> = {
@@ -222,46 +222,50 @@ export interface EntityDB<
 
 export abstract class FutureDatabaseImpl {
   // Sets the FutureMachineDBTools which gives access to tools for Future
-  abstract setFutureMachineDBTools(
+  public abstract setFutureMachineDBTools(
     futureMachineDBTools: FutureMachineDBTools
   ): void;
 
   // Returns a new `MethodDB`.
-  abstract createMethodDB(name: MethodName, type: MethodType): MethodDB;
+  public abstract createMethodDB(name: MethodName, type: MethodType): MethodDB;
 
   // Returns a new Pending `FutureDB`.
-  abstract createFutureDB<T extends SerializableDB>(): FutureDB<T>;
+  public abstract createFutureDB<T extends SerializableDB>(): FutureDB<T>;
 
   // Returns a `FutureDB` that's already resolved with `reason`. This doesn't
   // need to be written to the database unless bound to a `Method`.
-  abstract createResolvedFutureDB<T extends SerializableDB>(
+  public abstract createResolvedFutureDB<T extends SerializableDB>(
     result: T | undefined
   ): FutureDB<T>;
 
   // Returns a `FutureDB` that's already rejected with `reason`. This doesn't
   // need to be written to the database unless bound to a `Method`.
-  abstract createRejectedFutureDB<T extends SerializableDB>(
+  public abstract createRejectedFutureDB<T extends SerializableDB>(
     reason: T | undefined
   ): FutureDB<T>;
 
   // Returns the a Pending `FutureDB` with the given `futureId`. If there is no
   // `FutureDB` with the given `futureId` or if the `FutureDB` with the given
   // `futureId` is not Pending, returns undefined.
-  abstract getFutureDB<T extends Serializable>(
+  public abstract getFutureDB<T extends Serializable>(
     futureId: FutureId<T>
   ): FutureDB<ToSerializableDB<T>> | undefined;
 
-  abstract createAggregateDB<T extends SerializableDB>(): AggregateDB<T>;
+  public abstract createAggregateDB<T extends SerializableDB>(): AggregateDB<T>;
 
-  abstract createDictionaryDB<T extends SerializableDB>(): DictionaryDB<T>;
+  public abstract createDictionaryDB<
+    T extends SerializableDB,
+  >(): DictionaryDB<T>;
 
-  abstract createStructDB<T extends Record<string, SerializableDB>>(
+  public abstract createStructDB<T extends Record<string, SerializableDB>>(
     obj: T
   ): StructDB<T>;
 
-  abstract createListDB<T extends SerializableDB[]>(elements: T): ListDB<T>;
+  public abstract createListDB<T extends SerializableDB[]>(
+    elements: T
+  ): ListDB<T>;
 
-  abstract createEntityDB<T extends Record<string, SerializableDB>>(
+  public abstract createEntityDB<T extends Record<string, SerializableDB>>(
     entityName: string,
     obj: T
   ): EntityDB<T>;
