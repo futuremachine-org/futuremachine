@@ -86,11 +86,14 @@ class PromiseExecutorContext implements ExecutorContext<
     }
     return promise;
   }
-  async flush(): Promise<void> {
-    // Cycle the event loop so that events don't overlap.
-    for (let i = 0; i < 100; i++) {
-      await Promise.resolve();
-    }
+  flush(): Promise<void> {
+    // Schedule a macrotask which is guaranteed to be triggered after all
+    // microtasks.
+    const { promise, resolve } = Promise.withResolvers<void>();
+
+    setTimeout(resolve, 0);
+
+    return promise;
   }
 
   deferredNext(

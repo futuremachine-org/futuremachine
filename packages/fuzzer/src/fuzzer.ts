@@ -1,18 +1,10 @@
 import { strict as assert } from 'node:assert';
+import readline from 'node:readline';
 import { ExecutorBase } from './executor_base.js';
 import { FutureExecutor } from './executors/future_executor.js';
 import { PromiseExecutor } from './executors/promise_executor.js';
 import { FuzzerPlan } from './fuzzer_plan.js';
 import { RandGenXorshift } from './rand_gen_xorshift.js';
-
-const seed = Math.random();
-console.log(`Seed: ${seed}`);
-const randGen = new RandGenXorshift(seed);
-const plan = new FuzzerPlan(randGen, 100);
-const promiseExecutor = new ExecutorBase(new PromiseExecutor());
-await promiseExecutor.run(plan);
-const futureExecutor = new ExecutorBase(new FutureExecutor());
-await futureExecutor.run(plan);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type VisitorObject = Record<string, any>;
@@ -68,8 +60,45 @@ const AllSettledVisitor: Visitor = {
   },
 };
 
-const futureEvents = futureExecutor.getEvents();
-visit([AggregateErrorVisitor, AllSettledVisitor], futureEvents);
+async function fuzz(seed: number) {
+  const randGen = new RandGenXorshift(seed);
+  const plan = new FuzzerPlan(randGen, 200);
 
-console.log(`Seed: ${seed}`);
-assert.deepStrictEqual(futureEvents, promiseExecutor.getEvents());
+  const promiseExecutor = new ExecutorBase(new PromiseExecutor());
+  const futureExecutor = new ExecutorBase(new FutureExecutor());
+
+  const promiseEvents = await promiseExecutor.run(plan);
+  const futureEvents = await futureExecutor.run(plan);
+
+  // TODO: it doesn't seem like it matters if this runs or not. That probably
+  // means we're not getting as much test coverage as before.
+  visit([AggregateErrorVisitor, AllSettledVisitor], futureEvents);
+
+  assert.deepStrictEqual(futureEvents, promiseEvents);
+}
+
+async function run() {
+  const start = Date.now();
+  const runTime = 10 * 60 * 1000;
+  let curTime = start;
+
+  while (curTime - start < runTime) {
+    readline.clearLine(process.stdout, 0);
+    readline.cursorTo(process.stdout, 0);
+    process.stdout.write(`${runTime - (curTime - start)}ms`);
+    const seed = Math.random();
+    try {
+      await fuzz(seed);
+    } catch (e) {
+      console.log('\nFailure');
+      console.error(e);
+      console.log(`Seed: ${seed}`);
+      process.exit(1);
+    }
+    curTime = Date.now();
+  }
+  console.log('\nSuccess');
+  console.log('All seeds passed');
+}
+
+await run();

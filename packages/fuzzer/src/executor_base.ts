@@ -89,10 +89,6 @@ export class ExecutorBase<
 
   constructor(private executor: Executor<DeferredType, DeferredId, Context>) {}
 
-  public getEvents(): unknown[] {
-    return this.events;
-  }
-
   // TODO: Handle recursion better if we ever
   private createEventObject(context: Context, value: unknown): unknown {
     switch (typeof value) {
@@ -242,7 +238,7 @@ export class ExecutorBase<
     return context;
   }
 
-  public async run(plan: FuzzerPlan) {
+  public async run(plan: FuzzerPlan): Promise<unknown[]> {
     const methods = plan.getMethods();
     const actions = plan.getActions();
 
@@ -372,5 +368,6 @@ export class ExecutorBase<
       }
     }
     await context.flush();
+    return this.events;
   }
 }
