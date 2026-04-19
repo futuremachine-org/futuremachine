@@ -1,4 +1,5 @@
 import { strict as assert } from 'node:assert';
+import { randomBytes } from 'node:crypto';
 import readline from 'node:readline';
 import { parseArgs } from 'node:util';
 import { ExecutorBase } from './executor_base.js';
@@ -66,7 +67,11 @@ const AllSettledVisitor: Visitor = {
   },
 };
 
-async function fuzz(seed: number) {
+function getRandomSeed(): bigint {
+  return randomBytes(8).readBigUInt64LE();
+}
+
+async function fuzz(seed: bigint) {
   const randGen = new RandGenXorshift(seed);
   const plan = new FuzzerPlan(randGen, 200);
 
@@ -87,30 +92,32 @@ async function fuzzForDuration(durationMs: number) {
   console.log(`Fuzzing for ${durationMs}ms`);
   const start = Date.now();
   let curTime = start;
+  let count = 0;
 
   while (curTime - start < durationMs) {
+    count++;
     if (!isCI) {
       readline.clearLine(process.stdout, 0);
       readline.cursorTo(process.stdout, 0);
-      const timeLeft = durationMs - (curTime - start);
-      process.stdout.write(`Time left: ${timeLeft}ms`);
+      const timeLeft = Math.round((durationMs - (curTime - start)) / 1000);
+      process.stdout.write(`Time left: ${timeLeft}s`);
     }
-    const seed = Math.random();
+    const seed = getRandomSeed();
     try {
       await fuzz(seed);
     } catch (e) {
       console.log('\nFailure');
       console.error(e);
-      console.log(`Seed: ${seed}`);
+      console.log(`Seed ${count} failed: ${seed}`);
       process.exit(1);
     }
     curTime = Date.now();
   }
   console.log('\nSuccess');
-  console.log('All seeds passed');
+  console.log(`All ${count} seeds passed`);
 }
 
-async function fuzzWithSeed(seed: number) {
+async function fuzzWithSeed(seed: bigint) {
   console.log(`Running seed: ${seed}`);
   try {
     await fuzz(seed);
@@ -145,18 +152,36 @@ function printHelpAndExit(exitCode: number): never {
   process.exit(exitCode);
 }
 
-function parseCommandLineNumber(
+function parseCommandLineBigInt(
+  numberStr: string | undefined
+): bigint | undefined {
+  if (numberStr === undefined) {
+    return undefined;
+  }
+
+  if (!/^\d+?$/.test(numberStr)) {
+    printHelpAndExit(1);
+  }
+
+  try {
+    return BigInt(numberStr);
+  } catch {
+    printHelpAndExit(1);
+  }
+}
+
+function parseCommandLineInt(
   numberStr: string | undefined
 ): number | undefined {
   if (numberStr === undefined) {
     return undefined;
   }
 
-  if (!/^\d+(\.\d+)?$/.test(numberStr)) {
+  if (!/^\d+?$/.test(numberStr)) {
     printHelpAndExit(1);
   }
 
-  const num = Number.parseFloat(numberStr);
+  const num = Number.parseInt(numberStr);
 
   if (!Number.isFinite(num)) {
     printHelpAndExit(1);
@@ -167,7 +192,7 @@ function parseCommandLineNumber(
 
 function getCommandLineFlags(): {
   durationMs: number | undefined;
-  seed: number | undefined;
+  seed: bigint | undefined;
 } {
   let durationMsStr: string | undefined;
   let seedStr: string | undefined;
@@ -195,8 +220,8 @@ function getCommandLineFlags(): {
   }
 
   return {
-    durationMs: parseCommandLineNumber(durationMsStr),
-    seed: parseCommandLineNumber(seedStr),
+    durationMs: parseCommandLineInt(durationMsStr),
+    seed: parseCommandLineBigInt(seedStr),
   };
 }
 

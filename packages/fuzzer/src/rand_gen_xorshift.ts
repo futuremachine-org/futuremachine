@@ -10,8 +10,8 @@ export class RandGenXorshift implements RandomGenerator {
   private state: bigint;
 
   // Seed is between 0 and 1.
-  constructor(seed: number) {
-    this.state = BigInt(RandGenXorshift.MAX * seed);
+  constructor(seed: bigint) {
+    this.state = seed;
     if (this.state === 0n) {
       this.state = 1n;
     }
