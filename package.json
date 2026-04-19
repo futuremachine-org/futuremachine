@@ -18,7 +18,7 @@
     "test:fuzzer": "npm run --prefix packages/fuzzer fuzz --",
     "format": "prettier --write .",
     "clean": "npm run clean --workspaces",
-    "prepare": "npm run build && husky",
+    "prepare": "tsc -b && husky",
     "check:circular": "npx madge --circular --extensions ts,tsx --warning --exclude 'node_modules|.stryker-tmp|dist' packages/",
     "check:versions": "syncpack lint",
     "check:worktree-clean": "test -z \"$(git status --porcelain)\" || (echo 'Error: Working tree is dirty. Commit your changes before shipping.' && exit 1)",

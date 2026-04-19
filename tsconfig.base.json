@@ -27,6 +27,12 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+
+    "paths": {
+      "@futuremachine/core": ["./packages/core/src"],
+      "@futuremachine/db-conformance-tests": ["./packages/db-conformance-tests/src"],
+      "@futuremachine/db-sqlite-node": ["./packages/db-sqlite-node/src"]
+    }
   }
 }
