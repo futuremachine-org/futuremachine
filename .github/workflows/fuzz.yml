@@ -1,0 +1,44 @@
+name: Fuzzer
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install
+        run: npm i
+
+      - name: Run Fuzzer
+        id: run-fuzzer
+        continue-on-error: true
+        run: |
+          npm run -s test:fuzzer -- --duration-ms=$((60 * 60 * 1000)) 2>&1 | tee fuzzer-logs.txt
+
+      - name: Archive Failing Seed Logs
+        if: steps.run-fuzzer.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: failing-fuzzer-logs
+          path: fuzzer-logs.txt
+
+      - name: Report Failure to Job Summary
+        if: steps.run-fuzzer.outcome == 'failure'
+        run: |
+          echo "### ❌ Fuzzing Failure Detected" >> $GITHUB_STEP_SUMMARY
+          echo "A bug was found during fuzzing. Check the artifacts for the full log." >> $GITHUB_STEP_SUMMARY
+          echo "#### Last 10 lines of output:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -n 10 fuzzer-logs.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
