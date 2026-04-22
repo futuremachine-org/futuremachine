@@ -1,9 +1,16 @@
+import { SimpleFutureDatabase } from '@futuremachine/core';
 import { strict as assert } from 'node:assert';
 import { randomBytes } from 'node:crypto';
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import readline from 'node:readline';
 import { parseArgs } from 'node:util';
+import { SQLFutureDatabase } from '../../db-sqlite-node/out/src/sql_future_database.js';
 import { ExecutorBase } from './executor_base.js';
-import { FutureExecutor } from './executors/future_executor.js';
+import {
+  FutureExecutor,
+  type FutureDatabaseHolder,
+} from './executors/future_executor.js';
 import { PromiseExecutor } from './executors/promise_executor.js';
 import { FuzzerPlan } from './fuzzer_plan.js';
 import { RandGenXorshift } from './rand_gen_xorshift.js';
@@ -71,12 +78,55 @@ function getRandomSeed(): bigint {
   return randomBytes(8).readBigUInt64LE();
 }
 
-async function fuzz(seed: bigint) {
+let madeDbDir = false;
+export function randomDatabasePath(): string {
+  const dbDir = 'db';
+  if (!madeDbDir) {
+    madeDbDir = true;
+    mkdirSync(dbDir, { recursive: true });
+  }
+
+  return join(dbDir, `dbPath${Math.random()}.db`);
+}
+
+enum DbType {
+  Simple,
+  NodeSqlite,
+}
+
+function getDbHolder(dbType: DbType): FutureDatabaseHolder {
+  switch (dbType) {
+    case DbType.Simple:
+      return {
+        createInstance() {
+          return new SimpleFutureDatabase();
+        },
+        flush(db: SimpleFutureDatabase) {
+          return db.flush();
+        },
+      };
+    case DbType.NodeSqlite: {
+      const dbPath = randomDatabasePath();
+      return {
+        createInstance() {
+          return new SQLFutureDatabase(dbPath);
+        },
+        flush(db: SimpleFutureDatabase) {
+          return db.flush();
+        },
+      };
+    }
+  }
+}
+
+async function fuzz(seed: bigint, dbType: DbType) {
   const randGen = new RandGenXorshift(seed);
   const plan = new FuzzerPlan(randGen, 200);
 
   const promiseExecutor = new ExecutorBase(new PromiseExecutor());
-  const futureExecutor = new ExecutorBase(new FutureExecutor());
+  const futureExecutor = new ExecutorBase(
+    new FutureExecutor(getDbHolder(dbType))
+  );
 
   const promiseEvents = await promiseExecutor.run(plan);
   const futureEvents = await futureExecutor.run(plan);
@@ -88,7 +138,7 @@ async function fuzz(seed: bigint) {
   assert.deepStrictEqual(futureEvents, promiseEvents);
 }
 
-async function fuzzForDuration(durationMs: number) {
+async function fuzzForDuration(durationMs: number, dbType: DbType) {
   console.log(`Fuzzing for ${durationMs}ms`);
   const start = Date.now();
   let curTime = start;
@@ -104,7 +154,7 @@ async function fuzzForDuration(durationMs: number) {
     }
     const seed = getRandomSeed();
     try {
-      await fuzz(seed);
+      await fuzz(seed, dbType);
     } catch (e) {
       console.log('\nFailure');
       console.error(e);
@@ -117,10 +167,10 @@ async function fuzzForDuration(durationMs: number) {
   console.log(`All ${count} seeds passed`);
 }
 
-async function fuzzWithSeed(seed: bigint) {
+async function fuzzWithSeed(seed: bigint, dbType: DbType) {
   console.log(`Running seed: ${seed}`);
   try {
-    await fuzz(seed);
+    await fuzz(seed, dbType);
   } catch (e) {
     console.log('Failure');
     console.error(e);
@@ -131,6 +181,8 @@ async function fuzzWithSeed(seed: bigint) {
 }
 
 const defaultDurationMs = 5 * 1000;
+const DbFlagSimpleString = 'simple';
+const DbFlagSqliteString = 'sqlite';
 
 function printHelpAndExit(exitCode: number): never {
   const helpMessage = [
@@ -141,9 +193,10 @@ function printHelpAndExit(exitCode: number): never {
     '  Single:  Runs a specific seed (ignores duration).',
     '',
     'Options:',
-    `  --duration-ms=N    Max time to run random seeds (default: ${defaultDurationMs}).`,
-    '  --seed=N           Run a single specific seed.',
-    '  -h, --help         Display this help message.',
+    `  --duration-ms=N             Max time to run random seeds (default: ${defaultDurationMs}).`,
+    '  --seed=N                    Run a single specific seed.',
+    `  --db-type={${DbFlagSimpleString}|${DbFlagSqliteString}}   Select the database backend (default: ${DbFlagSimpleString}).`,
+    '  -h, --help                  Display this help message.',
     '',
     'Note: --seed and --duration-ms cannot be used together.',
   ].join('\n');
@@ -193,14 +246,17 @@ function parseCommandLineInt(
 function getCommandLineFlags(): {
   durationMs: number | undefined;
   seed: bigint | undefined;
+  dbType: DbType;
 } {
   let durationMsStr: string | undefined;
   let seedStr: string | undefined;
+  let dbTypeStr: string;
   try {
     const { values } = parseArgs({
       options: {
         ['duration-ms']: { type: 'string' },
         seed: { type: 'string' },
+        ['db-type']: { type: 'string', default: DbFlagSimpleString },
         help: { type: 'boolean', short: 'h' },
       },
     });
@@ -211,6 +267,7 @@ function getCommandLineFlags(): {
 
     durationMsStr = values['duration-ms'];
     seedStr = values.seed;
+    dbTypeStr = values['db-type'];
   } catch {
     printHelpAndExit(1);
   }
@@ -219,20 +276,26 @@ function getCommandLineFlags(): {
     printHelpAndExit(1);
   }
 
+  if (dbTypeStr !== DbFlagSimpleString && dbTypeStr !== DbFlagSqliteString) {
+    printHelpAndExit(1);
+  }
+
   return {
     durationMs: parseCommandLineInt(durationMsStr),
     seed: parseCommandLineBigInt(seedStr),
+    dbType:
+      dbTypeStr === DbFlagSimpleString ? DbType.Simple : DbType.NodeSqlite,
   };
 }
 
 async function run() {
-  const { durationMs, seed } = getCommandLineFlags();
+  const { durationMs, seed, dbType } = getCommandLineFlags();
   if (durationMs !== undefined) {
-    await fuzzForDuration(durationMs);
+    await fuzzForDuration(durationMs, dbType);
   } else if (seed !== undefined) {
-    await fuzzWithSeed(seed);
+    await fuzzWithSeed(seed, dbType);
   } else {
-    await fuzzForDuration(defaultDurationMs);
+    await fuzzForDuration(defaultDurationMs, dbType);
   }
 }
 

@@ -1,4 +1,5 @@
 import type {
+  FutureDatabase,
   FutureId,
   FutureMachine,
   Method,
@@ -6,12 +7,7 @@ import type {
   Serializable,
   StateBuilder,
 } from '@futuremachine/core';
-import {
-  createMethodMachine,
-  Entity,
-  Future,
-  SimpleFutureDatabase,
-} from '@futuremachine/core';
+import { createMethodMachine, Entity, Future } from '@futuremachine/core';
 import {
   type DeferredResolvers,
   type Executor,
@@ -155,20 +151,26 @@ class FutureExecutorContext
   }
 }
 
+export interface FutureDatabaseHolder {
+  createInstance(): FutureDatabase;
+  flush(database: FutureDatabase): Promise<void>;
+}
+
 export class FutureExecutor implements Executor<
   Future<Serializable>,
   FutureId<Serializable>,
   FutureExecutorContext
 > {
-  private database = new SimpleFutureDatabase();
+  constructor(private db_holder: FutureDatabaseHolder) {}
 
   public createContext(): FutureExecutorContext {
-    const methodMachine = createMethodMachine(this.database);
+    const database = this.db_holder.createInstance();
+    const methodMachine = createMethodMachine(database);
     const flushDatabase = methodMachine.methods.create(
       'flushDatabase',
       (futureMachine: FutureMachine) => {
         const { future, resolve } = futureMachine.withResolvers<void>();
-        this.database.flush().then(() => resolve());
+        this.db_holder.flush(database).then(() => resolve());
         return future;
       }
     );

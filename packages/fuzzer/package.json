@@ -19,6 +19,7 @@
     "fuzz": "tsc -b && node out/fuzzer.js"
   },
   "dependencies": {
-    "@futuremachine/core": "0.1.0"
+    "@futuremachine/core": "0.1.0",
+    "@futuremachine/db-sqlite-node": "0.1.0"
   }
 }
