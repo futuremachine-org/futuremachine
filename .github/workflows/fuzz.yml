@@ -8,6 +8,10 @@ on:
 jobs:
   fuzz:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: [simple, sqlite]
     steps:
       - uses: actions/checkout@v6
 
@@ -24,20 +28,20 @@ jobs:
         id: run-fuzzer
         continue-on-error: true
         run: |
-          npm run -s test:fuzzer -- --duration-ms=$((60 * 60 * 1000)) 2>&1 | tee fuzzer-logs.txt
+          npm run -s test:fuzzer -- --duration-ms=$((60 * 60 * 1000)) --db-type=${{ matrix.backend }} 2>&1 | tee fuzzer-logs.txt
 
       - name: Archive Failing Seed Logs
         if: steps.run-fuzzer.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
-          name: failing-fuzzer-logs
+          name: failing-fuzzer-logs-${{ matrix.backend }}
           path: fuzzer-logs.txt
 
       - name: Report Failure to Job Summary
         if: steps.run-fuzzer.outcome == 'failure'
         run: |
-          echo "### ❌ Fuzzing Failure Detected" >> $GITHUB_STEP_SUMMARY
-          echo "A bug was found during fuzzing. Check the artifacts for the full log." >> $GITHUB_STEP_SUMMARY
+          echo "### ❌ Fuzzing Failure Detected (${{ matrix.backend }})" >> $GITHUB_STEP_SUMMARY
+          echo "A bug was found using the **${{ matrix.backend }}** backend." >> $GITHUB_STEP_SUMMARY
           echo "#### Last 10 lines of output:" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           tail -n 10 fuzzer-logs.txt >> $GITHUB_STEP_SUMMARY
