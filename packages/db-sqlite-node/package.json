@@ -39,7 +39,7 @@
     "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
   },
   "dependencies": {
-    "@futuremachine/core": "0.1.0",
+    "@futuremachine/core": "0.1.1",
     "@futuremachine/db-conformance-tests": "0.1.0"
   }
 }

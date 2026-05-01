@@ -1,6 +1,6 @@
 {
   "name": "@futuremachine/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
   "description": "A TypeScript library for Futures, persistent Promises that survive process restarts and can be resolved by ID.",
