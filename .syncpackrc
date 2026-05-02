@@ -1,0 +1,22 @@
+{
+  "semverGroups": [
+    {
+      "dependencies": [
+        "@futuremachine/core"
+      ],
+      "dependencyTypes": [
+        "peer"
+      ],
+      "range": "~"
+    },
+    {
+      "dependencies": [
+        "@futuremachine/core"
+      ],
+      "dependencyTypes": [
+        "dev"
+      ],
+      "range": ""
+    }
+  ]
+}

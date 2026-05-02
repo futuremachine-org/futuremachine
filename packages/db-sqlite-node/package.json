@@ -38,7 +38,10 @@
     "test": "tsc -b && rimraf db && node --test --expose-gc",
     "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "@futuremachine/core": "~0.1.1"
+  },
+  "devDependencies": {
     "@futuremachine/core": "0.1.1",
     "@futuremachine/db-conformance-tests": "0.1.0"
   }
