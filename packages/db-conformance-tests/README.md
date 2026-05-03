@@ -5,7 +5,6 @@
 </p>
 
 <div align="center">
-# 
 
 # `@futuremachine/db-conformance-tests`
 
