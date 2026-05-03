@@ -8,7 +8,7 @@
 
 # `@futuremachine/db-sqlite-node`
 
-<!-- [![npm version](https://img.shields.io/npm/v/@futuremachine/db-sqlite-node.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/db-sqlite-node) -->
+[![npm version](https://img.shields.io/npm/v/@futuremachine/db-sqlite-node.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/db-sqlite-node)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg?style=flat-square)](LICENSE)
 
 **The node:sqlite storage implementation for FutureMachine. Provides a**

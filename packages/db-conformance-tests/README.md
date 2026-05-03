@@ -9,7 +9,7 @@
 
 # `@futuremachine/db-conformance-tests`
 
-<!-- [![npm version](https://img.shields.io/npm/v/@futuremachine/db-conformance-tests.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/db-conformance-tests) -->
+[![npm version](https://img.shields.io/npm/v/@futuremachine/db-conformance-tests.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/db-conformance-tests)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg?style=flat-square)](LICENSE)
 
 **Verifies a @futuremachine/core FutureDatabase implementation.**
