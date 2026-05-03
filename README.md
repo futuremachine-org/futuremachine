@@ -21,7 +21,7 @@
 | :--- | :--- | :--- |
 | [`@futuremachine/core`](./packages/core) | [![npm version](https://img.shields.io/npm/v/@futuremachine/core.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/core) | The core FutureMachine engine. |
 | [`@futuremachine/db-sqlite-node`](./packages/db-sqlite-node) |  | A node:sqlite implementation of the FutureDatabase. |
-| [`@futuremachine/db-conformance-tests`](./packages/db-tests) |  | Utilities for testing database adapters. |
+| [`@futuremachine/db-conformance-tests`](./packages/db-conformance-tests) |  | Utilities for testing database adapters. |
 
 ## Quick start
 
