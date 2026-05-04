@@ -37,7 +37,7 @@
   "scripts": {
     "clean": "rimraf out",
     "build": "tsc -b",
-    "test": "tsc -b && node --test"
+    "test": "tsc -b && node --test out/test/**/*.test.js"
   },
   "peerDependencies": {
     "@futuremachine/core": "~0.1.2"
