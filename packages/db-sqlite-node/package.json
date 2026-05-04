@@ -39,10 +39,10 @@
     "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
   },
   "peerDependencies": {
-    "@futuremachine/core": "~0.1.1"
+    "@futuremachine/core": "~0.1.2"
   },
   "devDependencies": {
-    "@futuremachine/core": "0.1.1",
+    "@futuremachine/core": "0.1.2",
     "@futuremachine/db-conformance-tests": "0.1.0"
   }
 }

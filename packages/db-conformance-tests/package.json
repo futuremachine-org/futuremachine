@@ -40,9 +40,9 @@
     "test": "tsc -b && node --test"
   },
   "peerDependencies": {
-    "@futuremachine/core": "~0.1.1"
+    "@futuremachine/core": "~0.1.2"
   },
   "devDependencies": {
-    "@futuremachine/core": "0.1.1"
+    "@futuremachine/core": "0.1.2"
   }
 }

@@ -1,0 +1,46 @@
+name: Publish
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package-path:
+          [
+            'packages/core',
+            'packages/db-sqlite-node',
+            'packages/db-conformance-tests',
+          ]
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npm test
+
+      - name: Publish if version changed
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+
+          NPM_VERSION=$(npm view "$PACKAGE_NAME" version --silent 2>/dev/null || echo "0.0.0")
+
+          if [ "$NPM_VERSION" != "$LOCAL_VERSION" ]; then
+            echo "Publishing $PACKAGE_NAME: ($NPM_VERSION) -> ($LOCAL_VERSION)"
+            npm publish --provenance --access public --ignore-scripts
+          else
+            echo "Skipping $PACKAGE_NAME: Up to date $LOCAL_VERSION."
+          fi
+        working-directory: ${{ matrix.package-path }}
