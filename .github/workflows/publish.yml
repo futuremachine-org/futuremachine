@@ -24,6 +24,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
       - run: npm ci --ignore-scripts
@@ -39,7 +40,7 @@ jobs:
 
           if [ "$NPM_VERSION" != "$LOCAL_VERSION" ]; then
             echo "Publishing $PACKAGE_NAME: ($NPM_VERSION) -> ($LOCAL_VERSION)"
-            npm publish --provenance --access public --ignore-scripts
+            npm publish --access public --ignore-scripts
           else
             echo "Skipping $PACKAGE_NAME: Up to date $LOCAL_VERSION."
           fi
