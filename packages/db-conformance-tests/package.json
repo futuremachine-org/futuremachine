@@ -1,6 +1,6 @@
 {
   "name": "@futuremachine/db-conformance-tests",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
   "description": "Verifies a @futuremachine/core FutureDatabase implementation.",
