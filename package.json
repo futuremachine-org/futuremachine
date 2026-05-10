@@ -21,11 +21,9 @@
     "prepare": "tsc -b && husky",
     "check:circular": "npx madge --circular --extensions ts,tsx --warning --exclude 'node_modules|.stryker-tmp|dist' packages/",
     "check:versions": "syncpack lint",
-    "check:worktree-clean": "test -z \"$(git status --porcelain)\" || (echo 'Error: Working tree is dirty. Commit your changes before shipping.' && exit 1)",
-    "pre-ship": "npm run check:worktree-clean -s && npm run clean && npm run lint && npm run build && npm run test",
-    "ship:core": "npm run pre-ship && npm publish --workspace=packages/core --access public --",
-    "ship:db-sqlite-node": "npm run pre-ship && npm publish --workspace=packages/db-sqlite-node --access public --",
-    "ship:db-conformance-tests": "npm run pre-ship && npm publish --workspace=packages/db-conformance-tests --access public --"
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -69,6 +67,8 @@
     ]
   },
   "dependencies": {
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
     "@eslint/compat": "^2.0.5"
   }
 }
