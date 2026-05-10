@@ -270,13 +270,15 @@ class SimpleDictionaryDB<T extends SerializableDB>
   implements DictionaryDB<T>
 {
   private facade: Dictionary<Serializable> | undefined;
-  private map: Map<string, T> = new Map();
+  private map: Map<string, T>;
 
   constructor(
     private database: SimpleFutureDatabaseImpl,
-    private dbInstanceId: number
+    private dbInstanceId: number,
+    iterable: Iterable<readonly [string, T]>
   ) {
     super();
+    this.map = new Map(iterable);
   }
 
   public setFacade(facade: Dictionary<Serializable>): void {
@@ -690,8 +692,10 @@ class SimpleFutureDatabaseImpl extends FutureDatabaseImpl implements Database {
     return new SimpleAggregateDB<T>(this, this.instanceId);
   }
 
-  public createDictionaryDB<T extends SerializableDB>(): DictionaryDB<T> {
-    return new SimpleDictionaryDB(this, this.instanceId);
+  public createDictionaryDB<T extends SerializableDB>(
+    iterable: Iterable<readonly [string, T]>
+  ): DictionaryDB<T> {
+    return new SimpleDictionaryDB(this, this.instanceId, iterable);
   }
 
   public createStructDB<T extends Record<string, SerializableDB>>(

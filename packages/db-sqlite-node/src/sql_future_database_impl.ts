@@ -781,8 +781,10 @@ export class SQLFutureDatabaseImpl extends FutureDatabaseImpl {
     return new SQLAggregateDB<T>(this);
   }
 
-  public createDictionaryDB<T extends SerializableDB>(): DictionaryDB<T> {
-    return new SQLDictionaryDB<T>(this, undefined);
+  public createDictionaryDB<T extends SerializableDB>(
+    iterable: Iterable<readonly [string, T]>
+  ): DictionaryDB<T> {
+    return new SQLDictionaryDB<T>(this, undefined, iterable);
   }
 
   public createStructDB<T extends Record<string, SerializableDB>>(

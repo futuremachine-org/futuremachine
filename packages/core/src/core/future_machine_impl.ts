@@ -759,9 +759,23 @@ export class FutureMachineImpl {
     return future;
   }
 
-  public createDictionary<T extends Serializable>(): Dictionary<T> {
-    const dictionaryDb =
-      this.database.createDictionaryDB<ToSerializableDB<T>>();
+  private *serializeDictionaryEntries<T extends Serializable>(
+    iterable?: Iterable<readonly [string, T]> | null
+  ): Iterable<readonly [string, ToSerializableDB<T>]> {
+    if (iterable === undefined || iterable === null) {
+      return;
+    }
+    for (const [key, value] of iterable) {
+      yield [key, serialize(value)];
+    }
+  }
+
+  public createDictionary<T extends Serializable>(
+    iterable?: Iterable<readonly [string, T]> | null
+  ): Dictionary<T> {
+    const dictionaryDb = this.database.createDictionaryDB<ToSerializableDB<T>>(
+      this.serializeDictionaryEntries(iterable)
+    );
     const dictionary = Dictionary[DictionaryCreate](
       new DictionaryImpl(this, dictionaryDb)
     );

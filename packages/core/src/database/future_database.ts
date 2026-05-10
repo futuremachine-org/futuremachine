@@ -253,9 +253,9 @@ export abstract class FutureDatabaseImpl {
 
   public abstract createAggregateDB<T extends SerializableDB>(): AggregateDB<T>;
 
-  public abstract createDictionaryDB<
-    T extends SerializableDB,
-  >(): DictionaryDB<T>;
+  public abstract createDictionaryDB<T extends SerializableDB>(
+    iterable: Iterable<readonly [string, T]>
+  ): DictionaryDB<T>;
 
   public abstract createStructDB<T extends Record<string, SerializableDB>>(
     obj: T

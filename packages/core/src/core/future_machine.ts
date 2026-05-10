@@ -370,7 +370,11 @@ function createFutureMachine(
 }
 
 export type Containers = Struct<{
-  createDictionary: Method<<T extends Serializable>() => Dictionary<T>>;
+  createDictionary: Method<
+    <T extends Serializable>(
+      iterable?: Iterable<readonly [string, T]> | null
+    ) => Dictionary<T>
+  >;
   createStruct: Method<
     <T extends Record<string, Serializable>>(obj: T) => Struct<T>
   >;
@@ -381,8 +385,10 @@ function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
   // TODO: Should take an iterable to construct the dictionary.
   const createDictionary = futureMachineImpl.createInternalMethod(
     'createDictionary',
-    <T extends Serializable>(): Dictionary<T> => {
-      return futureMachineImpl.createDictionary();
+    <T extends Serializable>(
+      iterable?: Iterable<readonly [string, T]> | null
+    ): Dictionary<T> => {
+      return futureMachineImpl.createDictionary(iterable);
     }
   );
 

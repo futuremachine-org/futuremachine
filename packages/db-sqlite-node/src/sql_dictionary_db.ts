@@ -24,12 +24,15 @@ export class SQLDictionaryDB<T extends SerializableDB>
 {
   private facade: Dictionary<Serializable> | undefined;
 
+  private map: Map<string, T>;
+
   constructor(
     database: SQLFutureDatabaseImpl,
     objectId: ObjectIdDb | undefined,
-    private map: Map<string, T> = new Map()
+    iterable?: Iterable<readonly [string, T]>
   ) {
     super(database, objectId);
+    this.map = new Map(iterable);
   }
 
   public static GetIds(

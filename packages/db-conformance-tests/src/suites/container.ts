@@ -77,6 +77,27 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
+    test('can be constructed with an iterable', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number>([
+        ['hello', 1],
+        ['world', 2],
+      ]);
+
+      assert.strictEqual(dictionary.has('hello'), true);
+      assert.strictEqual(dictionary.get('hello'), 1);
+      assert.strictEqual(dictionary.has('world'), true);
+      assert.strictEqual(dictionary.get('world'), 2);
+
+      await dbHolder.close(futureDatabase);
+    });
+
     test('can be bound to Methods', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
