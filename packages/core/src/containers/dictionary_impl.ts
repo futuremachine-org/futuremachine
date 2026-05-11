@@ -1,10 +1,12 @@
 import type { FutureMachineImpl } from '../core/future_machine_impl.js';
+import type { Method } from '../core/method.js';
 import type {
   DictionaryDB,
   Serializable,
   ToSerializableDB,
 } from '../database/future_database.js';
 import { deserialize, serialize } from '../database/serialize_utils.js';
+import type { Dictionary } from './dictionary.js';
 
 export class DictionaryImpl<T extends Serializable> {
   constructor(
@@ -46,5 +48,21 @@ export class DictionaryImpl<T extends Serializable> {
 
   public clear(): void {
     this.dictionaryDb.clear();
+  }
+
+  // TODO: Add thisArg parameter once Method supports it.
+  public forEach(
+    callback: (
+      value: T,
+      key: string,
+      dictionary: Dictionary<T>
+    ) => void | Method<
+      (value: T, key: string, dictionary: Dictionary<T>) => void
+    >,
+    dictionary: Dictionary<T>
+  ): void {
+    for (const [key, value] of this.entries()) {
+      callback(value, key, dictionary);
+    }
   }
 }

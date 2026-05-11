@@ -123,6 +123,182 @@ export default (testSettings: TestSettings) => {
         assert.strictEqual(value, expectedValue);
       }
 
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('can iterate over entries via entries() when entries are being added/removed', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const entries: [string, number][] = [
+        ['hello', 1],
+        ['world', 2],
+      ];
+
+      const addedEntry: [string, number] = ['fizz', 3];
+
+      const dictionary = containers.createDictionary<number>(entries);
+
+      let index = 0;
+      for (const [key, value] of dictionary.entries()) {
+        assert.ok(index < entries.length + 1);
+
+        if (index === 1) {
+          dictionary.set(addedEntry[0], addedEntry[1]);
+        }
+
+        const [expectedKey, expectedValue] =
+          index < entries.length ? entries[index]! : addedEntry;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      }
+      assert.strictEqual(index, entries.length + 1);
+
+      index = 0;
+      for (const [key, value] of dictionary.entries()) {
+        assert.ok(index < entries.length);
+
+        if (index === 1) {
+          dictionary.delete(addedEntry[0]);
+        }
+
+        const [expectedKey, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      }
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('can iterate over entries via forEntries()', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      const entries: [string, number][] = [
+        ['hello', 1],
+        ['world', 2],
+      ];
+
+      let index: number;
+      const callback = (
+        value: number,
+        key: string,
+        passedDictionary: Dictionary<number>
+      ) => {
+        assert.strictEqual(passedDictionary, dictionary);
+        assert.ok(index < entries.length);
+        const [expectedKey, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      };
+
+      const callbackMethod = methods.create('callback', callback);
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number>(entries);
+
+      index = 0;
+      dictionary.forEach(callback);
+      assert.strictEqual(index, entries.length);
+      index = 0;
+      dictionary.forEach(callbackMethod);
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('can iterate over entries via forEntries() when entries are being added/removed', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      const entries: [string, number][] = [
+        ['hello', 1],
+        ['world', 2],
+      ];
+
+      const addedEntry: [string, number] = ['fizz', 3];
+
+      let index: number;
+      const addingCallback = (
+        value: number,
+        key: string,
+        passedDictionary: Dictionary<number>
+      ) => {
+        assert.strictEqual(passedDictionary, dictionary);
+        assert.ok(index < entries.length + 1);
+
+        if (index === 1) {
+          dictionary.set(addedEntry[0], addedEntry[1]);
+        }
+
+        const [expectedKey, expectedValue] =
+          index < entries.length ? entries[index]! : addedEntry;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      };
+      const addingMethod = methods.create('addingCallback', addingCallback);
+
+      const removingCallback = (
+        value: number,
+        key: string,
+        passedDictionary: Dictionary<number>
+      ) => {
+        assert.strictEqual(passedDictionary, dictionary);
+        assert.ok(index < entries.length);
+
+        if (index === 1) {
+          dictionary.delete(addedEntry[0]);
+        }
+
+        const [expectedKey, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      };
+      const removingMethod = methods.create(
+        'removingCallback',
+        removingCallback
+      );
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number>(entries);
+
+      index = 0;
+      dictionary.forEach(addingCallback);
+      assert.strictEqual(index, entries.length + 1);
+      index = 0;
+      dictionary.forEach(addingMethod);
+      assert.strictEqual(index, entries.length + 1);
+
+      index = 0;
+      dictionary.forEach(removingCallback);
+      assert.strictEqual(index, entries.length);
+      index = 0;
+      dictionary.forEach(removingMethod);
+      assert.strictEqual(index, entries.length);
+
       await dbHolder.close(futureDatabase);
     });
 

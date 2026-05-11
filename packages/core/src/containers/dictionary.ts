@@ -1,3 +1,4 @@
+import type { Method } from '../core/method.js';
 import type { Serializable } from '../database/future_database.js';
 import type { SerializableObject } from '../database/serializable_object.js';
 import {
@@ -46,6 +47,19 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
 
   public clear(): void {
     this.impl.clear();
+  }
+
+  // TODO: Add thisArg parameter once Method supports it.
+  public forEach(
+    callback: (
+      value: T,
+      key: string,
+      dictionary: Dictionary<T>
+    ) => void | Method<
+      (value: T, key: string, dictionary: Dictionary<T>) => void
+    >
+  ): void {
+    this.impl.forEach(callback, this);
   }
 
   // TODO: How could we implement `groupBy`? We could implement it as a static
