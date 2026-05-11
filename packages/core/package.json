@@ -38,7 +38,7 @@
   "scripts": {
     "clean": "rimraf out",
     "build": "tsc -b",
-    "test": "tsc -b && node --test out/test/**/*.test.js",
+    "test": "node --test out/test/**/*.test.js",
     "test:stryker": "node --test out/test/**/*.test.js"
   }
 }

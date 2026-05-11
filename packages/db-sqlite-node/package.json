@@ -35,7 +35,7 @@
   "scripts": {
     "clean": "rimraf out",
     "build": "tsc -b",
-    "test": "tsc -b && rimraf db && node --test --expose-gc out/test/**/*.test.js",
+    "test": "rimraf db && node --test --expose-gc out/test/**/*.test.js",
     "test:stryker": "node --test --expose-gc out/test/**/*.test.js"
   },
   "peerDependencies": {

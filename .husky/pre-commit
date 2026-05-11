@@ -19,5 +19,4 @@ npm run lint -s
 echo "Running tests..."
 npm test -s -- -- --test-reporter=dot
 
-rm -f .test_output
 echo "All checks passed. Committing..."
