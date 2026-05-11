@@ -98,6 +98,69 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
+    test('getOrInsert() gets if the dictionary holds the value', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number>([
+        ['hello', 1],
+        ['world', 2],
+      ]);
+
+      assert.strictEqual(dictionary.get('world'), 2);
+      assert.strictEqual(dictionary.getOrInsert('world', 2), 2);
+      assert.strictEqual(dictionary.get('world'), 2);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test("getOrInsert() inserts if the dictionary doesn't hold the value", async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number>([
+        ['hello', 1],
+        ['world', 2],
+      ]);
+
+      assert.strictEqual(dictionary.get('fizz'), undefined);
+      assert.strictEqual(dictionary.getOrInsert('fizz', 3), 3);
+      assert.strictEqual(dictionary.get('fizz'), 3);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('getOrInsert() works with undefined', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number | undefined>([
+        ['hello', 1],
+        ['world', undefined],
+      ]);
+
+      assert.strictEqual(dictionary.get('world'), undefined);
+      assert.strictEqual(dictionary.getOrInsert('world', 2), undefined);
+      assert.strictEqual(dictionary.get('world'), undefined);
+      assert.strictEqual(dictionary.get('fizz'), undefined);
+      assert.strictEqual(dictionary.getOrInsert('fizz', 3), 3);
+      assert.strictEqual(dictionary.get('fizz'), 3);
+
+      await dbHolder.close(futureDatabase);
+    });
+
     test('can iterate over entries via entries()', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);

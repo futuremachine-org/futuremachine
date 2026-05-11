@@ -32,6 +32,14 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
     return this.impl.get(key);
   }
 
+  public getOrInsert(key: string, value: T): T {
+    if (this.has(key)) {
+      return this.get(key)!;
+    }
+    this.set(key, value);
+    return value;
+  }
+
   public set(key: string, value: T): Dictionary<T> {
     this.impl.set(key, value);
     return this;
