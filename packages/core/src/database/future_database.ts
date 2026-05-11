@@ -168,6 +168,7 @@ export interface DictionaryDB<T extends SerializableDB> extends ObjectDB {
   setFacade(facade: Dictionary<Serializable>): void;
   getFacade(): Dictionary<Serializable> | undefined;
 
+  entries(): IteratorObject<[string, T]>;
   get(key: string): T | undefined;
   set(key: string, value: T): void;
   has(key: string): boolean;

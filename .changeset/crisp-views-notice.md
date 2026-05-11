@@ -1,0 +1,7 @@
+---
+'@futuremachine/db-conformance-tests': minor
+'@futuremachine/db-sqlite-node': minor
+'@futuremachine/core': minor
+---
+
+Add entries() to Dictionary.

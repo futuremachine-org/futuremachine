@@ -98,6 +98,34 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
+    test('can iterate over entries via entries()', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const entries: [string, number][] = [
+        ['hello', 1],
+        ['world', 2],
+      ];
+
+      const dictionary = containers.createDictionary<number>(entries);
+
+      let index = 0;
+      for (const [key, value] of dictionary.entries()) {
+        assert.ok(index < entries.length);
+        const [expectedKey, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      }
+
+      await dbHolder.close(futureDatabase);
+    });
+
     test('can be bound to Methods', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);

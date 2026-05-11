@@ -23,6 +23,10 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
     return this.impl;
   }
 
+  public entries(): IteratorObject<[string, T]> {
+    return this.impl.entries();
+  }
+
   public get(key: string): T | undefined {
     return this.impl.get(key);
   }
@@ -43,6 +47,10 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
   public clear(): void {
     this.impl.clear();
   }
+
+  // TODO: How could we implement `groupBy`? We could implement it as a static
+  // method here, but then it wouldn't be a serializable `Method`. We could
+  // place it in the containers api object, but then it wouldn't match ECMA.
 
   // TODO: Add other methods that Map has.
 }
