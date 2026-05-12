@@ -40,6 +40,18 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
     return value;
   }
 
+  public getOrInsertComputed(
+    key: string,
+    callback: ((key: string) => T) | Method<(key: string) => T>
+  ): T {
+    if (this.has(key)) {
+      return this.get(key)!;
+    }
+    const value = callback(key);
+    this.set(key, value);
+    return value;
+  }
+
   public set(key: string, value: T): Dictionary<T> {
     this.impl.set(key, value);
     return this;
@@ -59,13 +71,9 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
 
   // TODO: Add thisArg parameter once Method supports it.
   public forEach(
-    callback: (
-      value: T,
-      key: string,
-      dictionary: Dictionary<T>
-    ) => void | Method<
-      (value: T, key: string, dictionary: Dictionary<T>) => void
-    >
+    callback:
+      | ((value: T, key: string, dictionary: Dictionary<T>) => void)
+      | Method<(value: T, key: string, dictionary: Dictionary<T>) => void>
   ): void {
     this.impl.forEach(callback, this);
   }
