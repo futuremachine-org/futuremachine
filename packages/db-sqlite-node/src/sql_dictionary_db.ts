@@ -104,6 +104,10 @@ export class SQLDictionaryDB<T extends SerializableDB>
     return this.map.keys();
   }
 
+  public values(): IteratorObject<T> {
+    return this.map.values();
+  }
+
   public get(key: string): T | undefined {
     return this.map.get(key);
   }

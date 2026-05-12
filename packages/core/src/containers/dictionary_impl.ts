@@ -32,6 +32,12 @@ export class DictionaryImpl<T extends Serializable> {
     return this.dictionaryDb.keys();
   }
 
+  public values(): IteratorObject<T> {
+    return this.dictionaryDb.values().map((value) => {
+      return deserialize(this.futureMachine, value);
+    });
+  }
+
   public get(key: string): T | undefined {
     // TODO: Should we be deserializing it every time? Or maybe we should keep
     // the deserialized value in a map in the impl?

@@ -36,6 +36,10 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
     return this.impl.keys();
   }
 
+  public values(): IteratorObject<T> {
+    return this.impl.values();
+  }
+
   public get(key: string): T | undefined {
     return this.impl.get(key);
   }

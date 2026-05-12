@@ -461,7 +461,87 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
-    test('can iterate over entries via forEntries()', async (t) => {
+    test('can iterate over values via values()', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const entries: [string, number][] = [
+        ['hello', 1],
+        ['world', 2],
+      ];
+
+      const dictionary = containers.createDictionary<number>(entries);
+
+      let index = 0;
+      for (const value of dictionary.values()) {
+        assert.ok(index < entries.length);
+        const [, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(value, expectedValue);
+      }
+
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('can iterate over values via values() when entries are being added/removed', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const entries: [string, number][] = [
+        ['hello', 1],
+        ['world', 2],
+      ];
+
+      const addedEntry: [string, number] = ['fizz', 3];
+
+      const dictionary = containers.createDictionary<number>(entries);
+
+      let index = 0;
+      for (const value of dictionary.values()) {
+        assert.ok(index < entries.length + 1);
+
+        if (index === 1) {
+          dictionary.set(addedEntry[0], addedEntry[1]);
+        }
+
+        const [, expectedValue] =
+          index < entries.length ? entries[index]! : addedEntry;
+        index++;
+
+        assert.strictEqual(value, expectedValue);
+      }
+      assert.strictEqual(index, entries.length + 1);
+
+      index = 0;
+      for (const value of dictionary.values()) {
+        assert.ok(index < entries.length);
+
+        if (index === 1) {
+          dictionary.delete(addedEntry[0]);
+        }
+
+        const [, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(value, expectedValue);
+      }
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('can iterate over entries via forEach()', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
