@@ -27,6 +27,9 @@ jobs:
       - run: npm run build
       - run: npm test
 
+      # TODO: Temporary workaround to not bump packages to 1.0.0.
+      - run: npx patch-package
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1

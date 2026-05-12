@@ -24,8 +24,7 @@
     "check:versions": "syncpack lint",
     "changeset": "changeset",
     "version": "changeset version && npm i",
-    "release": "changeset publish",
-    "postinstall": "patch-package"
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
