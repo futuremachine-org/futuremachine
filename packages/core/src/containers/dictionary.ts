@@ -28,6 +28,10 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
     return this.impl.entries();
   }
 
+  public keys(): IteratorObject<string> {
+    return this.impl.keys();
+  }
+
   public get(key: string): T | undefined {
     return this.impl.get(key);
   }

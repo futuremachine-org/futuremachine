@@ -285,6 +285,10 @@ class SimpleDictionaryDB<T extends SerializableDB>
     return this.map.entries();
   }
 
+  public keys(): IteratorObject<string> {
+    return this.map.keys();
+  }
+
   public setFacade(facade: Dictionary<Serializable>): void {
     this.dbInstanceId = this.database.getInstanceId();
     this.facade = facade;
