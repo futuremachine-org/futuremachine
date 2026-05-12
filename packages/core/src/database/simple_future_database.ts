@@ -281,6 +281,10 @@ class SimpleDictionaryDB<T extends SerializableDB>
     this.map = new Map(iterable);
   }
 
+  public size(): number {
+    return this.map.size;
+  }
+
   public entries(): IteratorObject<[string, T]> {
     return this.map.entries();
   }

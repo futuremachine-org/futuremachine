@@ -18,6 +18,10 @@ export class DictionaryImpl<T extends Serializable> {
     return this.dictionaryDb;
   }
 
+  public size(): number {
+    return this.dictionaryDb.size();
+  }
+
   public entries(): IteratorObject<[string, T]> {
     return this.dictionaryDb.entries().map(([key, value]) => {
       return [key, deserialize(this.futureMachine, value)];

@@ -92,6 +92,10 @@ export class SQLDictionaryDB<T extends SerializableDB>
     });
   }
 
+  public size(): number {
+    return this.map.size;
+  }
+
   public entries(): IteratorObject<[string, T]> {
     return this.map.entries();
   }

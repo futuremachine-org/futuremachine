@@ -24,6 +24,10 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
     return this.impl;
   }
 
+  public get size(): number {
+    return this.impl.size();
+  }
+
   public entries(): IteratorObject<[string, T]> {
     return this.impl.entries();
   }

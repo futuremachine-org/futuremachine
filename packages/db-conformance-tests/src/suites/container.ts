@@ -77,6 +77,29 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
+    test('size returns the number of entries', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const dictionary = containers.createDictionary<number>();
+
+      dictionary.set('hello', 1);
+      dictionary.set('world', 1);
+      dictionary.set('fizz', 1);
+
+      assert.strictEqual(dictionary.size, 3);
+
+      dictionary.delete('world');
+
+      assert.strictEqual(dictionary.size, 2);
+
+      await dbHolder.close(futureDatabase);
+    });
+
     test('can be constructed with an iterable', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
