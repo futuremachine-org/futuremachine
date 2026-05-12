@@ -24,7 +24,8 @@
     "check:versions": "syncpack lint",
     "changeset": "changeset",
     "version": "changeset version && npm i",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -36,6 +37,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",
+    "patch-package": "^8.0.1",
     "prettier": "^3.8.1",
     "prettier-plugin-organize-imports": "^4.3.0",
     "rimraf": "^6.1.3",
