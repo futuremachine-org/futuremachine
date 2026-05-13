@@ -229,7 +229,7 @@ export default (testSettings: TestSettings) => {
         const method = methods.create(
           'My Method',
           (value1: number, value2: string): List<[number, string]> => {
-            return containers.createList(value1, value2);
+            return containers.list.create(value1, value2);
           }
         );
 

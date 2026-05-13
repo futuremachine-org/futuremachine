@@ -33,7 +33,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>();
+      const dictionary = containers.dictionary.create<number>();
 
       const key1 = 'Hello';
       const value1 = 1234;
@@ -85,7 +85,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>();
+      const dictionary = containers.dictionary.create<number>();
 
       dictionary.set('hello', 1);
       dictionary.set('world', 1);
@@ -108,7 +108,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>([
+      const dictionary = containers.dictionary.create<number>([
         ['hello', 1],
         ['world', 2],
       ]);
@@ -129,7 +129,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>([
+      const dictionary = containers.dictionary.create<number>([
         ['hello', 1],
         ['world', 2],
       ]);
@@ -149,7 +149,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>([
+      const dictionary = containers.dictionary.create<number>([
         ['hello', 1],
         ['world', 2],
       ]);
@@ -169,7 +169,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number | undefined>([
+      const dictionary = containers.dictionary.create<number | undefined>([
         ['hello', 1],
         ['world', undefined],
       ]);
@@ -198,7 +198,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>([
+      const dictionary = containers.dictionary.create<number>([
         ['hello', 1],
         ['world', 2],
       ]);
@@ -231,7 +231,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>([
+      const dictionary = containers.dictionary.create<number>([
         ['hello', 1],
         ['world', 2],
       ]);
@@ -265,7 +265,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number | undefined>([
+      const dictionary = containers.dictionary.create<number | undefined>([
         ['hello', 1],
         ['world', undefined],
       ]);
@@ -311,7 +311,7 @@ export default (testSettings: TestSettings) => {
         ['world', 2],
       ];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const [key, value] of dictionary) {
@@ -336,15 +336,15 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const entry1 = containers.createList<number[]>(1, 2, 3);
-      const entry2 = containers.createList<number[]>(4, 5);
+      const entry1 = containers.list.create<number[]>(1, 2, 3);
+      const entry2 = containers.list.create<number[]>(4, 5);
 
       const entries: [string, List<number[]>][] = [
         ['hello', entry1],
         ['world', entry2],
       ];
 
-      const dictionary = containers.createDictionary<List<number[]>>(entries);
+      const dictionary = containers.dictionary.create<List<number[]>>(entries);
 
       let index = 0;
       for (const [key, value] of dictionary) {
@@ -376,7 +376,7 @@ export default (testSettings: TestSettings) => {
 
       const addedEntry: [string, number] = ['fizz', 3];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const [key, value] of dictionary) {
@@ -427,7 +427,7 @@ export default (testSettings: TestSettings) => {
         ['world', 2],
       ];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const [key, value] of dictionary.entries()) {
@@ -452,15 +452,15 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const entry1 = containers.createList<number[]>(1, 2, 3);
-      const entry2 = containers.createList<number[]>(4, 5);
+      const entry1 = containers.list.create<number[]>(1, 2, 3);
+      const entry2 = containers.list.create<number[]>(4, 5);
 
       const entries: [string, List<number[]>][] = [
         ['hello', entry1],
         ['world', entry2],
       ];
 
-      const dictionary = containers.createDictionary<List<number[]>>(entries);
+      const dictionary = containers.dictionary.create<List<number[]>>(entries);
 
       let index = 0;
       for (const [key, value] of dictionary.entries()) {
@@ -492,7 +492,7 @@ export default (testSettings: TestSettings) => {
 
       const addedEntry: [string, number] = ['fizz', 3];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const [key, value] of dictionary.entries()) {
@@ -543,7 +543,7 @@ export default (testSettings: TestSettings) => {
         ['world', 2],
       ];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const key of dictionary.keys()) {
@@ -574,7 +574,7 @@ export default (testSettings: TestSettings) => {
 
       const addedEntry: [string, number] = ['fizz', 3];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const key of dictionary.keys()) {
@@ -623,7 +623,7 @@ export default (testSettings: TestSettings) => {
         ['world', 2],
       ];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const value of dictionary.values()) {
@@ -647,15 +647,15 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const entry1 = containers.createList<number[]>(1, 2, 3);
-      const entry2 = containers.createList<number[]>(4, 5);
+      const entry1 = containers.list.create<number[]>(1, 2, 3);
+      const entry2 = containers.list.create<number[]>(4, 5);
 
       const entries: [string, List<number[]>][] = [
         ['hello', entry1],
         ['world', entry2],
       ];
 
-      const dictionary = containers.createDictionary<List<number[]>>(entries);
+      const dictionary = containers.dictionary.create<List<number[]>>(entries);
 
       let index = 0;
       for (const value of dictionary.values()) {
@@ -686,7 +686,7 @@ export default (testSettings: TestSettings) => {
 
       const addedEntry: [string, number] = ['fizz', 3];
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       let index = 0;
       for (const value of dictionary.values()) {
@@ -752,7 +752,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       index = 0;
       dictionary.forEach(callback);
@@ -824,7 +824,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const dictionary = containers.createDictionary<number>(entries);
+      const dictionary = containers.dictionary.create<number>(entries);
 
       index = 0;
       dictionary.forEach(addingCallback);
@@ -858,7 +858,7 @@ export default (testSettings: TestSettings) => {
 
       const futureMachine = methods.build();
 
-      const dictionary = containers.createDictionary<number>();
+      const dictionary = containers.dictionary.create<number>();
 
       const { future, resolve } = futureMachine.withResolvers<string>();
 
@@ -909,7 +909,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<string>();
         futureId = id;
 
-        const dictionary = containers.createDictionary<number>();
+        const dictionary = containers.dictionary.create<number>();
         dictionary.set(key, value);
 
         future.next(method.bindArgs(dictionary));
@@ -959,7 +959,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const dictionary = containers.createDictionary<Future<number>>();
+        const dictionary = containers.dictionary.create<Future<number>>();
         dictionary.set(key, futureMachine.resolve(value));
 
         future.next(method.bindArgs(dictionary));
@@ -999,7 +999,7 @@ export default (testSettings: TestSettings) => {
       const { future, id } = futureMachine.withResolvers<void>();
 
       const boundMethod = method.bindArgs(1);
-      const original = containers.createDictionary<Method<() => void>>();
+      const original = containers.dictionary.create<Method<() => void>>();
       original.set('key', boundMethod);
 
       future.next(holder.bindArgs(original));
@@ -1030,7 +1030,7 @@ export default (testSettings: TestSettings) => {
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
       const { future } = futureMachine.withResolvers<number>();
-      const original = containers.createDictionary<Future<number>>();
+      const original = containers.dictionary.create<Future<number>>();
       original.set('key', future);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -1072,7 +1072,7 @@ export default (testSettings: TestSettings) => {
       const { future, id } = futureMachine.withResolvers<void>();
 
       const test = createTest();
-      const original = containers.createDictionary<TestClass>();
+      const original = containers.dictionary.create<TestClass>();
       original.set('key', test);
 
       future.next(holder.bindArgs(original));
@@ -1102,8 +1102,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const list = containers.createList<number[]>();
-      const original = containers.createDictionary<List<number[]>>();
+      const list = containers.list.create<number[]>();
+      const original = containers.dictionary.create<List<number[]>>();
       original.set('key', list);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -1134,8 +1134,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createStruct<structType>({ num: 1 });
-      const original = containers.createDictionary<Struct<structType>>();
+      const value = containers.struct.create<structType>({ num: 1 });
+      const original = containers.dictionary.create<Struct<structType>>();
       original.set('key', value);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -1165,8 +1165,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createDictionary<number>();
-      const original = containers.createDictionary<Dictionary<number>>();
+      const value = containers.dictionary.create<number>();
+      const original = containers.dictionary.create<Dictionary<number>>();
       original.set('key', value);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -1224,7 +1224,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const dictionary = containers.createDictionary<Method<() => number>>();
+        const dictionary = containers.dictionary.create<Method<() => number>>();
         dictionary.set(key, thunk.bindArgs(value));
 
         future.next(holder.bindArgs(dictionary));
@@ -1278,7 +1278,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const dictionary = containers.createDictionary<number>();
+        const dictionary = containers.dictionary.create<number>();
         dictionary.set(key, value);
 
         future.next(method.bindArgs(futureMachine.resolve(dictionary)));
@@ -1343,7 +1343,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const dictionary2 = containers.createDictionary<number>();
+        const dictionary2 = containers.dictionary.create<number>();
 
         futureMachine.resolveFutureById(futureId2, dictionary2);
 
@@ -1356,7 +1356,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const dictionary1 = containers.createDictionary<number>();
+        const dictionary1 = containers.dictionary.create<number>();
 
         futureMachine.resolveFutureById(futureId1, dictionary1);
 
@@ -1421,7 +1421,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const dictionary2 = containers.createDictionary<number>();
+        const dictionary2 = containers.dictionary.create<number>();
 
         futureMachine.resolveFutureById(futureId2, dictionary2);
 
@@ -1434,7 +1434,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const dictionary1 = containers.createDictionary<number>();
+        const dictionary1 = containers.dictionary.create<number>();
 
         futureMachine.resolveFutureById(futureId1, dictionary1);
 
@@ -1506,7 +1506,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const dictionary2 = containers.createDictionary<number>();
+        const dictionary2 = containers.dictionary.create<number>();
 
         futureMachine.rejectFutureById(futureId2, dictionary2);
 
@@ -1519,7 +1519,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const dictionary1 = containers.createDictionary<number>();
+        const dictionary1 = containers.dictionary.create<number>();
 
         futureMachine.rejectFutureById(futureId1, dictionary1);
 
@@ -1595,7 +1595,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.withResolvers<number>();
         futureId2 = id2;
 
-        const dictionary = containers.createDictionary<number>();
+        const dictionary = containers.dictionary.create<number>();
 
         future1.next(method.bindArgs(dictionary));
         future2.next(updateMethod.bindArgs(dictionary, key));
@@ -1721,13 +1721,16 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<string>();
         futureId = id;
 
-        const dictionary = containers.createDictionary<containersType>();
+        const dictionary = containers.dictionary.create<containersType>();
 
-        const dictionaryEntry = containers.createDictionary<number>();
+        const dictionaryEntry = containers.dictionary.create<number>();
 
-        const listEntry = containers.createList<string[]>(listItem0, listItem1);
+        const listEntry = containers.list.create<string[]>(
+          listItem0,
+          listItem1
+        );
 
-        const structEntry = containers.createStruct<structType>({
+        const structEntry = containers.struct.create<structType>({
           A: undefined,
           B: structValue2,
         });
@@ -1825,7 +1828,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const dictionary = containers.createDictionary<entryType>();
+        const dictionary = containers.dictionary.create<entryType>();
 
         dictionary.set('number', numberValue);
         dictionary.set('dict', dictionary);
@@ -1879,7 +1882,7 @@ export default (testSettings: TestSettings) => {
         World: number;
       };
 
-      const struct = containers.createStruct<structType>({
+      const struct = containers.struct.create<structType>({
         Hello: undefined,
         World: value2,
       });
@@ -1899,7 +1902,7 @@ export default (testSettings: TestSettings) => {
       const { methods, containers } = createMethodMachine(futureDatabase);
 
       methods.build();
-      const struct = containers.createStruct({});
+      const struct = containers.struct.create({});
 
       // By default is `Struct`.
       assert.strictEqual(struct.constructor, Struct);
@@ -1909,7 +1912,7 @@ export default (testSettings: TestSettings) => {
       assert.strictEqual(struct.constructor, Object);
 
       // Can define it when creating it.
-      const struct2 = containers.createStruct({
+      const struct2 = containers.struct.create({
         constructor: 'Hello',
       });
       assert.strictEqual(struct2.constructor, 'Hello');
@@ -1924,7 +1927,7 @@ export default (testSettings: TestSettings) => {
       const { methods, containers } = createMethodMachine(futureDatabase);
 
       methods.build();
-      const struct = containers.createStruct({
+      const struct = containers.struct.create({
         Hello: 1,
       });
 
@@ -1953,7 +1956,7 @@ export default (testSettings: TestSettings) => {
       assert.ok(struct.hasOwnProperty('World' as 'Hello'));
 
       // Can define it when creating it.
-      const struct2 = containers.createStruct({
+      const struct2 = containers.struct.create({
         hasOwnProperty: 'Hello',
       });
       assert.strictEqual(struct2.hasOwnProperty, 'Hello');
@@ -1970,7 +1973,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const keys = ['Hello', 'World'] as const;
-      const struct = containers.createStruct({
+      const struct = containers.struct.create({
         [keys[0]]: 12,
         [keys[1]]: 34,
       });
@@ -2015,7 +2018,7 @@ export default (testSettings: TestSettings) => {
         World: value2,
       };
 
-      const struct = containers.createStruct<structType>(constructorObject);
+      const struct = containers.struct.create<structType>(constructorObject);
 
       assert.strictEqual(struct.Hello, undefined);
       assert.strictEqual(struct.World, value2);
@@ -2029,7 +2032,7 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
-    test('modifying the object that was passed to the createStruct does not modify the struct it created', async (t) => {
+    test('modifying the object that was passed to the struct.create does not modify the struct it created', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
@@ -2051,7 +2054,7 @@ export default (testSettings: TestSettings) => {
         World: value2_1,
       };
 
-      const struct = containers.createStruct<structType>(structObject);
+      const struct = containers.struct.create<structType>(structObject);
 
       assert.strictEqual(struct.Hello, undefined);
       struct.Hello = value1;
@@ -2085,7 +2088,7 @@ export default (testSettings: TestSettings) => {
 
       const futureMachine = methods.build();
 
-      const struct = containers.createStruct<structType>({
+      const struct = containers.struct.create<structType>({
         Hello: undefined,
         World: value2,
       });
@@ -2140,7 +2143,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<keyof structType>();
         futureId = id;
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           Hello: undefined,
           World: value2,
         });
@@ -2195,7 +2198,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           Hello: futureMachine.resolve(value),
         });
 
@@ -2236,7 +2239,7 @@ export default (testSettings: TestSettings) => {
       const { future, id } = futureMachine.withResolvers<void>();
 
       const boundMethod = method.bindArgs(1);
-      const original = containers.createStruct<structType>({
+      const original = containers.struct.create<structType>({
         boundMethod,
       });
 
@@ -2269,7 +2272,7 @@ export default (testSettings: TestSettings) => {
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
       const { future } = futureMachine.withResolvers<number>();
-      const original = containers.createStruct({
+      const original = containers.struct.create({
         future,
       });
 
@@ -2313,7 +2316,7 @@ export default (testSettings: TestSettings) => {
       const { future, id } = futureMachine.withResolvers<void>();
 
       const test = createTest();
-      const original = containers.createStruct<structType>({
+      const original = containers.struct.create<structType>({
         test,
       });
 
@@ -2345,8 +2348,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const list = containers.createList<number[]>();
-      const original = containers.createStruct<structType>({
+      const list = containers.list.create<number[]>();
+      const original = containers.struct.create<structType>({
         list,
       });
 
@@ -2380,8 +2383,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createStruct<structType>({ num: 1 });
-      const original = containers.createStruct<structHolderType>({ value });
+      const value = containers.struct.create<structType>({ num: 1 });
+      const original = containers.struct.create<structHolderType>({ value });
 
       holdingFuture.next(holder.bindArgs(original));
 
@@ -2411,8 +2414,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createDictionary<number>();
-      const original = containers.createStruct<structType>({ value });
+      const value = containers.dictionary.create<number>();
+      const original = containers.struct.create<structType>({ value });
 
       holdingFuture.next(holder.bindArgs(original));
 
@@ -2472,7 +2475,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           Hello: thunk.bindArgs(value),
         });
 
@@ -2530,7 +2533,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           Hello: undefined,
           World: value2,
         });
@@ -2600,7 +2603,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const struct2 = containers.createStruct<structType>({
+        const struct2 = containers.struct.create<structType>({
           Hello: undefined,
           World: value2_2,
         });
@@ -2614,7 +2617,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const struct1 = containers.createStruct<structType>({
+        const struct1 = containers.struct.create<structType>({
           Hello: undefined,
           World: value1_2,
         });
@@ -2684,7 +2687,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const struct2 = containers.createStruct<structType>({
+        const struct2 = containers.struct.create<structType>({
           Hello: undefined,
           World: value2_2,
         });
@@ -2698,7 +2701,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const struct1 = containers.createStruct<structType>({
+        const struct1 = containers.struct.create<structType>({
           Hello: undefined,
           World: value1_2,
         });
@@ -2775,7 +2778,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const struct2 = containers.createStruct<structType>({
+        const struct2 = containers.struct.create<structType>({
           Hello: undefined,
           World: value2_2,
         });
@@ -2789,7 +2792,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const struct1 = containers.createStruct<structType>({
+        const struct1 = containers.struct.create<structType>({
           Hello: undefined,
           World: value1_2,
         });
@@ -2877,7 +2880,7 @@ export default (testSettings: TestSettings) => {
           futureMachine.withResolvers<number>();
         futureId2 = id2;
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           Hello: undefined,
           World: value2,
         });
@@ -3007,18 +3010,21 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<string>();
         futureId = id;
 
-        const dictionaryEntry = containers.createDictionary<number>();
+        const dictionaryEntry = containers.dictionary.create<number>();
 
-        const listEntry = containers.createList<string[]>(listItem0, listItem1);
+        const listEntry = containers.list.create<string[]>(
+          listItem0,
+          listItem1
+        );
 
-        const structEntry = containers.createStruct<entryStructType>({
+        const structEntry = containers.struct.create<entryStructType>({
           A: undefined,
           B: structValue2,
         });
 
         const entityEntry = createTest();
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           [parentDictKey]: dictionaryEntry,
           [parentListKey]: listEntry,
           [parentStructKey]: structEntry,
@@ -3105,7 +3111,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const struct = containers.createStruct<structType>({
+        const struct = containers.struct.create<structType>({
           Hello: undefined,
         });
         struct.Hello = struct;
@@ -3139,7 +3145,7 @@ export default (testSettings: TestSettings) => {
 
       methods.build();
 
-      const list = containers.createList<number[]>();
+      const list = containers.list.create<number[]>();
 
       const elements = [1234, 88, 438, 574];
       list.push(...elements);
@@ -3171,7 +3177,7 @@ export default (testSettings: TestSettings) => {
 
       const elements = [1234, 88, 438, 574];
       const elementsCopy = [...elements];
-      const list = containers.createList<number[]>(...elementsCopy);
+      const list = containers.list.create<number[]>(...elementsCopy);
 
       assert.strictEqual(list.length, elements.length);
       assert.deepStrictEqual([...list], elements);
@@ -3196,7 +3202,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const elements = [1234, 88, 438, 574];
-      const list = containers.createList<number[]>(...elements);
+      const list = containers.list.create<number[]>(...elements);
 
       assert.deepStrictEqual([...list], elements);
 
@@ -3217,7 +3223,7 @@ export default (testSettings: TestSettings) => {
       const elements: [string, number] = ['Hello', 123];
       // TODO: Should we have a separate function called createTuple that will
       // let us pass in the actual array?
-      const list = containers.createList(...elements);
+      const list = containers.list.create(...elements);
 
       const element0: string = list.at(0);
       const element1: number = list.at(1);
@@ -3237,7 +3243,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const elements = [1234, 88, 438, 574];
-      const list = containers.createList<number[]>(...elements);
+      const list = containers.list.create<number[]>(...elements);
 
       const mapFunc = (num: number) => num.toString();
 
@@ -3261,7 +3267,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const elements = [1234, 88, 438, 574];
-      const list = containers.createList<number[]>(...elements);
+      const list = containers.list.create<number[]>(...elements);
 
       const test = list.map(mapMethod);
 
@@ -3279,7 +3285,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const elements = [1234, 88, 438, 574];
-      const list = containers.createList<number[]>(...elements);
+      const list = containers.list.create<number[]>(...elements);
 
       const newValues = [999, 102];
 
@@ -3312,7 +3318,7 @@ export default (testSettings: TestSettings) => {
 
       const futureMachine = methods.build();
 
-      const list = containers.createList<number[]>();
+      const list = containers.list.create<number[]>();
 
       const { future, resolve } = futureMachine.withResolvers<number>();
 
@@ -3362,7 +3368,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<number>();
         futureId = id;
 
-        const list = containers.createList<number[]>();
+        const list = containers.list.create<number[]>();
         list.push(...elements);
 
         future.next(method.bindArgs(list));
@@ -3410,7 +3416,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const list = containers.createList<Future<number>[]>(
+        const list = containers.list.create<Future<number>[]>(
           futureMachine.resolve(value)
         );
 
@@ -3451,7 +3457,7 @@ export default (testSettings: TestSettings) => {
       const { future, id } = futureMachine.withResolvers<void>();
 
       const boundMethod = method.bindArgs(1);
-      const original = containers.createList<listType>(boundMethod);
+      const original = containers.list.create<listType>(boundMethod);
 
       future.next(holder.bindArgs(original));
 
@@ -3482,7 +3488,7 @@ export default (testSettings: TestSettings) => {
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
       const { future } = futureMachine.withResolvers<number>();
-      const original = containers.createList<listType>(future);
+      const original = containers.list.create<listType>(future);
 
       holdingFuture.next(holder.bindArgs(original));
 
@@ -3524,7 +3530,7 @@ export default (testSettings: TestSettings) => {
       const { future, id } = futureMachine.withResolvers<void>();
 
       const test = createTest();
-      const original = containers.createList<listType>(test);
+      const original = containers.list.create<listType>(test);
 
       future.next(holder.bindArgs(original));
 
@@ -3554,8 +3560,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const list = containers.createList<number[]>();
-      const original = containers.createList<listType>(list);
+      const list = containers.list.create<number[]>();
+      const original = containers.list.create<listType>(list);
 
       holdingFuture.next(holder.bindArgs(original));
 
@@ -3587,8 +3593,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createStruct<structType>({ num: 1 });
-      const original = containers.createList<listType>(value);
+      const value = containers.struct.create<structType>({ num: 1 });
+      const original = containers.list.create<listType>(value);
 
       holdingFuture.next(holder.bindArgs(original));
 
@@ -3618,8 +3624,8 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createDictionary<number>();
-      const original = containers.createList<listType>(value);
+      const value = containers.dictionary.create<number>();
+      const original = containers.list.create<listType>(value);
 
       holdingFuture.next(holder.bindArgs(original));
 
@@ -3674,7 +3680,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const list = containers.createList<Method<() => number>[]>(
+        const list = containers.list.create<Method<() => number>[]>(
           thunk.bindArgs(value)
         );
 
@@ -3727,7 +3733,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const list = containers.createList<number[]>();
+        const list = containers.list.create<number[]>();
         list.push(...elements);
 
         future.next(method.bindArgs(futureMachine.resolve(list)));
@@ -3788,7 +3794,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const list2 = containers.createList<number[]>();
+        const list2 = containers.list.create<number[]>();
 
         futureMachine.resolveFutureById(futureId2, list2);
 
@@ -3801,7 +3807,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const list1 = containers.createList<number[]>();
+        const list1 = containers.list.create<number[]>();
 
         futureMachine.resolveFutureById(futureId1, list1);
 
@@ -3858,7 +3864,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const list2 = containers.createList<number[]>();
+        const list2 = containers.list.create<number[]>();
 
         futureMachine.resolveFutureById(futureId2, list2);
 
@@ -3871,7 +3877,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const list1 = containers.createList<number[]>();
+        const list1 = containers.list.create<number[]>();
 
         futureMachine.resolveFutureById(futureId1, list1);
 
@@ -3933,7 +3939,7 @@ export default (testSettings: TestSettings) => {
       {
         const { containers, futureDatabase, futureMachine } =
           await createMethods();
-        const list2 = containers.createList<number[]>();
+        const list2 = containers.list.create<number[]>();
 
         futureMachine.rejectFutureById(futureId2, list2);
 
@@ -3946,7 +3952,7 @@ export default (testSettings: TestSettings) => {
         const { containers, futureDatabase, futureMachine, promise } =
           await createMethods();
 
-        const list1 = containers.createList<number[]>();
+        const list1 = containers.list.create<number[]>();
 
         futureMachine.rejectFutureById(futureId1, list1);
 
@@ -4061,13 +4067,16 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<string>();
         futureId = id;
 
-        const list = containers.createList<containersType[]>();
+        const list = containers.list.create<containersType[]>();
 
-        const dictionaryEntry = containers.createDictionary<number>();
+        const dictionaryEntry = containers.dictionary.create<number>();
 
-        const listEntry = containers.createList<string[]>(listItem0, listItem1);
+        const listEntry = containers.list.create<string[]>(
+          listItem0,
+          listItem1
+        );
 
-        const structEntry = containers.createStruct<structType>({
+        const structEntry = containers.struct.create<structType>({
           A: undefined,
           B: structValue2,
         });
@@ -4148,7 +4157,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const list = containers.createList<listType[]>();
+        const list = containers.list.create<listType[]>();
         list.push(list);
 
         future.next(method.bindArgs(list));
@@ -4759,7 +4768,7 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const list = containers.createList<number[]>();
+      const list = containers.list.create<number[]>();
       const original = createTest(list);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -4808,7 +4817,7 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createStruct<structType>({ num: 1 });
+      const value = containers.struct.create<structType>({ num: 1 });
       const original = createTest(value);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -4855,7 +4864,7 @@ export default (testSettings: TestSettings) => {
 
       const { future: holdingFuture, id } = futureMachine.withResolvers<void>();
 
-      const value = containers.createDictionary<number>();
+      const value = containers.dictionary.create<number>();
       const original = createTest(value);
 
       holdingFuture.next(holder.bindArgs(original));
@@ -5022,7 +5031,7 @@ export default (testSettings: TestSettings) => {
         const { future, id } = futureMachine.withResolvers<void>();
         futureId = id;
 
-        const instance = createTest(containers.createList(...value1));
+        const instance = createTest(containers.list.create(...value1));
         future.next(method.bindArgs(instance));
 
         await dbHolder.close(futureDatabase);
@@ -6023,11 +6032,14 @@ export default (testSettings: TestSettings) => {
 
         const entity = createTest();
 
-        const dictionaryEntry = containers.createDictionary<number>();
+        const dictionaryEntry = containers.dictionary.create<number>();
 
-        const listEntry = containers.createList<string[]>(listItem0, listItem1);
+        const listEntry = containers.list.create<string[]>(
+          listItem0,
+          listItem1
+        );
 
-        const structEntry = containers.createStruct<structType>({
+        const structEntry = containers.struct.create<structType>({
           A: undefined,
           B: structValue2,
         });

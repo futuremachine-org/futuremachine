@@ -502,7 +502,7 @@ export default (testSettings: TestSettings) => {
       const message = 'Hello world';
       const cause = 'Fizz buzz';
       const exception: AggregateException = exceptions.createAggregateException(
-        containers.createList(),
+        containers.list.create(),
         message,
         {
           cause,
@@ -566,7 +566,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const exception: AggregateException = createCustomException(
-        containers.createList()
+        containers.list.create()
       );
 
       assert.strictEqual(exception.name, name);
@@ -626,7 +626,7 @@ export default (testSettings: TestSettings) => {
         // Add a frame to the stack;
         function createAggregateException() {
           return exceptions.createAggregateException(
-            containers.createList(),
+            containers.list.create(),
             message,
             { cause }
           );
@@ -665,7 +665,7 @@ export default (testSettings: TestSettings) => {
       methods.build();
 
       const exception: Exception = exceptions.createAggregateException(
-        containers.createList()
+        containers.list.create()
       );
       assert.doesNotMatch(exception.stack, /createAggregateException/);
       // TODO: This should be true when the AggregateException is made by us:

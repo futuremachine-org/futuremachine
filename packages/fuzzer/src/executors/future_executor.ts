@@ -58,7 +58,7 @@ class FutureExecutorContext
   ) => (...args: B) => R;
 
   public createTestObject(): TestObject {
-    return this.get('methodMachine').containers.createStruct({
+    return this.get('methodMachine').containers.struct.create({
       value: 0,
     });
   }

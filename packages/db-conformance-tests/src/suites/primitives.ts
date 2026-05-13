@@ -90,7 +90,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const dictionary = containers.createDictionary<undefined>();
+          const dictionary = containers.dictionary.create<undefined>();
           dictionary.set(key, undefined);
 
           future.next(method.bindArgs(dictionary));
@@ -141,7 +141,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const struct = containers.createStruct<structType>({
+          const struct = containers.struct.create<structType>({
             Hello: undefined,
           });
 
@@ -186,7 +186,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const list = containers.createList<undefined[]>();
+          const list = containers.list.create<undefined[]>();
           list.push(undefined);
 
           future.next(method.bindArgs(list));
@@ -366,7 +366,7 @@ export default (testSettings: TestSettings) => {
           // List.
           futureMachine
             .allSettled(
-              containers.createList(futureMachine.try(thrower), future)
+              containers.list.create(futureMachine.try(thrower), future)
             )
             .next(resolver);
           await dbHolder.close(futureDatabase);
@@ -456,7 +456,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const dictionary = containers.createDictionary<null>();
+          const dictionary = containers.dictionary.create<null>();
           dictionary.set(key, null);
 
           future.next(method.bindArgs(dictionary));
@@ -507,7 +507,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const struct = containers.createStruct<structType>({
+          const struct = containers.struct.create<structType>({
             Hello: null,
           });
 
@@ -551,7 +551,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const list = containers.createList<null[]>();
+          const list = containers.list.create<null[]>();
           list.push(null);
 
           future.next(method.bindArgs(list));
@@ -730,7 +730,7 @@ export default (testSettings: TestSettings) => {
           // List.
           futureMachine
             .allSettled(
-              containers.createList(futureMachine.try(thrower), future)
+              containers.list.create(futureMachine.try(thrower), future)
             )
             .next(resolver);
           await dbHolder.close(futureDatabase);
@@ -820,7 +820,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const dictionary = containers.createDictionary<boolean>();
+          const dictionary = containers.dictionary.create<boolean>();
           dictionary.set(key, true);
 
           future.next(method.bindArgs(dictionary));
@@ -871,7 +871,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const struct = containers.createStruct<structType>({
+          const struct = containers.struct.create<structType>({
             Hello: true,
           });
 
@@ -915,7 +915,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const list = containers.createList<boolean[]>();
+          const list = containers.list.create<boolean[]>();
           list.push(true);
 
           future.next(method.bindArgs(list));
@@ -1094,7 +1094,7 @@ export default (testSettings: TestSettings) => {
           // List.
           futureMachine
             .allSettled(
-              containers.createList(futureMachine.try(thrower), future)
+              containers.list.create(futureMachine.try(thrower), future)
             )
             .next(resolver);
           await dbHolder.close(futureDatabase);
@@ -1188,7 +1188,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const dictionary = containers.createDictionary<number>();
+          const dictionary = containers.dictionary.create<number>();
           dictionary.set(key, value);
 
           future.next(method.bindArgs(dictionary));
@@ -1241,7 +1241,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const struct = containers.createStruct<structType>({
+          const struct = containers.struct.create<structType>({
             Hello: value,
           });
 
@@ -1287,7 +1287,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const list = containers.createList<number[]>();
+          const list = containers.list.create<number[]>();
           list.push(value);
 
           future.next(method.bindArgs(list));
@@ -1496,7 +1496,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const dictionary = containers.createDictionary<bigint>();
+          const dictionary = containers.dictionary.create<bigint>();
           dictionary.set(key, value);
 
           future.next(method.bindArgs(dictionary));
@@ -1549,7 +1549,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const struct = containers.createStruct<structType>({
+          const struct = containers.struct.create<structType>({
             Hello: value,
           });
 
@@ -1595,7 +1595,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const list = containers.createList<bigint[]>();
+          const list = containers.list.create<bigint[]>();
           list.push(value);
 
           future.next(method.bindArgs(list));
@@ -1804,7 +1804,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const dictionary = containers.createDictionary<string>();
+          const dictionary = containers.dictionary.create<string>();
           dictionary.set(key, value);
 
           future.next(method.bindArgs(dictionary));
@@ -1857,7 +1857,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const struct = containers.createStruct<structType>({
+          const struct = containers.struct.create<structType>({
             Hello: value,
           });
 
@@ -1903,7 +1903,7 @@ export default (testSettings: TestSettings) => {
           const { future, id } = futureMachine.withResolvers<void>();
           futureId = id;
 
-          const list = containers.createList<string[]>();
+          const list = containers.list.create<string[]>();
           list.push(value);
 
           future.next(method.bindArgs(list));

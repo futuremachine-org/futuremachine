@@ -213,7 +213,7 @@ describe('SQLFutureDatabase', () => {
         const { futureDatabase, futureMachine, containers, method } =
           await createMethods();
 
-        const list = containers.createList(...values);
+        const list = containers.list.create(...values);
         const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
 
         f1.next(method.bindArgs(list));
@@ -283,7 +283,7 @@ describe('SQLFutureDatabase', () => {
         const { futureDatabase, futureMachine, containers, method1, method2 } =
           await createMethods();
 
-        const list = containers.createList(...values);
+        const list = containers.list.create(...values);
         const { future: f1, id: id1 } = futureMachine.withResolvers<void>();
         futureId1 = id1;
 
@@ -573,7 +573,7 @@ describe('SQLFutureDatabase', () => {
         const { methods, containers } = createMethodMachine(futureDatabase);
         methods.build();
 
-        containers.createDictionary();
+        containers.dictionary.create();
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
       });
 
@@ -598,7 +598,7 @@ describe('SQLFutureDatabase', () => {
 
         const futureMachine = methods.build();
 
-        const obj = containers.createDictionary();
+        const obj = containers.dictionary.create();
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
         const { future, resolve: rF } = futureMachine.withResolvers<void>();
@@ -637,7 +637,7 @@ describe('SQLFutureDatabase', () => {
         let futureId: FutureId<void>;
 
         await (async () => {
-          const obj = containers.createDictionary<number>();
+          const obj = containers.dictionary.create<number>();
           obj.set('key1', 2);
           assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
@@ -699,7 +699,7 @@ describe('SQLFutureDatabase', () => {
         let futureId: FutureId<void>;
 
         await (async () => {
-          const obj = containers.createDictionary<number>();
+          const obj = containers.dictionary.create<number>();
           obj.set('key1', 2);
           assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
@@ -836,7 +836,7 @@ describe('SQLFutureDatabase', () => {
 
         const { future } = futureMachine.withResolvers<void>();
 
-        const holder = containers.createDictionary<HolderMethod>();
+        const holder = containers.dictionary.create<HolderMethod>();
         const boundMethod = method.bindArgs(holder);
         holder.set('boundMethod', boundMethod);
 
@@ -880,7 +880,7 @@ describe('SQLFutureDatabase', () => {
           futureId = id;
           await futureDatabase.flush();
 
-          struct1 = containers.createStruct({
+          struct1 = containers.struct.create({
             unique_world: 3,
           });
           future.next(method.bindArgs(struct1));

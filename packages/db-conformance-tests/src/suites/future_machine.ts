@@ -2210,14 +2210,14 @@ export default (testSettings: TestSettings) => {
             testClassFuture,
           ] as const);
 
-          const dictionaryEntry = containers.createDictionary<number>();
+          const dictionaryEntry = containers.dictionary.create<number>();
 
-          const listEntry = containers.createList<string[]>(
+          const listEntry = containers.list.create<string[]>(
             listItem0,
             listItem1
           );
 
-          const structEntry = containers.createStruct<structType>({
+          const structEntry = containers.struct.create<structType>({
             A: undefined,
             B: structValue2,
           });

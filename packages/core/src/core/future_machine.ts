@@ -370,15 +370,21 @@ function createFutureMachine(
 }
 
 export type Containers = Struct<{
-  createDictionary: Method<
-    <T extends Serializable>(
-      iterable?: Iterable<readonly [string, T]> | null
-    ) => Dictionary<T>
-  >;
-  createStruct: Method<
-    <T extends Record<string, Serializable>>(obj: T) => Struct<T>
-  >;
-  createList: Method<<T extends Serializable[]>(...elements: T) => List<T>>;
+  dictionary: Struct<{
+    create: Method<
+      <T extends Serializable>(
+        iterable?: Iterable<readonly [string, T]> | null
+      ) => Dictionary<T>
+    >;
+  }>;
+  struct: Struct<{
+    create: Method<
+      <T extends Record<string, Serializable>>(obj: T) => Struct<T>
+    >;
+  }>;
+  list: Struct<{
+    create: Method<<T extends Serializable[]>(...elements: T) => List<T>>;
+  }>;
 }>;
 
 function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
@@ -407,9 +413,15 @@ function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
     }
   );
   return futureMachineImpl.createStruct({
-    createDictionary,
-    createStruct,
-    createList,
+    dictionary: futureMachineImpl.createStruct({
+      create: createDictionary,
+    }),
+    struct: futureMachineImpl.createStruct({
+      create: createStruct,
+    }),
+    list: futureMachineImpl.createStruct({
+      create: createList,
+    }),
   });
 }
 
