@@ -328,6 +328,39 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
+    test('can iterate over container entries via entries()', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const entry1 = containers.createList<number[]>(1, 2, 3);
+      const entry2 = containers.createList<number[]>(4, 5);
+
+      const entries: [string, List<number[]>][] = [
+        ['hello', entry1],
+        ['world', entry2],
+      ];
+
+      const dictionary = containers.createDictionary<List<number[]>>(entries);
+
+      let index = 0;
+      for (const [key, value] of dictionary.entries()) {
+        assert.ok(index < entries.length);
+        const [expectedKey, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(key, expectedKey);
+        assert.strictEqual(value, expectedValue);
+      }
+
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
     test('can iterate over entries via entries() when entries are being added/removed', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
@@ -475,6 +508,38 @@ export default (testSettings: TestSettings) => {
       ];
 
       const dictionary = containers.createDictionary<number>(entries);
+
+      let index = 0;
+      for (const value of dictionary.values()) {
+        assert.ok(index < entries.length);
+        const [, expectedValue] = entries[index]!;
+        index++;
+
+        assert.strictEqual(value, expectedValue);
+      }
+
+      assert.strictEqual(index, entries.length);
+
+      await dbHolder.close(futureDatabase);
+    });
+
+    test('can iterate over container values via values()', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      methods.build();
+
+      const entry1 = containers.createList<number[]>(1, 2, 3);
+      const entry2 = containers.createList<number[]>(4, 5);
+
+      const entries: [string, List<number[]>][] = [
+        ['hello', entry1],
+        ['world', entry2],
+      ];
+
+      const dictionary = containers.createDictionary<List<number[]>>(entries);
 
       let index = 0;
       for (const value of dictionary.values()) {
