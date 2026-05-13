@@ -1,6 +1,6 @@
 {
   "name": "@futuremachine/db-conformance-tests",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
   "description": "Verifies a @futuremachine/core FutureDatabase implementation.",
@@ -40,9 +40,9 @@
     "test": "node --test out/test/**/*.test.js"
   },
   "peerDependencies": {
-    "@futuremachine/core": "~0.1.3"
+    "@futuremachine/core": "~0.2.0"
   },
   "devDependencies": {
-    "@futuremachine/core": "0.1.3"
+    "@futuremachine/core": "0.2.0"
   }
 }
