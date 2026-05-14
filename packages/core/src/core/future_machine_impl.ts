@@ -783,6 +783,20 @@ export class FutureMachineImpl {
     return dictionary;
   }
 
+  public dictionaryGroupBy<T extends Serializable>(
+    items: Iterable<T>,
+    callback:
+      | ((item: T, index: number) => string)
+      | Method<(item: T, index: number) => string>
+  ): Dictionary<List<T[]>> {
+    const groups = Map.groupBy(items, callback);
+    return this.createDictionary(
+      groups
+        .entries()
+        .map(([key, values]) => [key, this.createList(values)] as const)
+    );
+  }
+
   // TODO: If T is a Struct, we should unwrap it. This would let us get rid of
   // `RawStruct`.
   public createStruct<T extends Record<string, Serializable>>(

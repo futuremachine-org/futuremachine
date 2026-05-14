@@ -376,6 +376,14 @@ export type Containers = Struct<{
         iterable?: Iterable<readonly [string, T]> | null
       ) => Dictionary<T>
     >;
+    groupBy: Method<
+      <T extends Serializable>(
+        items: Iterable<T>,
+        callback:
+          | ((item: T, index: number) => string)
+          | Method<(item: T, index: number) => string>
+      ) => Dictionary<List<T[]>>
+    >;
   }>;
   struct: Struct<{
     create: Method<
@@ -389,8 +397,8 @@ export type Containers = Struct<{
 
 function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
   // TODO: Should take an iterable to construct the dictionary.
-  const createDictionary = futureMachineImpl.createInternalMethod(
-    'createDictionary',
+  const dictionaryCreate = futureMachineImpl.createInternalMethod(
+    'dictionaryCreate',
     <T extends Serializable>(
       iterable?: Iterable<readonly [string, T]> | null
     ): Dictionary<T> => {
@@ -398,7 +406,19 @@ function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
     }
   );
 
-  const createStruct = futureMachineImpl.createInternalMethod(
+  const dictionaryGroupBy = futureMachineImpl.createInternalMethod(
+    'dictionaryGroupBy',
+    <T extends Serializable>(
+      items: Iterable<T>,
+      callback:
+        | ((item: T, index: number) => string)
+        | Method<(item: T, index: number) => string>
+    ): Dictionary<List<T[]>> => {
+      return futureMachineImpl.dictionaryGroupBy(items, callback);
+    }
+  );
+
+  const structCreate = futureMachineImpl.createInternalMethod(
     'createStruct',
     <T extends Record<string, Serializable>>(obj: T): Struct<T> => {
       return futureMachineImpl.createStruct(obj);
@@ -406,21 +426,22 @@ function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
   );
 
   // TODO: Should this take an array of elements instead? Or an Iterable?
-  const createList = futureMachineImpl.createInternalMethod(
-    'createList',
+  const listCreate = futureMachineImpl.createInternalMethod(
+    'listCreate',
     <T extends Serializable[]>(...elements: T): List<T> => {
       return futureMachineImpl.createList(elements);
     }
   );
   return futureMachineImpl.createStruct({
     dictionary: futureMachineImpl.createStruct({
-      create: createDictionary,
+      create: dictionaryCreate,
+      groupBy: dictionaryGroupBy,
     }),
     struct: futureMachineImpl.createStruct({
-      create: createStruct,
+      create: structCreate,
     }),
     list: futureMachineImpl.createStruct({
-      create: createList,
+      create: listCreate,
     }),
   });
 }

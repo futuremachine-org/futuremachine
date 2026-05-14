@@ -77,6 +77,74 @@ export default (testSettings: TestSettings) => {
       await dbHolder.close(futureDatabase);
     });
 
+    test('can be created by groupBy', async (t) => {
+      const dbHolder = await testSettings.createDbHolder();
+      dbHolder.addCleanup(t);
+      const futureDatabase = await dbHolder.createDbInstance();
+      const { containers, methods } = createMethodMachine(futureDatabase);
+
+      const func = (
+        item: Struct<{ str: string; num: number }>,
+        index: number
+      ) => {
+        return `${item.num}: ${index % 2 === 0}`;
+      };
+
+      const method = methods.create('func', func);
+
+      methods.build();
+
+      const items: Struct<{ str: string; num: number }>[] = [
+        containers.struct.create({ str: 'Hello', num: 10 }),
+        containers.struct.create({ str: 'Hello', num: 20 }),
+        containers.struct.create({ str: 'World', num: 10 }),
+        containers.struct.create({ str: 'World', num: 20 }),
+        containers.struct.create({ str: 'Fizz', num: 10 }),
+        containers.struct.create({ str: 'Fizz', num: 20 }),
+        containers.struct.create({ str: 'Buzz', num: 10 }),
+        containers.struct.create({ str: 'Buzz', num: 20 }),
+      ];
+
+      const expected = Map.groupBy(items, func);
+
+      function assertGroupedCorrectly(
+        actual: Dictionary<
+          List<
+            Struct<{
+              str: string;
+              num: number;
+            }>[]
+          >
+        >
+      ) {
+        const expectedGroups = Array.from(expected);
+        const actualGroups = Array.from(actual);
+        assert.strictEqual(expectedGroups.length, actualGroups.length);
+        for (let i = 0; i < expectedGroups.length; i++) {
+          const [expectedKey, expectedGroup] = expectedGroups[i]!;
+          const [actualKey, actualGroup] = actualGroups[i]!;
+          assert.strictEqual(actualKey, expectedKey);
+          for (let j = 0; j < expectedGroup.length; j++) {
+            const { str: expectedStr, num: expectedNum } = expectedGroup[j]!;
+            const { str: actualStr, num: actualNum } = actualGroup.at(j)!;
+            assert.strictEqual(actualStr, expectedStr);
+            assert.strictEqual(actualNum, expectedNum);
+          }
+        }
+      }
+
+      assertGroupedCorrectly(containers.dictionary.groupBy(items, func));
+      assertGroupedCorrectly(containers.dictionary.groupBy(items, method));
+      assertGroupedCorrectly(
+        containers.dictionary.groupBy(containers.list.create(...items), func)
+      );
+      assertGroupedCorrectly(
+        containers.dictionary.groupBy(containers.list.create(...items), method)
+      );
+
+      await dbHolder.close(futureDatabase);
+    });
+
     test('size returns the number of entries', async (t) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
