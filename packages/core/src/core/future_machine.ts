@@ -369,30 +369,34 @@ function createFuturesAPI(futureMachineImpl: FutureMachineImpl): FuturesAPI {
   });
 }
 
+export type DictionariesAPI = Struct<{
+  create: Method<
+    <T extends Serializable>(
+      iterable?: Iterable<readonly [string, T]> | null
+    ) => Dictionary<T>
+  >;
+  groupBy: Method<
+    <T extends Serializable>(
+      items: Iterable<T>,
+      callback:
+        | ((item: T, index: number) => string)
+        | Method<(item: T, index: number) => string>
+    ) => Dictionary<List<T[]>>
+  >;
+}>;
+
+export type StructsAPI = Struct<{
+  create: Method<<T extends Record<string, Serializable>>(obj: T) => Struct<T>>;
+}>;
+
+export type ListsAPI = Struct<{
+  create: Method<<T extends Serializable[]>(...elements: T) => List<T>>;
+}>;
+
 export type ContainersAPI = Struct<{
-  dictionary: Struct<{
-    create: Method<
-      <T extends Serializable>(
-        iterable?: Iterable<readonly [string, T]> | null
-      ) => Dictionary<T>
-    >;
-    groupBy: Method<
-      <T extends Serializable>(
-        items: Iterable<T>,
-        callback:
-          | ((item: T, index: number) => string)
-          | Method<(item: T, index: number) => string>
-      ) => Dictionary<List<T[]>>
-    >;
-  }>;
-  struct: Struct<{
-    create: Method<
-      <T extends Record<string, Serializable>>(obj: T) => Struct<T>
-    >;
-  }>;
-  list: Struct<{
-    create: Method<<T extends Serializable[]>(...elements: T) => List<T>>;
-  }>;
+  dictionary: DictionariesAPI;
+  struct: StructsAPI;
+  list: ListsAPI;
 }>;
 
 function createContainersAPI(
