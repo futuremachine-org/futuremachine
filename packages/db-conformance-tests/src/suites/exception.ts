@@ -11,7 +11,7 @@ import type {
 } from '@futuremachine/core';
 import {
   AggregateException,
-  createMethodMachine,
+  createFutureMachine,
   Exception,
   SerializableException,
   TypeException,
@@ -24,7 +24,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -42,7 +42,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -64,7 +64,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       type customExceptionState = ExceptionState & {
         customProp: number;
@@ -124,7 +124,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       type customExceptionState = ExceptionState & {
         customProp: number;
@@ -177,16 +177,16 @@ export default (testSettings: TestSettings) => {
 
       async function createMethods() {
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods, exceptions } = createMethodMachine(futureDatabase);
+        const { methods, exceptions } = createFutureMachine(futureDatabase);
 
         const { promise, resolve } = Promise.withResolvers<Exception>();
         const method = methods.create('method', (exception: Exception) => {
           resolve(exception);
         });
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        return { exceptions, futureDatabase, method, futureMachine, promise };
+        return { exceptions, futureDatabase, method, futures, promise };
       }
 
       const message = 'Hello world';
@@ -196,9 +196,9 @@ export default (testSettings: TestSettings) => {
       let futureId: FutureId<void>;
 
       {
-        const { exceptions, futureDatabase, method, futureMachine } =
+        const { exceptions, futureDatabase, method, futures } =
           await createMethods();
-        const { future, id } = futureMachine.withResolvers<void>();
+        const { future, id } = futures.withResolvers<void>();
         futureId = id;
 
         // Add a frame to the stack;
@@ -214,9 +214,8 @@ export default (testSettings: TestSettings) => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
-        futureMachine.resolveFutureById(futureId);
+        const { futureDatabase, futures, promise } = await createMethods();
+        futures.resolveFutureById(futureId);
 
         const exception = await promise;
 
@@ -234,7 +233,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -252,7 +251,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -267,7 +266,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -289,7 +288,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -311,7 +310,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -326,7 +325,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -350,7 +349,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -372,7 +371,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       type customExceptionState = ExceptionState & {
         customProp: number;
@@ -425,16 +424,16 @@ export default (testSettings: TestSettings) => {
 
       async function createMethods() {
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods, exceptions } = createMethodMachine(futureDatabase);
+        const { methods, exceptions } = createFutureMachine(futureDatabase);
 
         const { promise, resolve } = Promise.withResolvers<TypeException>();
         const method = methods.create('method', (exception: TypeException) => {
           resolve(exception);
         });
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        return { exceptions, futureDatabase, method, futureMachine, promise };
+        return { exceptions, futureDatabase, method, futures, promise };
       }
 
       const message = 'Hello world';
@@ -443,9 +442,9 @@ export default (testSettings: TestSettings) => {
       let futureId: FutureId<void>;
 
       {
-        const { exceptions, futureDatabase, method, futureMachine } =
+        const { exceptions, futureDatabase, method, futures } =
           await createMethods();
-        const { future, id } = futureMachine.withResolvers<void>();
+        const { future, id } = futures.withResolvers<void>();
         futureId = id;
 
         // Add a frame to the stack;
@@ -459,9 +458,8 @@ export default (testSettings: TestSettings) => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
-        futureMachine.resolveFutureById(futureId);
+        const { futureDatabase, futures, promise } = await createMethods();
+        futures.resolveFutureById(futureId);
 
         const exception = await promise;
 
@@ -477,7 +475,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -495,7 +493,7 @@ export default (testSettings: TestSettings) => {
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
       const { methods, exceptions, containers } =
-        createMethodMachine(futureDatabase);
+        createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -524,7 +522,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, containers } = createMethodMachine(futureDatabase);
+      const { methods, containers } = createFutureMachine(futureDatabase);
 
       type customExceptionState = AggregateExceptionState & {
         customProp: number;
@@ -584,7 +582,7 @@ export default (testSettings: TestSettings) => {
       async function createMethods() {
         const futureDatabase = await dbHolder.createDbInstance();
         const { methods, exceptions, containers } =
-          createMethodMachine(futureDatabase);
+          createFutureMachine(futureDatabase);
 
         const { promise, resolve } =
           Promise.withResolvers<AggregateException>();
@@ -595,14 +593,14 @@ export default (testSettings: TestSettings) => {
           }
         );
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         return {
           exceptions,
           containers,
           futureDatabase,
           method,
-          futureMachine,
+          futures,
           promise,
         };
       }
@@ -613,14 +611,9 @@ export default (testSettings: TestSettings) => {
       let futureId: FutureId<void>;
 
       {
-        const {
-          exceptions,
-          containers,
-          futureDatabase,
-          method,
-          futureMachine,
-        } = await createMethods();
-        const { future, id } = futureMachine.withResolvers<void>();
+        const { exceptions, containers, futureDatabase, method, futures } =
+          await createMethods();
+        const { future, id } = futures.withResolvers<void>();
         futureId = id;
 
         // Add a frame to the stack;
@@ -638,9 +631,8 @@ export default (testSettings: TestSettings) => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
-        futureMachine.resolveFutureById(futureId);
+        const { futureDatabase, futures, promise } = await createMethods();
+        futures.resolveFutureById(futureId);
 
         const exception = await promise;
 
@@ -660,7 +652,7 @@ export default (testSettings: TestSettings) => {
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
       const { methods, exceptions, containers } =
-        createMethodMachine(futureDatabase);
+        createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -680,7 +672,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -706,7 +698,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       type customExceptionState = ExceptionState & {
         customProp: number;
@@ -762,7 +754,7 @@ export default (testSettings: TestSettings) => {
 
       async function createMethods() {
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods, exceptions } = createMethodMachine(futureDatabase);
+        const { methods, exceptions } = createFutureMachine(futureDatabase);
 
         const { promise, resolve } =
           Promise.withResolvers<SerializableException>();
@@ -773,9 +765,9 @@ export default (testSettings: TestSettings) => {
           }
         );
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        return { exceptions, futureDatabase, method, futureMachine, promise };
+        return { exceptions, futureDatabase, method, futures, promise };
       }
 
       const message = 'Hello world';
@@ -784,9 +776,9 @@ export default (testSettings: TestSettings) => {
       let futureId: FutureId<void>;
 
       {
-        const { exceptions, futureDatabase, method, futureMachine } =
+        const { exceptions, futureDatabase, method, futures } =
           await createMethods();
-        const { future, id } = futureMachine.withResolvers<void>();
+        const { future, id } = futures.withResolvers<void>();
         futureId = id;
 
         // Add a frame to the stack;
@@ -800,9 +792,8 @@ export default (testSettings: TestSettings) => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
-        futureMachine.resolveFutureById(futureId);
+        const { futureDatabase, futures, promise } = await createMethods();
+        futures.resolveFutureById(futureId);
 
         const exception = await promise;
 
@@ -821,7 +812,7 @@ export default (testSettings: TestSettings) => {
       const dbHolder = await testSettings.createDbHolder();
       dbHolder.addCleanup(t);
       const futureDatabase = await dbHolder.createDbInstance();
-      const { methods, exceptions } = createMethodMachine(futureDatabase);
+      const { methods, exceptions } = createFutureMachine(futureDatabase);
 
       methods.build();
 

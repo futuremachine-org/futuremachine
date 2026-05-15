@@ -7,16 +7,16 @@ import type {
   Dictionary,
   FutureFulfilledResult,
   FutureId,
-  FutureMachine,
+  FutureMachineAPI,
+  FuturesAPI,
   FutureSettledResult,
   List,
-  MethodMachine,
   Serializable,
   StateBuilder,
   Struct,
 } from '@futuremachine/core';
 import {
-  createMethodMachine,
+  createFutureMachine,
   Entity,
   SerializableException,
 } from '@futuremachine/core';
@@ -41,24 +41,25 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const methodMachine = createMethodMachine(futureDatabase);
+          const methodMachine = createFutureMachine(futureDatabase);
           const { methods } = methodMachine;
 
-          const { promise, resolve } = Promise.withResolvers<MethodMachine>();
+          const { promise, resolve } =
+            Promise.withResolvers<FutureMachineAPI>();
           const method = methods.create(
             'method',
-            (methodMachine: MethodMachine) => {
+            (methodMachine: FutureMachineAPI) => {
               resolve(methodMachine);
             }
           );
 
-          const futureMachine = methods.build();
+          const futures = methods.build();
 
           return {
             methodMachine,
             futureDatabase,
             method,
-            futureMachine,
+            futures,
             promise,
           };
         }
@@ -66,9 +67,9 @@ export default (testSettings: TestSettings) => {
         let futureId: FutureId<void>;
 
         {
-          const { methodMachine, futureDatabase, method, futureMachine } =
+          const { methodMachine, futureDatabase, method, futures } =
             await createMethods();
-          const { future, id } = futureMachine.withResolvers<void>();
+          const { future, id } = futures.withResolvers<void>();
           futureId = id;
 
           future.next(method.bindArgs(methodMachine));
@@ -76,9 +77,9 @@ export default (testSettings: TestSettings) => {
         }
 
         {
-          const { methodMachine, futureDatabase, futureMachine, promise } =
+          const { methodMachine, futureDatabase, futures, promise } =
             await createMethods();
-          futureMachine.resolveFutureById(futureId);
+          futures.resolveFutureById(futureId);
 
           // TODO: Should we figure out how to make it strictEqual. Likely would
           // need be able to get Structs and other containers by ids.
@@ -92,7 +93,7 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
         // External methods with names of internal method
         methods.create('method', () => {});
@@ -103,7 +104,7 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
         class TestClass extends Entity<Record<string, never>> {}
 
@@ -121,7 +122,7 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
         // External methods with names of internal method
         methods.create('nextFinally', () => {});
@@ -137,10 +138,10 @@ export default (testSettings: TestSettings) => {
         const { method: afterFinally, promise: afterFinallyPromise } =
           createMethod<number>(methods);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const { future, resolve: futureResolve } =
-          futureMachine.withResolvers<number>();
+          futures.withResolvers<number>();
 
         future.finally(onFinally).next(afterFinally);
 
@@ -157,7 +158,7 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
         class TestClass extends Entity<Record<string, never>> {}
 
@@ -187,7 +188,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           // External methods with names of internal method
           const createTestClass = methods.registerEntity(
@@ -213,10 +214,10 @@ export default (testSettings: TestSettings) => {
             }
           );
 
-          const futureMachine = methods.build();
+          const futures = methods.build();
 
           return {
-            futureMachine,
+            futures,
             futureDatabase,
             createTestClass,
             testClassHolder,
@@ -227,16 +228,12 @@ export default (testSettings: TestSettings) => {
         let futureId: FutureId<void>;
 
         {
-          const {
-            futureMachine,
-            futureDatabase,
-            createTestClass,
-            testClassHolder,
-          } = await createMethods();
+          const { futures, futureDatabase, createTestClass, testClassHolder } =
+            await createMethods();
           const testClassInstance = createTestClass();
           assert.ok(testClassInstance instanceof TestClass);
 
-          const { future, id } = futureMachine.withResolvers<void>();
+          const { future, id } = futures.withResolvers<void>();
           futureId = id;
 
           future.next(testClassHolder.bindArgs(testClassInstance));
@@ -245,9 +242,8 @@ export default (testSettings: TestSettings) => {
         }
 
         {
-          const { futureMachine, futureDatabase, promise } =
-            await createMethods();
-          futureMachine.resolveFutureById(futureId);
+          const { futures, futureDatabase, promise } = await createMethods();
+          futures.resolveFutureById(futureId);
 
           const testClassInstance = await promise;
 
@@ -260,7 +256,7 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
         class TestClass extends Entity<Record<string, never>> {}
 
@@ -284,7 +280,7 @@ export default (testSettings: TestSettings) => {
           const dbHolder = await testSettings.createDbHolder();
           dbHolder.addCleanup(t);
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           methods.create('method', () => {});
           await dbHolder.close(futureDatabase);
@@ -294,7 +290,7 @@ export default (testSettings: TestSettings) => {
           const dbHolder = await testSettings.createDbHolder();
           dbHolder.addCleanup(t);
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           methods.build();
           await dbHolder.close(futureDatabase);
@@ -305,7 +301,7 @@ export default (testSettings: TestSettings) => {
           const dbHolder = await testSettings.createDbHolder();
           dbHolder.addCleanup(t);
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           methods.build();
           assert.throws(() => methods.create('method', () => {}));
@@ -316,7 +312,7 @@ export default (testSettings: TestSettings) => {
           const dbHolder = await testSettings.createDbHolder();
           dbHolder.addCleanup(t);
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           methods.build();
           assert.throws(() => methods.build());
@@ -334,41 +330,36 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
-          const { promise, resolve } = Promise.withResolvers<FutureMachine>();
-          const method = methods.create(
-            'method',
-            (futureMachine: FutureMachine) => {
-              resolve(futureMachine);
-            }
-          );
+          const { promise, resolve } = Promise.withResolvers<FuturesAPI>();
+          const method = methods.create('method', (futures: FuturesAPI) => {
+            resolve(futures);
+          });
 
-          const futureMachine = methods.build();
+          const futures = methods.build();
 
-          return { futureDatabase, method, futureMachine, promise };
+          return { futureDatabase, method, futures, promise };
         }
 
         let futureId: FutureId<void>;
 
         {
-          const { futureDatabase, method, futureMachine } =
-            await createMethods();
-          const { future, id } = futureMachine.withResolvers<void>();
+          const { futureDatabase, method, futures } = await createMethods();
+          const { future, id } = futures.withResolvers<void>();
           futureId = id;
 
-          future.next(method.bindArgs(futureMachine));
+          future.next(method.bindArgs(futures));
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { futureDatabase, futureMachine, promise } =
-            await createMethods();
-          futureMachine.resolveFutureById(futureId);
+          const { futureDatabase, futures, promise } = await createMethods();
+          futures.resolveFutureById(futureId);
 
           // TODO: Should we figure out how to make it strictEqual. Likely would
           // need be able to get Structs and other containers by ids.
-          assert.deepStrictEqual(await promise, futureMachine);
+          assert.deepStrictEqual(await promise, futures);
           await dbHolder.close(futureDatabase);
         }
       });
@@ -377,9 +368,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
-        const futureMachine = methods.build();
-        futureMachine.create(() => {});
+        const { methods } = createFutureMachine(futureDatabase);
+        const futures = methods.build();
+        futures.create(() => {});
         await dbHolder.close(futureDatabase);
       });
 
@@ -387,9 +378,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
-        const futureMachine = methods.build();
-        futureMachine.withResolvers();
+        const { methods } = createFutureMachine(futureDatabase);
+        const futures = methods.build();
+        futures.withResolvers();
         await dbHolder.close(futureDatabase);
       });
 
@@ -397,18 +388,18 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
-        const futureMachine = methods.build();
-        futureMachine.resolveFutureById('' as FutureId<Serializable>);
+        const { methods } = createFutureMachine(futureDatabase);
+        const futures = methods.build();
+        futures.resolveFutureById('' as FutureId<Serializable>);
         await dbHolder.close(futureDatabase);
       });
       test('can call rejectFutureById', async (t) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
-        const futureMachine = methods.build();
-        futureMachine.rejectFutureById('' as FutureId<Serializable>);
+        const { methods } = createFutureMachine(futureDatabase);
+        const futures = methods.build();
+        futures.rejectFutureById('' as FutureId<Serializable>);
         await dbHolder.close(futureDatabase);
       });
 
@@ -416,9 +407,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
-        const futureMachine = methods.build();
-        futureMachine.resolve(undefined);
+        const { methods } = createFutureMachine(futureDatabase);
+        const futures = methods.build();
+        futures.resolve(undefined);
         await dbHolder.close(futureDatabase);
       });
 
@@ -426,9 +417,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
-        const futureMachine = methods.build();
-        futureMachine.reject(undefined);
+        const { methods } = createFutureMachine(futureDatabase);
+        const futures = methods.build();
+        futures.reject(undefined);
         await dbHolder.close(futureDatabase);
       });
 
@@ -436,10 +427,10 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const method = methods.create('method', () => {});
-        const futureMachine = methods.build();
-        futureMachine.try(method);
+        const futures = methods.build();
+        futures.try(method);
         await dbHolder.close(futureDatabase);
       });
     });
@@ -449,16 +440,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const raceFuture = futureMachine.race([f1, f2]);
+        const raceFuture = futures.race([f1, f2]);
 
         const result = 4312;
 
@@ -475,16 +464,15 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const f2 = futureMachine.resolve<number>(result);
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const f2 = futures.resolve<number>(result);
 
-        const raceFuture = futureMachine.race([f1, f2, true]);
+        const raceFuture = futures.race([f1, f2, true]);
 
         r1('Hello');
 
@@ -498,16 +486,15 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const f2 = futureMachine.resolve<boolean>(true);
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const f2 = futures.resolve<boolean>(true);
 
-        const raceFuture = futureMachine.race([f1, result, f2]);
+        const raceFuture = futures.race([f1, result, f2]);
 
         r1('Hello');
 
@@ -521,16 +508,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, reject: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, reject: r1 } = futures.withResolvers<string>();
+        const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
-        const raceFuture = futureMachine.race([f1, f2]);
+        const raceFuture = futures.race([f1, f2]);
 
         const result = 4312;
 
@@ -547,16 +532,15 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const f2 = futureMachine.reject<number>(result);
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const f2 = futures.reject<number>(result);
 
-        const raceFuture = futureMachine.race([f1, f2, Promise.resolve(true)]);
+        const raceFuture = futures.race([f1, f2, Promise.resolve(true)]);
 
         r1('Hello');
 
@@ -570,21 +554,19 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<number>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<number>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
         const iterable = (function* () {
           yield f1;
           yield f2;
         })();
 
-        const raceFuture = futureMachine.race(iterable);
+        const raceFuture = futures.race(iterable);
 
         const result = 4312;
 
@@ -601,9 +583,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
 
@@ -612,7 +594,7 @@ export default (testSettings: TestSettings) => {
           throw result;
         })();
 
-        const raceFuture = futureMachine.race(iterable);
+        const raceFuture = futures.race(iterable);
 
         await assertPromiseRejects(raceFuture.getPromise(), result);
 
@@ -624,16 +606,16 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
           throw {};
         })();
 
-        const future = futureMachine.race(iterable);
+        const future = futures.race(iterable);
 
         const exception = await getPromiseRejectReason(future.getPromise());
 
@@ -649,9 +631,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         let future;
 
@@ -662,10 +644,10 @@ export default (testSettings: TestSettings) => {
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
-          future = futureMachine.race(throwingIterable);
+          future = futures.race(throwingIterable);
         })();
 
-        futureMachine.race(iterable);
+        futures.race(iterable);
 
         const exception = await getPromiseRejectReason(future!.getPromise());
 
@@ -684,7 +666,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } = Promise.withResolvers<string | number>();
           const method = methods.create('method', (result: string | number) => {
@@ -695,7 +677,7 @@ export default (testSettings: TestSettings) => {
             method,
             promise,
             futureDatabase,
-            futureMachine: methods.build(),
+            futures: methods.build(),
           };
         }
 
@@ -703,28 +685,24 @@ export default (testSettings: TestSettings) => {
         let id2: FutureId<string>;
 
         {
-          const { method, futureDatabase, futureMachine } =
-            await createMethods();
-          const { future: f1, id: id1_ } =
-            futureMachine.withResolvers<number>();
-          const { future: f2, id: id2_ } =
-            futureMachine.withResolvers<string>();
+          const { method, futureDatabase, futures } = await createMethods();
+          const { future: f1, id: id1_ } = futures.withResolvers<number>();
+          const { future: f2, id: id2_ } = futures.withResolvers<string>();
           id1 = id1_;
           id2 = id2_;
 
-          const raceFuture = futureMachine.race([f1, f2]);
+          const raceFuture = futures.race([f1, f2]);
 
           raceFuture.next(method);
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { promise, futureDatabase, futureMachine } =
-            await createMethods();
+          const { promise, futureDatabase, futures } = await createMethods();
           const result = 4312;
 
-          futureMachine.resolveFutureById(id1, result);
-          futureMachine.resolveFutureById(id2, 'Hello');
+          futures.resolveFutureById(id1, result);
+          futures.resolveFutureById(id2, 'Hello');
 
           assert.strictEqual(await promise, result);
           assert.ok(await dbHolder.isEmpty(futureDatabase));
@@ -736,15 +714,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const { promise: p1, resolve: r1 } = Promise.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const raceFuture = futureMachine.race([p1, f2]);
+        const raceFuture = futures.race([p1, f2]);
 
         const result = 4312;
 
@@ -767,15 +744,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f2, resolve: r1 } =
-          futureMachine.withResolvers<string>();
+        const { future: f2, resolve: r1 } = futures.withResolvers<string>();
         const { promise: p2, resolve: r2 } = Promise.withResolvers<number>();
 
-        const raceFuture = futureMachine.race([p2, f2]);
+        const raceFuture = futures.race([p2, f2]);
 
         const result = 4312;
 
@@ -797,21 +773,19 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<string>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<string>();
 
         const test = (function* () {
           yield f1;
           yield f2;
         })();
 
-        const allFuture = futureMachine.all(test);
+        const allFuture = futures.all(test);
 
         const results: [string, string] = ['Hello', 'world!'];
 
@@ -828,16 +802,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const allFuture = futureMachine.all([f1, f2]);
+        const allFuture = futures.all([f1, f2]);
 
         const results: [string, number] = ['Hello', 1234];
 
@@ -854,16 +826,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, reject: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, reject: r1 } = futures.withResolvers<string>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const allFuture = futureMachine.all([f1, f2]);
+        const allFuture = futures.all([f1, f2]);
 
         const result = 1234;
 
@@ -880,15 +850,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
         const results: [string, number] = ['Hello', 1234];
-        const allFuture = futureMachine.all([results[0], f2]);
+        const allFuture = futures.all([results[0], f2]);
 
         r2(results[1]);
 
@@ -902,9 +871,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
 
@@ -913,7 +882,7 @@ export default (testSettings: TestSettings) => {
           throw result;
         })();
 
-        const allFuture = futureMachine.all(iterable);
+        const allFuture = futures.all(iterable);
 
         await assertPromiseRejects(allFuture.getPromise(), result);
 
@@ -925,16 +894,16 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
           throw {};
         })();
 
-        const future = futureMachine.all(iterable);
+        const future = futures.all(iterable);
 
         const exception = await getPromiseRejectReason(future.getPromise());
 
@@ -950,9 +919,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         let future;
 
@@ -963,10 +932,10 @@ export default (testSettings: TestSettings) => {
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
-          future = futureMachine.all(throwingIterable);
+          future = futures.all(throwingIterable);
         })();
 
-        futureMachine.all(iterable);
+        futures.all(iterable);
 
         const exception = await getPromiseRejectReason(future!.getPromise());
 
@@ -983,7 +952,7 @@ export default (testSettings: TestSettings) => {
         dbHolder.addCleanup(t);
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } =
             Promise.withResolvers<List<[string, number]>>();
@@ -998,7 +967,7 @@ export default (testSettings: TestSettings) => {
             method,
             promise,
             futureDatabase,
-            futureMachine: methods.build(),
+            futures: methods.build(),
           };
         }
 
@@ -1006,16 +975,13 @@ export default (testSettings: TestSettings) => {
         let id2;
 
         {
-          const { method, futureDatabase, futureMachine } =
-            await createMethods();
-          const { future: f1, id: id1_ } =
-            futureMachine.withResolvers<string>();
-          const { future: f2, id: id2_ } =
-            futureMachine.withResolvers<number>();
+          const { method, futureDatabase, futures } = await createMethods();
+          const { future: f1, id: id1_ } = futures.withResolvers<string>();
+          const { future: f2, id: id2_ } = futures.withResolvers<number>();
           id1 = id1_;
           id2 = id2_;
 
-          const allFuture = futureMachine.all([f1, f2] as const);
+          const allFuture = futures.all([f1, f2] as const);
 
           allFuture.next(method);
           await dbHolder.close(futureDatabase);
@@ -1024,17 +990,16 @@ export default (testSettings: TestSettings) => {
         const results: [string, number] = ['Hello', 1234];
 
         {
-          const { futureDatabase, futureMachine } = await createMethods();
+          const { futureDatabase, futures } = await createMethods();
 
-          futureMachine.resolveFutureById(id2, results[1]);
+          futures.resolveFutureById(id2, results[1]);
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { promise, futureDatabase, futureMachine } =
-            await createMethods();
+          const { promise, futureDatabase, futures } = await createMethods();
 
-          futureMachine.resolveFutureById(id1, results[0]);
+          futures.resolveFutureById(id1, results[0]);
 
           assert.deepStrictEqual([...(await promise)], results);
           assert.ok(await dbHolder.isEmpty(futureDatabase));
@@ -1046,16 +1011,15 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const { promise, resolve: r1 } = Promise.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
         const results: [string, number] = ['Hello', 1234];
-        const allFuture = futureMachine.all([promise, f2]);
+        const allFuture = futures.all([promise, f2]);
 
         r2(results[1]);
         r1(results[0]);
@@ -1070,11 +1034,11 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const allFuture = futureMachine.all([]);
+        const allFuture = futures.all([]);
 
         assert.deepStrictEqual([...(await allFuture.getPromise())], []);
 
@@ -1088,16 +1052,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const anyFuture = futureMachine.any([f1, f2]);
+        const anyFuture = futures.any([f1, f2]);
 
         const result = 4312;
 
@@ -1114,16 +1076,15 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const f2 = futureMachine.resolve<number>(result);
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const f2 = futures.resolve<number>(result);
 
-        const anyFuture = futureMachine.any([f1, f2, true]);
+        const anyFuture = futures.any([f1, f2, true]);
 
         r1('Hello');
 
@@ -1137,16 +1098,15 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const f2 = futureMachine.resolve<boolean>(true);
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const f2 = futures.resolve<boolean>(true);
 
-        const anyFuture = futureMachine.any([f1, result, f2]);
+        const anyFuture = futures.any([f1, result, f2]);
 
         r1('Hello');
 
@@ -1160,16 +1120,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, reject: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, reject: r1 } = futures.withResolvers<string>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const anyFuture = futureMachine.any([f1, f2]);
+        const anyFuture = futures.any([f1, f2]);
 
         const result = 4312;
 
@@ -1186,16 +1144,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, reject: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, reject: r1 } = futures.withResolvers<string>();
+        const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
-        const anyFuture = futureMachine.any([f1, f2]);
+        const anyFuture = futures.any([f1, f2]);
 
         const results = [4312, 'Hello'];
 
@@ -1217,7 +1173,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } =
             Promise.withResolvers<AggregateException>();
@@ -1228,10 +1184,10 @@ export default (testSettings: TestSettings) => {
             }
           );
 
-          const futureMachine = methods.build();
+          const futures = methods.build();
           return {
             futureDatabase,
-            futureMachine,
+            futures,
             promise,
             onException,
           };
@@ -1243,32 +1199,31 @@ export default (testSettings: TestSettings) => {
         let futureId2: FutureId<number>;
 
         {
-          const { futureDatabase, futureMachine, onException } =
+          const { futureDatabase, futures, onException } =
             await createMethods();
-          const { future: f1, id: id1 } = futureMachine.withResolvers<string>();
-          const { future: f2, id: id2 } = futureMachine.withResolvers<number>();
+          const { future: f1, id: id1 } = futures.withResolvers<string>();
+          const { future: f2, id: id2 } = futures.withResolvers<number>();
           futureId1 = id1;
           futureId2 = id2;
 
-          const anyFuture = futureMachine.any([f1, f2]);
+          const anyFuture = futures.any([f1, f2]);
           anyFuture.catch(onException);
 
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { futureDatabase, futureMachine } = await createMethods();
+          const { futureDatabase, futures } = await createMethods();
 
-          futureMachine.rejectFutureById(futureId2, results[1]);
+          futures.rejectFutureById(futureId2, results[1]);
 
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { futureDatabase, futureMachine, promise } =
-            await createMethods();
+          const { futureDatabase, futures, promise } = await createMethods();
 
-          futureMachine.rejectFutureById(futureId1, results[0]);
+          futures.rejectFutureById(futureId1, results[0]);
 
           assertIsAggregateException(await promise, results);
 
@@ -1283,7 +1238,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } =
             Promise.withResolvers<AggregateException>();
@@ -1294,8 +1249,8 @@ export default (testSettings: TestSettings) => {
             }
           );
 
-          const futureMachine = methods.build();
-          return { futureDatabase, futureMachine, promise, onException };
+          const futures = methods.build();
+          return { futureDatabase, futures, promise, onException };
         }
 
         const results = [4312, 'Hello'];
@@ -1303,20 +1258,18 @@ export default (testSettings: TestSettings) => {
         let futureId: FutureId<void>;
 
         {
-          const { futureDatabase, futureMachine, onException, promise } =
+          const { futureDatabase, futures, onException, promise } =
             await createMethods();
-          const { future: f1, reject: r1 } =
-            futureMachine.withResolvers<string>();
-          const { future: f2, reject: r2 } =
-            futureMachine.withResolvers<number>();
+          const { future: f1, reject: r1 } = futures.withResolvers<string>();
+          const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
-          const anyFuture = futureMachine.any([f1, f2]);
+          const anyFuture = futures.any([f1, f2]);
           anyFuture.catch(onException);
 
           r2(results[1]);
           r1(results[0]);
 
-          const { future: f3, id: id3 } = futureMachine.withResolvers<void>();
+          const { future: f3, id: id3 } = futures.withResolvers<void>();
           futureId = id3;
 
           f3.next(onException.bindArgs(await promise));
@@ -1325,10 +1278,9 @@ export default (testSettings: TestSettings) => {
         }
 
         {
-          const { futureDatabase, futureMachine, promise } =
-            await createMethods();
+          const { futureDatabase, futures, promise } = await createMethods();
 
-          futureMachine.resolveFutureById(futureId);
+          futures.resolveFutureById(futureId);
 
           assertIsAggregateException(await promise, results);
 
@@ -1341,21 +1293,19 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<number>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<number>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
         const iterable = (function* () {
           yield f1;
           yield f2;
         })();
 
-        const anyFuture = futureMachine.any(iterable);
+        const anyFuture = futures.any(iterable);
 
         const result = 4312;
 
@@ -1372,9 +1322,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
 
@@ -1383,7 +1333,7 @@ export default (testSettings: TestSettings) => {
           throw result;
         })();
 
-        const anyFuture = futureMachine.any(iterable);
+        const anyFuture = futures.any(iterable);
 
         await assertPromiseRejects(anyFuture.getPromise(), result);
 
@@ -1395,16 +1345,16 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
           throw {};
         })();
 
-        const future = futureMachine.any(iterable);
+        const future = futures.any(iterable);
 
         const exception = await getPromiseRejectReason(future.getPromise());
 
@@ -1420,9 +1370,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         let future;
 
@@ -1433,10 +1383,10 @@ export default (testSettings: TestSettings) => {
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
-          future = futureMachine.any(throwingIterable);
+          future = futures.any(throwingIterable);
         })();
 
-        futureMachine.any(iterable);
+        futures.any(iterable);
 
         const exception = await getPromiseRejectReason(future!.getPromise());
 
@@ -1453,7 +1403,7 @@ export default (testSettings: TestSettings) => {
         dbHolder.addCleanup(t);
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } = Promise.withResolvers<string | number>();
           const method = methods.create('method', (result: string | number) => {
@@ -1464,7 +1414,7 @@ export default (testSettings: TestSettings) => {
             method,
             promise,
             futureDatabase,
-            futureMachine: methods.build(),
+            futures: methods.build(),
           };
         }
 
@@ -1472,28 +1422,24 @@ export default (testSettings: TestSettings) => {
         let id2: FutureId<string>;
 
         {
-          const { method, futureDatabase, futureMachine } =
-            await createMethods();
-          const { future: f1, id: id1_ } =
-            futureMachine.withResolvers<number>();
-          const { future: f2, id: id2_ } =
-            futureMachine.withResolvers<string>();
+          const { method, futureDatabase, futures } = await createMethods();
+          const { future: f1, id: id1_ } = futures.withResolvers<number>();
+          const { future: f2, id: id2_ } = futures.withResolvers<string>();
           id1 = id1_;
           id2 = id2_;
 
-          const anyFuture = futureMachine.any([f1, f2]);
+          const anyFuture = futures.any([f1, f2]);
 
           anyFuture.next(method);
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { promise, futureDatabase, futureMachine } =
-            await createMethods();
+          const { promise, futureDatabase, futures } = await createMethods();
           const result = 4312;
 
-          futureMachine.resolveFutureById(id1, result);
-          futureMachine.resolveFutureById(id2, 'Hello');
+          futures.resolveFutureById(id1, result);
+          futures.resolveFutureById(id2, 'Hello');
 
           assert.strictEqual(await promise, result);
           assert.ok(await dbHolder.isEmpty(futureDatabase));
@@ -1505,15 +1451,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const { promise: p1, resolve: r1 } = Promise.withResolvers<string>();
-        const { future: f2, resolve: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, resolve: r2 } = futures.withResolvers<number>();
 
-        const anyFuture = futureMachine.any([p1, f2]);
+        const anyFuture = futures.any([p1, f2]);
 
         const result = 4312;
 
@@ -1536,15 +1481,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f2, resolve: r1 } =
-          futureMachine.withResolvers<string>();
+        const { future: f2, resolve: r1 } = futures.withResolvers<string>();
         const { promise: p2, resolve: r2 } = Promise.withResolvers<number>();
 
-        const anyFuture = futureMachine.any([p2, f2]);
+        const anyFuture = futures.any([p2, f2]);
 
         const result = 4312;
 
@@ -1565,11 +1509,11 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const anyFuture = futureMachine.any([]);
+        const anyFuture = futures.any([]);
 
         await assertPromiseRejectsWithAggregateException(
           anyFuture.getPromise(),
@@ -1584,9 +1528,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const iterable = (function* (): Generator<number> {
           yield 1;
@@ -1595,7 +1539,7 @@ export default (testSettings: TestSettings) => {
         })();
         iterable.return(undefined);
 
-        const anyFuture = futureMachine.any(iterable);
+        const anyFuture = futures.any(iterable);
 
         await assertPromiseRejectsWithAggregateException(
           anyFuture.getPromise(),
@@ -1612,21 +1556,19 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<string>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const { future: f2, reject: r2 } = futures.withResolvers<string>();
 
         const test = (function* () {
           yield f1;
           yield f2;
         })();
 
-        const allSettledFuture = futureMachine.allSettled(test);
+        const allSettledFuture = futures.allSettled(test);
 
         const results: AnyFutureSettledResult<string>[] = [
           { status: 'fulfilled', value: 'Hello' },
@@ -1649,16 +1591,14 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f1, resolve: r1 } =
-          futureMachine.withResolvers<string>();
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+        const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
-        const allSettledFuture = futureMachine.allSettled([f1, f2]);
+        const allSettledFuture = futures.allSettled([f1, f2]);
 
         const results: AnyFutureSettledResult<string>[] = [
           { status: 'fulfilled', value: 'Hello' },
@@ -1681,21 +1621,17 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
         const results: AnyFutureSettledResult<string>[] = [
           { status: 'fulfilled', value: 'Hello' },
           { status: 'rejected', reason: 1234 },
         ];
-        const allSettledFuture = futureMachine.allSettled([
-          results[0]!.value,
-          f2,
-        ]);
+        const allSettledFuture = futures.allSettled([results[0]!.value, f2]);
 
         r2(results[1]!.reason);
 
@@ -1712,9 +1648,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const result = 4312;
 
@@ -1723,7 +1659,7 @@ export default (testSettings: TestSettings) => {
           throw result;
         })();
 
-        const allSettledFuture = futureMachine.allSettled(iterable);
+        const allSettledFuture = futures.allSettled(iterable);
 
         await assertPromiseRejects(allSettledFuture.getPromise(), result);
 
@@ -1735,16 +1671,16 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
           throw {};
         })();
 
-        const future = futureMachine.allSettled(iterable);
+        const future = futures.allSettled(iterable);
 
         const exception = await getPromiseRejectReason(future.getPromise());
 
@@ -1760,9 +1696,9 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         let future;
 
@@ -1773,10 +1709,10 @@ export default (testSettings: TestSettings) => {
 
         // eslint-disable-next-line require-yield
         const iterable = (function* (): Generator<number> {
-          future = futureMachine.allSettled(throwingIterable);
+          future = futures.allSettled(throwingIterable);
         })();
 
-        futureMachine.allSettled(iterable);
+        futures.allSettled(iterable);
 
         const exception = await getPromiseRejectReason(future!.getPromise());
 
@@ -1793,7 +1729,7 @@ export default (testSettings: TestSettings) => {
         dbHolder.addCleanup(t);
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } =
             Promise.withResolvers<List<FutureSettledResult<string>[]>>();
@@ -1808,7 +1744,7 @@ export default (testSettings: TestSettings) => {
             method,
             promise,
             futureDatabase,
-            futureMachine: methods.build(),
+            futures: methods.build(),
           };
         }
 
@@ -1816,24 +1752,20 @@ export default (testSettings: TestSettings) => {
         let id2;
 
         {
-          const { futureDatabase, method, futureMachine } =
-            await createMethods();
-          const { future: f1, id: id1_ } =
-            futureMachine.withResolvers<string>();
-          const { future: f2, id: id2_ } =
-            futureMachine.withResolvers<string>();
+          const { futureDatabase, method, futures } = await createMethods();
+          const { future: f1, id: id1_ } = futures.withResolvers<string>();
+          const { future: f2, id: id2_ } = futures.withResolvers<string>();
           id1 = id1_;
           id2 = id2_;
 
-          const allSettledFuture = futureMachine.allSettled([f1, f2] as const);
+          const allSettledFuture = futures.allSettled([f1, f2] as const);
 
           allSettledFuture.next(method);
           await dbHolder.close(futureDatabase);
         }
 
         {
-          const { futureDatabase, promise, futureMachine } =
-            await createMethods();
+          const { futureDatabase, promise, futures } = await createMethods();
 
           const results: AnyFutureSettledResult<string>[] = [
             {
@@ -1846,8 +1778,8 @@ export default (testSettings: TestSettings) => {
             },
           ];
 
-          futureMachine.rejectFutureById(id2, results[1]!.reason);
-          futureMachine.resolveFutureById(id1, results[0]!.value);
+          futures.rejectFutureById(id2, results[1]!.reason);
+          futures.resolveFutureById(id1, results[0]!.value);
 
           assertFutureSettledResultListEquals(await promise, results);
           assert.ok(await dbHolder.isEmpty(futureDatabase));
@@ -1859,13 +1791,12 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const { promise, resolve: r1 } = Promise.withResolvers<string>();
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
         const results: AnyFutureSettledResult<string>[] = [
           {
@@ -1877,7 +1808,7 @@ export default (testSettings: TestSettings) => {
             reason: '1234',
           },
         ];
-        const allSettledFuture = futureMachine.allSettled([promise, f2]);
+        const allSettledFuture = futures.allSettled([promise, f2]);
 
         r2(results[1]!.reason);
         r1(results[0]!.value!);
@@ -1895,13 +1826,12 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const { promise, reject: r1 } = Promise.withResolvers<string>();
-        const { future: f2, reject: r2 } =
-          futureMachine.withResolvers<number>();
+        const { future: f2, reject: r2 } = futures.withResolvers<number>();
 
         const results: AnyFutureSettledResult<string>[] = [
           {
@@ -1913,7 +1843,7 @@ export default (testSettings: TestSettings) => {
             reason: '1234',
           },
         ];
-        const allSettledFuture = futureMachine.allSettled([promise, f2]);
+        const allSettledFuture = futures.allSettled([promise, f2]);
 
         r2(results[1]!.reason);
         r1(results[0]!.reason);
@@ -1931,11 +1861,11 @@ export default (testSettings: TestSettings) => {
         const dbHolder = await testSettings.createDbHolder();
         dbHolder.addCleanup(t);
         const futureDatabase = await dbHolder.createDbInstance();
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const allSettledFuture = futureMachine.allSettled([]);
+        const allSettledFuture = futures.allSettled([]);
 
         assert.deepStrictEqual([...(await allSettledFuture.getPromise())], []);
 
@@ -1960,7 +1890,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } =
             Promise.withResolvers<List<FutureSettledResult<string>[]>>();
@@ -1975,28 +1905,26 @@ export default (testSettings: TestSettings) => {
             method,
             promise,
             futureDatabase,
-            futureMachine: methods.build(),
+            futures: methods.build(),
           };
         }
 
         let holderFutureId;
 
         {
-          const { futureDatabase, method, futureMachine, promise } =
+          const { futureDatabase, method, futures, promise } =
             await createMethods();
-          const { future: f1, resolve: r1 } =
-            futureMachine.withResolvers<string>();
-          const { future: f2, reject: r2 } =
-            futureMachine.withResolvers<string>();
+          const { future: f1, resolve: r1 } = futures.withResolvers<string>();
+          const { future: f2, reject: r2 } = futures.withResolvers<string>();
 
-          const allSettledFuture = futureMachine.allSettled([f1, f2] as const);
+          const allSettledFuture = futures.allSettled([f1, f2] as const);
 
           r2(results[1]!.reason);
           r1(results[0]!.value!);
 
           allSettledFuture.next(method);
 
-          const { future: f3, id: id3 } = futureMachine.withResolvers<void>();
+          const { future: f3, id: id3 } = futures.withResolvers<void>();
           holderFutureId = id3;
 
           f3.next(method.bindArgs(await promise));
@@ -2005,10 +1933,9 @@ export default (testSettings: TestSettings) => {
         }
 
         {
-          const { futureDatabase, promise, futureMachine } =
-            await createMethods();
+          const { futureDatabase, promise, futures } = await createMethods();
 
-          futureMachine.resolveFutureById(holderFutureId, undefined);
+          futures.resolveFutureById(holderFutureId, undefined);
 
           assertFutureSettledResultListEquals(await promise, results);
           assert.ok(await dbHolder.isEmpty(futureDatabase));
@@ -2027,7 +1954,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods } = createMethodMachine(futureDatabase);
+          const { methods } = createFutureMachine(futureDatabase);
 
           const { promise: getterPromise, resolve: getterResolve } =
             Promise.withResolvers<FutureSettledResult<string>>();
@@ -2053,30 +1980,24 @@ export default (testSettings: TestSettings) => {
             holder,
             holderPromise,
             futureDatabase,
-            futureMachine: methods.build(),
+            futures: methods.build(),
           };
         }
 
         let holderFutureId;
 
         {
-          const {
-            futureDatabase,
-            getter,
-            getterPromise,
-            holder,
-            futureMachine,
-          } = await createMethods();
-          const { future: f1, resolve: r1 } =
-            futureMachine.withResolvers<string>();
+          const { futureDatabase, getter, getterPromise, holder, futures } =
+            await createMethods();
+          const { future: f1, resolve: r1 } = futures.withResolvers<string>();
 
-          const allSettledFuture = futureMachine.allSettled([f1] as const);
+          const allSettledFuture = futures.allSettled([f1] as const);
 
           r1(result.value!);
 
           allSettledFuture.next(getter);
 
-          const { future: f3, id: id3 } = futureMachine.withResolvers<void>();
+          const { future: f3, id: id3 } = futures.withResolvers<void>();
           holderFutureId = id3;
 
           f3.next(holder.bindArgs(await getterPromise));
@@ -2085,10 +2006,10 @@ export default (testSettings: TestSettings) => {
         }
 
         {
-          const { futureDatabase, holderPromise, futureMachine } =
+          const { futureDatabase, holderPromise, futures } =
             await createMethods();
 
-          futureMachine.resolveFutureById(holderFutureId, undefined);
+          futures.resolveFutureById(holderFutureId, undefined);
 
           assertFutureSettledResultEquals(await holderPromise, result);
           assert.ok(await dbHolder.isEmpty(futureDatabase));
@@ -2148,7 +2069,7 @@ export default (testSettings: TestSettings) => {
 
         async function createMethods() {
           const futureDatabase = await dbHolder.createDbInstance();
-          const { methods, containers } = createMethodMachine(futureDatabase);
+          const { methods, containers } = createFutureMachine(futureDatabase);
 
           const { promise, resolve } = Promise.withResolvers<resultsType>();
           const method = methods.create('method', (dictionary: resultsType) => {
@@ -2168,12 +2089,12 @@ export default (testSettings: TestSettings) => {
             }
           );
 
-          const futureMachine = methods.build();
+          const futures = methods.build();
 
           return {
             containers,
             futureDatabase,
-            futureMachine,
+            futures,
             method,
             createTest,
             promise,
@@ -2186,24 +2107,24 @@ export default (testSettings: TestSettings) => {
           const {
             containers,
             futureDatabase,
-            futureMachine,
+            futures,
             method,
             promise,
             createTest,
           } = await createMethods();
-          const { future, id } = futureMachine.withResolvers<string>();
+          const { future, id } = futures.withResolvers<string>();
           futureId = id;
 
           const { future: dictionaryFuture, resolve: dictionaryResolve } =
-            futureMachine.withResolvers<Dictionary<number>>();
+            futures.withResolvers<Dictionary<number>>();
           const { future: listFuture, resolve: listResolve } =
-            futureMachine.withResolvers<List<string[]>>();
+            futures.withResolvers<List<string[]>>();
           const { future: structFuture, resolve: structResolve } =
-            futureMachine.withResolvers<Struct<structType>>();
+            futures.withResolvers<Struct<structType>>();
           const { future: testClassFuture, resolve: testClassResolve } =
-            futureMachine.withResolvers<TestClass>();
+            futures.withResolvers<TestClass>();
 
-          const allSettledFuture = futureMachine.allSettled([
+          const allSettledFuture = futures.allSettled([
             dictionaryFuture,
             listFuture,
             structFuture,
@@ -2240,9 +2161,8 @@ export default (testSettings: TestSettings) => {
         }
 
         {
-          const { futureDatabase, futureMachine, promise } =
-            await createMethods();
-          futureMachine.resolveFutureById(futureId, dictKey);
+          const { futureDatabase, futures, promise } = await createMethods();
+          futures.resolveFutureById(futureId, dictKey);
 
           const results: resultsType = await promise;
 

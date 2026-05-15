@@ -30,26 +30,28 @@ import type { ValidResult } from './future_impl.js';
 import type { Method, MethodName } from './method.js';
 import type { AnyMethodImpl } from './method_impl.js';
 
-export type MethodMachine = Struct<{
-  methods: Methods;
-  containers: Containers;
-  exceptions: Exceptions;
+export type FutureMachineAPI = Struct<{
+  methods: MethodsAPI;
+  containers: ContainersAPI;
+  exceptions: ExceptionsAPI;
 }>;
 
-export function createMethodMachine(database: FutureDatabase): MethodMachine {
+export function createFutureMachine(
+  database: FutureDatabase
+): FutureMachineAPI {
   const futureMachineImpl = new FutureMachineImpl(
     database[GetFutureDatabase]()
   );
 
   return futureMachineImpl.createStruct({
-    methods: createMethods(futureMachineImpl),
-    containers: createContainers(futureMachineImpl),
-    exceptions: createExceptions(futureMachineImpl),
+    methods: createMethodsAPI(futureMachineImpl),
+    containers: createContainersAPI(futureMachineImpl),
+    exceptions: createExceptionsAPI(futureMachineImpl),
   });
 }
 
-export type Methods = Struct<{
-  build: Method<() => FutureMachine>;
+export type MethodsAPI = Struct<{
+  build: Method<() => FuturesAPI>;
   create: Method<
     <Impl extends AnyMethodImpl>(name: MethodName, impl: Impl) => Method<Impl>
   >;
@@ -66,8 +68,8 @@ export type Methods = Struct<{
   >;
 }>;
 
-function createMethods(futureMachineImpl: FutureMachineImpl): Methods {
-  const futureMachine = createFutureMachine(futureMachineImpl);
+function createMethodsAPI(futureMachineImpl: FutureMachineImpl): MethodsAPI {
+  const futureMachine = createFuturesAPI(futureMachineImpl);
 
   function checkBuiltState() {
     if (futureMachineImpl.built) {
@@ -77,7 +79,7 @@ function createMethods(futureMachineImpl: FutureMachineImpl): Methods {
 
   const build = futureMachineImpl.createInternalMethod(
     'buildFutureMachine',
-    (): FutureMachine => {
+    (): FuturesAPI => {
       checkBuiltState();
       futureMachineImpl.built = true;
       return futureMachine;
@@ -117,7 +119,7 @@ function createMethods(futureMachineImpl: FutureMachineImpl): Methods {
   });
 }
 
-export type FutureMachine = Struct<{
+export type FuturesAPI = Struct<{
   create: Method<
     <T extends Serializable>(executor: FutureExecutor<T>) => Future<T>
   >;
@@ -193,9 +195,7 @@ export type FutureMachine = Struct<{
   }>;
 }>;
 
-function createFutureMachine(
-  futureMachineImpl: FutureMachineImpl
-): FutureMachine {
+function createFuturesAPI(futureMachineImpl: FutureMachineImpl): FuturesAPI {
   const create = <T extends Serializable>(
     executor: FutureExecutor<T>
   ): Future<T> => {
@@ -369,7 +369,7 @@ function createFutureMachine(
   });
 }
 
-export type Containers = Struct<{
+export type ContainersAPI = Struct<{
   dictionary: Struct<{
     create: Method<
       <T extends Serializable>(
@@ -395,7 +395,9 @@ export type Containers = Struct<{
   }>;
 }>;
 
-function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
+function createContainersAPI(
+  futureMachineImpl: FutureMachineImpl
+): ContainersAPI {
   // TODO: Should take an iterable to construct the dictionary.
   const dictionaryCreate = futureMachineImpl.createInternalMethod(
     'dictionaryCreate',
@@ -446,7 +448,7 @@ function createContainers(futureMachineImpl: FutureMachineImpl): Containers {
   });
 }
 
-export type Exceptions = Struct<{
+export type ExceptionsAPI = Struct<{
   createException: Method<
     (message?: string, options?: ExceptionOptions) => Exception
   >;
@@ -465,7 +467,9 @@ export type Exceptions = Struct<{
   >;
 }>;
 
-function createExceptions(futureMachineImpl: FutureMachineImpl): Exceptions {
+function createExceptionsAPI(
+  futureMachineImpl: FutureMachineImpl
+): ExceptionsAPI {
   const createException = (
     message?: string,
     options?: ExceptionOptions

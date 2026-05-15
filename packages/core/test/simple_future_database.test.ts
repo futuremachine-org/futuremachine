@@ -2,7 +2,7 @@ import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
 import {
-  createMethodMachine,
+  createFutureMachine,
   GetFutureDatabase,
   SimpleFutureDatabase,
   type FutureId,
@@ -20,15 +20,15 @@ describe('SimpleFutureDatabase', () => {
 
     async function createMethods() {
       const futureDatabase = new SimpleFutureDatabase(futureDatabaseState);
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       const { promise, resolve } = Promise.withResolvers<number>();
       const method = methods.create('method', (value: number) => {
         resolve(value);
       });
-      const futureMachine = methods.build();
+      const futures = methods.build();
 
-      return { futureDatabase, method, futureMachine, promise };
+      return { futureDatabase, method, futures, promise };
     }
 
     const value = 123;
@@ -36,8 +36,8 @@ describe('SimpleFutureDatabase', () => {
     let futureId: FutureId<void>;
 
     {
-      const { futureDatabase, method, futureMachine } = await createMethods();
-      const { future, id } = futureMachine.withResolvers<void>();
+      const { futureDatabase, method, futures } = await createMethods();
+      const { future, id } = futures.withResolvers<void>();
       futureId = id;
 
       future.next(method.bindArgs(value));
@@ -46,8 +46,8 @@ describe('SimpleFutureDatabase', () => {
     }
 
     {
-      const { futureDatabase, futureMachine, promise } = await createMethods();
-      futureMachine.resolveFutureById(futureId);
+      const { futureDatabase, futures, promise } = await createMethods();
+      futures.resolveFutureById(futureId);
 
       assert.strictEqual(await promise, value);
       await futureDatabase.flush();
@@ -56,17 +56,17 @@ describe('SimpleFutureDatabase', () => {
 
   test('dot tool related functions, getFutureIds and getReactions, report the correct information', async () => {
     const futureDatabase = new SimpleFutureDatabase();
-    const { methods } = createMethodMachine(futureDatabase);
+    const { methods } = createFutureMachine(futureDatabase);
 
     const method = methods.create('method', () => {});
 
-    const futureMachine = methods.build();
+    const futures = methods.build();
 
-    const { id: id1, future: f1 } = futureMachine.withResolvers<number>();
-    const { id: id2 } = futureMachine.withResolvers<number>();
-    const { id: id3 } = futureMachine.withResolvers<number>();
-    const { id: id4 } = futureMachine.withResolvers<number>();
-    const { id: id5 } = futureMachine.withResolvers<number>();
+    const { id: id1, future: f1 } = futures.withResolvers<number>();
+    const { id: id2 } = futures.withResolvers<number>();
+    const { id: id3 } = futures.withResolvers<number>();
+    const { id: id4 } = futures.withResolvers<number>();
+    const { id: id5 } = futures.withResolvers<number>();
 
     f1.next(method);
 

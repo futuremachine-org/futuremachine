@@ -49,11 +49,11 @@ const idFile = './savedFutureId';
 const db = new SQLFutureDatabase('test.db');
 
 // Build your FutureMachine.
-const { methods } = createMethodMachine(db);
+const { methods } = createFutureMachine(db);
 const logger = methods.create('logger', (str: string) => {
   console.log(`Hello ${str}!`);
 });
-const futureMachine = methods.build();
+const futures = methods.build();
 
 if (!fs.existsSync(idFile)) {
   // First run.
@@ -61,7 +61,7 @@ if (!fs.existsSync(idFile)) {
     'Creating a Future, adding a reaction, and saving its id to disk.'
   );
 
-  const { future, id } = futureMachine.withResolvers<string>();
+  const { future, id } = futures.withResolvers<string>();
   future.next(logger);
 
   fs.writeFileSync(idFile, id);
@@ -72,7 +72,7 @@ if (!fs.existsSync(idFile)) {
   const id = fs.readFileSync(idFile, 'utf8') as FutureId<string>;
   fs.unlinkSync(idFile);
 
-  futureMachine.resolveFutureById(id, 'world');
+  futures.resolveFutureById(id, 'world');
 }
 
 await db.close();

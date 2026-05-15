@@ -1,13 +1,13 @@
 import type {
   FutureDatabase,
   FutureId,
-  FutureMachine,
+  FutureMachineAPI,
+  FuturesAPI,
   Method,
-  MethodMachine,
   Serializable,
   StateBuilder,
 } from '@futuremachine/core';
-import { createMethodMachine, Entity, Future } from '@futuremachine/core';
+import { createFutureMachine, Entity, Future } from '@futuremachine/core';
 import {
   type DeferredResolvers,
   type Executor,
@@ -16,16 +16,16 @@ import {
 } from '../executor_base.js';
 
 type FutureExecutorContextState = {
-  flushDatabase: Method<(futureMachine: FutureMachine) => Future<void>>;
-  futureMachine: FutureMachine | undefined;
-  methodMachine: MethodMachine;
+  flushDatabase: Method<(futureMachine: FuturesAPI) => Future<void>>;
+  futureMachine: FuturesAPI | undefined;
+  methodMachine: FutureMachineAPI;
 };
 
 class FutureExecutorContext
   extends Entity<FutureExecutorContextState>
   implements ExecutorContext<Future<Serializable>, FutureId<Serializable>>
 {
-  public getFutureMachine(): FutureMachine {
+  public getFutureMachine(): FuturesAPI {
     if (this.get('futureMachine') === undefined) {
       throw new Error('Need to call build before calling getFutureMachine.');
     }
@@ -165,10 +165,10 @@ export class FutureExecutor implements Executor<
 
   public createContext(): FutureExecutorContext {
     const database = this.db_holder.createInstance();
-    const methodMachine = createMethodMachine(database);
+    const methodMachine = createFutureMachine(database);
     const flushDatabase = methodMachine.methods.create(
       'flushDatabase',
-      (futureMachine: FutureMachine) => {
+      (futureMachine: FuturesAPI) => {
         const { future, resolve } = futureMachine.withResolvers<void>();
         this.db_holder.flush(database).then(() => resolve());
         return future;

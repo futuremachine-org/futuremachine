@@ -3,7 +3,7 @@ import type {
   List,
   Method,
   MethodName,
-  Methods,
+  MethodsAPI,
   Serializable,
   SimpleFutureDatabase,
 } from '@futuremachine/core';
@@ -21,34 +21,34 @@ const idGenerator = (() => {
 })();
 
 export function createMethod<Params>(
-  methods: Methods
+  methods: MethodsAPI
 ): createMethodReturnType<Params, undefined>;
 
 export function createMethod<Params, Return extends Serializable>(
-  methods: Methods,
+  methods: MethodsAPI,
   retValue: Return
 ): createMethodReturnType<Params, Return>;
 
 export function createMethod<Params, Return extends Serializable>(
-  methods: Methods,
+  methods: MethodsAPI,
   retValue?: Return
 ): createMethodReturnType<Params, Return> {
   return createMethodWithName(methods, idGenerator(), retValue as Return);
 }
 
 export function createMethodWithName<Params>(
-  methods: Methods,
+  methods: MethodsAPI,
   name: MethodName
 ): createMethodReturnType<Params, undefined>;
 
 export function createMethodWithName<Params, Return extends Serializable>(
-  methods: Methods,
+  methods: MethodsAPI,
   name: MethodName,
   retValue: Return
 ): createMethodReturnType<Params, Return>;
 
 export function createMethodWithName<Params, Return extends Serializable>(
-  methods: Methods,
+  methods: MethodsAPI,
   name: MethodName,
   retValue?: Return
 ): createMethodReturnType<Params, Return> {

@@ -1,21 +1,21 @@
 import { strict as assert } from 'node:assert';
 import { describe, test } from 'node:test';
 
-import { createMethodMachine, SimpleFutureDatabase } from '../src/index.js';
+import { createFutureMachine, SimpleFutureDatabase } from '../src/index.js';
 
 describe('FutureMachineDBTools', () => {
   describe('onDone', () => {
     test("Promise returned resolves when there's no ongoing calls", async () => {
       const futureDatabase = new SimpleFutureDatabase();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
-      const futureMachine = methods.build();
+      const futures = methods.build();
 
-      const { future: f1, resolve: r1 } = futureMachine.withResolvers<number>();
-      const { future: f2, resolve: r2 } = futureMachine.withResolvers<number>();
-      const { future: f3, resolve: r3 } = futureMachine.withResolvers<number>();
-      const { future: f4, resolve: r4 } = futureMachine.withResolvers<number>();
-      const { future: f5, resolve: r5 } = futureMachine.withResolvers<number>();
+      const { future: f1, resolve: r1 } = futures.withResolvers<number>();
+      const { future: f2, resolve: r2 } = futures.withResolvers<number>();
+      const { future: f3, resolve: r3 } = futures.withResolvers<number>();
+      const { future: f4, resolve: r4 } = futures.withResolvers<number>();
+      const { future: f5, resolve: r5 } = futures.withResolvers<number>();
 
       const result = 5;
 
@@ -36,7 +36,7 @@ describe('FutureMachineDBTools', () => {
 
     test("Promise returned is already resolved if there's no ongoing calls", async () => {
       const futureDatabase = new SimpleFutureDatabase();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       methods.build();
 
@@ -51,15 +51,15 @@ describe('FutureMachineDBTools', () => {
 
     test("Promise returned resolves when there's no ongoing calls even if we call onDone again", async () => {
       const futureDatabase = new SimpleFutureDatabase();
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
-      const futureMachine = methods.build();
+      const futures = methods.build();
 
-      const { future: f1, resolve: r1 } = futureMachine.withResolvers<number>();
-      const { future: f2, resolve: r2 } = futureMachine.withResolvers<number>();
-      const { future: f3, resolve: r3 } = futureMachine.withResolvers<number>();
-      const { future: f4, resolve: r4 } = futureMachine.withResolvers<number>();
-      const { future: f5, resolve: r5 } = futureMachine.withResolvers<number>();
+      const { future: f1, resolve: r1 } = futures.withResolvers<number>();
+      const { future: f2, resolve: r2 } = futures.withResolvers<number>();
+      const { future: f3, resolve: r3 } = futures.withResolvers<number>();
+      const { future: f4, resolve: r4 } = futures.withResolvers<number>();
+      const { future: f5, resolve: r5 } = futures.withResolvers<number>();
 
       const result = 5;
 

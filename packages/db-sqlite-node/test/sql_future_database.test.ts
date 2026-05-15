@@ -11,7 +11,7 @@ import type {
   Struct,
 } from '@futuremachine/core';
 import {
-  createMethodMachine,
+  createFutureMachine,
   FutureState,
   GetFutureDatabase,
 } from '@futuremachine/core';
@@ -31,10 +31,10 @@ describe('SQLFutureDatabase', () => {
         cleanupDbFiles(dbPath);
       });
       const futureDatabase = new SQLFutureDatabase(dbPath);
-      const { methods } = createMethodMachine(futureDatabase);
-      const futureMachine = methods.build();
+      const { methods } = createFutureMachine(futureDatabase);
+      const futures = methods.build();
 
-      futureMachine.resolveFutureById('future-1234' as FutureId<void>);
+      futures.resolveFutureById('future-1234' as FutureId<void>);
 
       await futureDatabase.close();
     });
@@ -46,13 +46,13 @@ describe('SQLFutureDatabase', () => {
         cleanupDbFiles(dbPath);
       });
       const futureDatabase = new SQLFutureDatabase(dbPath);
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       const method = methods.create('method', () => {});
 
-      const futureMachine = methods.build();
+      const futures = methods.build();
 
-      const { future } = futureMachine.withResolvers<void>();
+      const { future } = futures.withResolvers<void>();
 
       future.next(method);
 
@@ -80,10 +80,10 @@ describe('SQLFutureDatabase', () => {
       });
       const futureDatabase = new SQLFutureDatabase(dbPath);
       const futureDatabaseImpl = futureDatabase[GetFutureDatabase]();
-      const { methods } = createMethodMachine(futureDatabase);
-      const futureMachine = methods.build();
+      const { methods } = createFutureMachine(futureDatabase);
+      const futures = methods.build();
 
-      const { resolve, id } = futureMachine.withResolvers<number>();
+      const { resolve, id } = futures.withResolvers<number>();
 
       assert.deepStrictEqual(
         futureDatabaseImpl.getFutureStateForTesting(id),
@@ -135,13 +135,13 @@ describe('SQLFutureDatabase', () => {
         cleanupDbFiles(dbPath);
       });
       const futureDatabase = new SQLFutureDatabase(dbPath);
-      const { methods } = createMethodMachine(futureDatabase);
+      const { methods } = createFutureMachine(futureDatabase);
 
       const method = methods.create('method', (_future: Future<number>) => {});
 
-      const futureMachine = methods.build();
+      const futures = methods.build();
 
-      const rejectedFuture = futureMachine.reject<number>(123);
+      const rejectedFuture = futures.reject<number>(123);
 
       const futureDatabaseImpl = futureDatabase[GetFutureDatabase]();
 
@@ -162,7 +162,7 @@ describe('SQLFutureDatabase', () => {
       await futureDatabase.flush();
       assert.strictEqual(futureDatabaseImpl.getFuturesCountForTesting(), 0);
 
-      const { future } = futureMachine.withResolvers();
+      const { future } = futures.withResolvers();
 
       // Creating an unresolved future won't write to the disk until a flush().
       assert.strictEqual(futureDatabaseImpl.getFuturesCountForTesting(), 0);
@@ -191,14 +191,14 @@ describe('SQLFutureDatabase', () => {
 
       async function createMethods() {
         const futureDatabase = new SQLFutureDatabase(dbPath);
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
         const { promise, resolve } = Promise.withResolvers<List<number[]>>();
         const method = methods.create('method', (list: List<number[]>) => {
           resolve(list);
         });
         return {
           futureDatabase,
-          futureMachine: methods.build(),
+          futures: methods.build(),
           containers,
           method,
           promise,
@@ -210,11 +210,11 @@ describe('SQLFutureDatabase', () => {
       let futureId: FutureId<void>;
 
       {
-        const { futureDatabase, futureMachine, containers, method } =
+        const { futureDatabase, futures, containers, method } =
           await createMethods();
 
         const list = containers.list.create(...values);
-        const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<void>();
 
         f1.next(method.bindArgs(list));
 
@@ -224,7 +224,7 @@ describe('SQLFutureDatabase', () => {
 
         await futureDatabase.gc();
 
-        const { future: f2, id } = futureMachine.withResolvers<void>();
+        const { future: f2, id } = futures.withResolvers<void>();
         futureId = id;
 
         f2.next(method.bindArgs(list));
@@ -233,10 +233,9 @@ describe('SQLFutureDatabase', () => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
+        const { futureDatabase, futures, promise } = await createMethods();
 
-        futureMachine.resolveFutureById(futureId);
+        futures.resolveFutureById(futureId);
 
         assert.deepStrictEqual([...(await promise)], values);
 
@@ -252,7 +251,7 @@ describe('SQLFutureDatabase', () => {
 
       async function createMethods() {
         const futureDatabase = new SQLFutureDatabase(dbPath);
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
         const { promise: p1, resolve: r1 } =
           Promise.withResolvers<List<number[]>>();
         const method1 = methods.create('method1', (list: List<number[]>) => {
@@ -265,7 +264,7 @@ describe('SQLFutureDatabase', () => {
         });
         return {
           futureDatabase,
-          futureMachine: methods.build(),
+          futures: methods.build(),
           containers,
           method1,
           method2,
@@ -280,11 +279,11 @@ describe('SQLFutureDatabase', () => {
       let futureId2: FutureId<void>;
 
       {
-        const { futureDatabase, futureMachine, containers, method1, method2 } =
+        const { futureDatabase, futures, containers, method1, method2 } =
           await createMethods();
 
         const list = containers.list.create(...values);
-        const { future: f1, id: id1 } = futureMachine.withResolvers<void>();
+        const { future: f1, id: id1 } = futures.withResolvers<void>();
         futureId1 = id1;
 
         f1.next(method1.bindArgs(list));
@@ -293,7 +292,7 @@ describe('SQLFutureDatabase', () => {
 
         await futureDatabase.gc();
 
-        const { future: f2, id: id2 } = futureMachine.withResolvers<void>();
+        const { future: f2, id: id2 } = futures.withResolvers<void>();
         futureId2 = id2;
 
         f2.next(method2.bindArgs(list));
@@ -302,9 +301,9 @@ describe('SQLFutureDatabase', () => {
       }
 
       {
-        const { futureDatabase, futureMachine, p1, p2 } = await createMethods();
+        const { futureDatabase, futures, p1, p2 } = await createMethods();
 
-        futureMachine.resolveFutureById(futureId1);
+        futures.resolveFutureById(futureId1);
 
         const v1 = await p1;
 
@@ -312,7 +311,7 @@ describe('SQLFutureDatabase', () => {
 
         v1.set([0], 0);
 
-        futureMachine.resolveFutureById(futureId2);
+        futures.resolveFutureById(futureId2);
 
         const v2 = await p2;
         values[0] = 0;
@@ -331,14 +330,14 @@ describe('SQLFutureDatabase', () => {
 
       async function createMethods() {
         const futureDatabase = new SQLFutureDatabase(dbPath);
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const { promise, resolve } = Promise.withResolvers<number>();
         const method = methods.create('method', (value: number) => {
           resolve(value);
         });
         return {
           futureDatabase,
-          futureMachine: methods.build(),
+          futures: methods.build(),
           method,
           promise,
         };
@@ -349,9 +348,9 @@ describe('SQLFutureDatabase', () => {
       let futureId: FutureId<void>;
 
       {
-        const { futureDatabase, futureMachine, method } = await createMethods();
+        const { futureDatabase, futures, method } = await createMethods();
 
-        const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<void>();
 
         const boundMethod = method.bindArgs(value);
 
@@ -363,7 +362,7 @@ describe('SQLFutureDatabase', () => {
 
         await futureDatabase.gc();
 
-        const { future: f2, id } = futureMachine.withResolvers<void>();
+        const { future: f2, id } = futures.withResolvers<void>();
         futureId = id;
 
         f2.next(boundMethod);
@@ -372,10 +371,9 @@ describe('SQLFutureDatabase', () => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
+        const { futureDatabase, futures, promise } = await createMethods();
 
-        futureMachine.resolveFutureById(futureId);
+        futures.resolveFutureById(futureId);
 
         assert.deepStrictEqual(await promise, value);
 
@@ -391,14 +389,14 @@ describe('SQLFutureDatabase', () => {
 
       async function createMethods() {
         const futureDatabase = new SQLFutureDatabase(dbPath);
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const { promise, resolve } = Promise.withResolvers<number>();
         const method = methods.create('method', (value: number) => {
           resolve(value);
         });
         return {
           futureDatabase,
-          futureMachine: methods.build(),
+          futures: methods.build(),
           method,
           promise,
         };
@@ -407,9 +405,9 @@ describe('SQLFutureDatabase', () => {
       const value = 12;
 
       {
-        const { futureDatabase, futureMachine, method } = await createMethods();
+        const { futureDatabase, futures, method } = await createMethods();
 
-        const { future: f1 } = futureMachine.withResolvers<void>();
+        const { future: f1 } = futures.withResolvers<void>();
 
         const boundMethod = method.bindArgs(value);
 
@@ -419,7 +417,7 @@ describe('SQLFutureDatabase', () => {
 
         await futureDatabase.gc();
 
-        const { future: f2 } = futureMachine.withResolvers<void>();
+        const { future: f2 } = futures.withResolvers<void>();
 
         f2.next(boundMethod);
 
@@ -443,14 +441,14 @@ describe('SQLFutureDatabase', () => {
 
       async function createMethods() {
         const futureDatabase = new SQLFutureDatabase(dbPath);
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const { promise, resolve } = Promise.withResolvers<Future<number>>();
         const method = methods.create('method', (future: Future<number>) => {
           resolve(future);
         });
         return {
           futureDatabase,
-          futureMachine: methods.build(),
+          futures: methods.build(),
           method,
           promise,
         };
@@ -461,11 +459,11 @@ describe('SQLFutureDatabase', () => {
       let futureId: FutureId<void>;
 
       {
-        const { futureDatabase, futureMachine, method } = await createMethods();
+        const { futureDatabase, futures, method } = await createMethods();
 
-        const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<void>();
 
-        const boundFuture = futureMachine.resolve<number>(value);
+        const boundFuture = futures.resolve<number>(value);
 
         f1.next(method.bindArgs(boundFuture));
 
@@ -475,7 +473,7 @@ describe('SQLFutureDatabase', () => {
 
         await futureDatabase.gc();
 
-        const { future: f2, id } = futureMachine.withResolvers<void>();
+        const { future: f2, id } = futures.withResolvers<void>();
         futureId = id;
 
         f2.next(method.bindArgs(boundFuture));
@@ -484,10 +482,9 @@ describe('SQLFutureDatabase', () => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
+        const { futureDatabase, futures, promise } = await createMethods();
 
-        futureMachine.resolveFutureById(futureId);
+        futures.resolveFutureById(futureId);
 
         assert.deepStrictEqual(await (await promise).getPromise(), value);
 
@@ -503,14 +500,14 @@ describe('SQLFutureDatabase', () => {
 
       async function createMethods() {
         const futureDatabase = new SQLFutureDatabase(dbPath);
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const { promise, resolve } = Promise.withResolvers<Future<number>>();
         const method = methods.create('method', (future: Future<number>) => {
           resolve(future);
         });
         return {
           futureDatabase,
-          futureMachine: methods.build(),
+          futures: methods.build(),
           method,
           promise,
         };
@@ -522,12 +519,12 @@ describe('SQLFutureDatabase', () => {
       let boundFutureId: FutureId<number>;
 
       {
-        const { futureDatabase, futureMachine, method } = await createMethods();
+        const { futureDatabase, futures, method } = await createMethods();
 
-        const { future: f1, resolve: r1 } = futureMachine.withResolvers<void>();
+        const { future: f1, resolve: r1 } = futures.withResolvers<void>();
 
         const { future: boundFuture, id: boundId } =
-          futureMachine.withResolvers<number>();
+          futures.withResolvers<number>();
         boundFutureId = boundId;
 
         f1.next(method.bindArgs(boundFuture));
@@ -538,7 +535,7 @@ describe('SQLFutureDatabase', () => {
 
         await futureDatabase.gc();
 
-        const { future: f2, id } = futureMachine.withResolvers<void>();
+        const { future: f2, id } = futures.withResolvers<void>();
         futureId = id;
 
         f2.next(method.bindArgs(boundFuture));
@@ -547,11 +544,10 @@ describe('SQLFutureDatabase', () => {
       }
 
       {
-        const { futureDatabase, futureMachine, promise } =
-          await createMethods();
+        const { futureDatabase, futures, promise } = await createMethods();
 
-        futureMachine.resolveFutureById(futureId);
-        futureMachine.resolveFutureById(boundFutureId, value);
+        futures.resolveFutureById(futureId);
+        futures.resolveFutureById(boundFutureId, value);
 
         assert.deepStrictEqual(await (await promise).getPromise(), value);
 
@@ -570,7 +566,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
         methods.build();
 
         containers.dictionary.create();
@@ -585,7 +581,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
 
         const { promise, resolve: rP } =
           Promise.withResolvers<Dictionary<Serializable>>();
@@ -596,12 +592,12 @@ describe('SQLFutureDatabase', () => {
           }
         );
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         const obj = containers.dictionary.create();
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
-        const { future, resolve: rF } = futureMachine.withResolvers<void>();
+        const { future, resolve: rF } = futures.withResolvers<void>();
         future.next(method.bindArgs(obj));
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
@@ -623,7 +619,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
 
         const resolvers = Promise.withResolvers<{ dict: Dictionary<number> }>();
         const rP = resolvers.resolve;
@@ -633,7 +629,7 @@ describe('SQLFutureDatabase', () => {
           rP({ dict });
         });
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
         let futureId: FutureId<void>;
 
         await (async () => {
@@ -641,7 +637,7 @@ describe('SQLFutureDatabase', () => {
           obj.set('key1', 2);
           assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
-          const { future, id } = futureMachine.withResolvers<void>();
+          const { future, id } = futures.withResolvers<void>();
           futureId = id;
 
           future.next(method.bindArgs(obj));
@@ -654,7 +650,7 @@ describe('SQLFutureDatabase', () => {
         await (async () => {
           assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 1);
 
-          futureMachine.resolveFutureById(futureId!);
+          futures.resolveFutureById(futureId!);
 
           const obj = await promise;
           const { dict } = obj;
@@ -675,7 +671,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
 
         type holder = Dictionary<number>;
         let rP: ((value: holder | PromiseLike<holder>) => void) | undefined;
@@ -695,7 +691,7 @@ describe('SQLFutureDatabase', () => {
           promise = undefined;
         });
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
         let futureId: FutureId<void>;
 
         await (async () => {
@@ -703,10 +699,9 @@ describe('SQLFutureDatabase', () => {
           obj.set('key1', 2);
           assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
-          const { future: f1, resolve: rF } =
-            futureMachine.withResolvers<void>();
+          const { future: f1, resolve: rF } = futures.withResolvers<void>();
 
-          const { future: f2, id } = futureMachine.withResolvers<void>();
+          const { future: f2, id } = futures.withResolvers<void>();
           futureId = id;
 
           const boundMethod = method.bindArgs(obj);
@@ -731,7 +726,7 @@ describe('SQLFutureDatabase', () => {
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 1);
 
         await (async () => {
-          futureMachine.resolveFutureById(futureId!);
+          futures.resolveFutureById(futureId!);
           const objFromCache = await promise;
 
           assert.strictEqual(objFromCache?.get('key1'), 5);
@@ -754,7 +749,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         methods.create('method', () => {});
         assert.strictEqual(impl.getMethodDbCacheSizeForTesting(), 0);
       });
@@ -767,13 +762,13 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const method = methods.create('method', () => {});
         assert.strictEqual(impl.getMethodDbCacheSizeForTesting(), 0);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future } = futureMachine.withResolvers<void>();
+        const { future } = futures.withResolvers<void>();
 
         future.next(method);
 
@@ -789,15 +784,15 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods } = createMethodMachine(futureDatabase);
+        const { methods } = createFutureMachine(futureDatabase);
         const method = methods.create('method', () => {});
         assert.strictEqual(impl.getMethodDbCacheSizeForTesting(), 0);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         let futureId: FutureId<void>;
         (() => {
-          const { future, id } = futureMachine.withResolvers<void>();
+          const { future, id } = futures.withResolvers<void>();
           futureId = id;
 
           future.next(method);
@@ -811,7 +806,7 @@ describe('SQLFutureDatabase', () => {
         assert.strictEqual(impl.getMethodDbCacheSizeForTesting(), 1);
 
         // This will result in the method be retrieved from the cache
-        futureMachine.resolveFutureById(futureId);
+        futures.resolveFutureById(futureId);
       });
 
       test('will only be cached once when it circularly references itself', async (t) => {
@@ -822,7 +817,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
 
         type HolderMethod = Method<(holder: Dictionary<HolderMethod>) => void>;
 
@@ -832,9 +827,9 @@ describe('SQLFutureDatabase', () => {
         );
         assert.strictEqual(impl.getMethodDbCacheSizeForTesting(), 0);
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
-        const { future } = futureMachine.withResolvers<void>();
+        const { future } = futures.withResolvers<void>();
 
         const holder = containers.dictionary.create<HolderMethod>();
         const boundMethod = method.bindArgs(holder);
@@ -856,7 +851,7 @@ describe('SQLFutureDatabase', () => {
         const futureDatabase = new SQLFutureDatabase(dbPath);
         const impl = futureDatabase[GetFutureDatabase]();
 
-        const { methods, containers } = createMethodMachine(futureDatabase);
+        const { methods, containers } = createFutureMachine(futureDatabase);
 
         type structType = { unique_world: number };
 
@@ -870,13 +865,13 @@ describe('SQLFutureDatabase', () => {
           }
         );
 
-        const futureMachine = methods.build();
+        const futures = methods.build();
 
         let futureId: FutureId<void>;
 
         let struct1: Struct<structType>;
         await (async () => {
-          const { future, id } = futureMachine.withResolvers<void>();
+          const { future, id } = futures.withResolvers<void>();
           futureId = id;
           await futureDatabase.flush();
 
@@ -902,7 +897,7 @@ describe('SQLFutureDatabase', () => {
         assert.strictEqual(impl.getObjectDbCacheSizeForTesting(), 0);
 
         // We resolve the future for `futureId` and get it from the cache.
-        futureMachine.resolveFutureById(futureId!);
+        futures.resolveFutureById(futureId!);
 
         // Despite the struct not being in the cache, we get the same struct since
         // we retrieved it through the cached future.
