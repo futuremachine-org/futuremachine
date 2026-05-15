@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/futuremachine-org/futuremachine">
+  <a href="https://futuremachine.org">
     <img src="https://raw.githubusercontent.com/futuremachine-org/futuremachine/main/assets/logo.svg" width="400" alt="FutureMachine Logo">
   </a>
 </p>
