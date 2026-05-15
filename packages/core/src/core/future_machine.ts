@@ -66,7 +66,7 @@ export type Methods = Struct<{
   >;
 }>;
 
-export function createMethods(futureMachineImpl: FutureMachineImpl): Methods {
+function createMethods(futureMachineImpl: FutureMachineImpl): Methods {
   const futureMachine = createFutureMachine(futureMachineImpl);
 
   function checkBuiltState() {

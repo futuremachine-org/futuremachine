@@ -1,11 +1,11 @@
 import { SimpleFutureDatabase } from '@futuremachine/core';
+import { SQLFutureDatabase } from '@futuremachine/db-sqlite-node';
 import { strict as assert } from 'node:assert';
 import { randomBytes } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import readline from 'node:readline';
 import { parseArgs } from 'node:util';
-import { SQLFutureDatabase } from '../../db-sqlite-node/out/src/sql_future_database.js';
 import { ExecutorBase } from './executor_base.js';
 import {
   FutureExecutor,

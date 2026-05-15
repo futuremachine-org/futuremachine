@@ -11,8 +11,8 @@
     "directory": "packages/fuzzer"
   },
   "type": "module",
-  "main": "out/src/sql_future_database.js",
-  "types": "out/src/sql_future_database.d.ts",
+  "main": "out/fuzzer.js",
+  "types": "out/fuzzer.d.ts",
   "scripts": {
     "clean": "rimraf out",
     "build": "tsc -b",

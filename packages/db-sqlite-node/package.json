@@ -23,8 +23,8 @@
     "disk-storage"
   ],
   "type": "module",
-  "main": "out/src/sql_future_database.js",
-  "types": "out/src/sql_future_database.d.ts",
+  "main": "out/src/index.js",
+  "types": "out/src/index.d.ts",
   "files": [
     "out/src",
     "!out/src/**/*.map",

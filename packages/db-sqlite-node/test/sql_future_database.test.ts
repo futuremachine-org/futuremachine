@@ -15,8 +15,8 @@ import {
   FutureState,
   GetFutureDatabase,
 } from '@futuremachine/core';
+import { SQLFutureDatabase } from '../src/index.js';
 import { ValueType } from '../src/sql_database_intf.js';
-import { SQLFutureDatabase } from '../src/sql_future_database.js';
 import {
   cleanupDbFiles,
   forceGarbageCollection,
