@@ -1,0 +1,37 @@
+{
+  "name": "@futuremachine/{{name}}",
+  "version": "0.0.0",
+  {{#unless isPublic}}
+  "private": true,
+  {{/unless}}
+  "author": "Nathan Memmott <nathanmemmott@gmail.com>",
+  "license": "ISC",
+  "description": "{{description}}",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futuremachine-org/futuremachine.git",
+    "directory": "packages/{{name}}"
+  },
+  {{#if isPublic}}
+  "bugs": {
+    "url": "https://github.com/futuremachine-org/futuremachine/issues"
+  },
+  "homepage": "https://futuremachine.org",
+  "keywords": [],
+  {{/if}}
+  "type": "module",
+  "main": "out/src/index.js",
+  "types": "out/src/index.d.ts",
+  "files": [
+    "out/src",
+    "!out/src/**/*.map",
+    "!out/src/**/*.tsbuildinfo",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rimraf out",
+    "build": "tsc -b",
+    "test": "node --test out/test/**/*.test.js"
+  }
+}

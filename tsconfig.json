@@ -1,9 +1,17 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/core" },
-    { "path": "./packages/db-sqlite-node" },
-    { "path": "./packages/db-conformance-tests" },
-    { "path": "./packages/fuzzer" }
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/db-sqlite-node"
+    },
+    {
+      "path": "./packages/db-conformance-tests"
+    },
+    {
+      "path": "./packages/fuzzer"
+    }
   ]
 }

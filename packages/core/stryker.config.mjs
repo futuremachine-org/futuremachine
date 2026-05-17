@@ -5,11 +5,5 @@ import parentConfig from '../../stryker.parent.mjs';
 export default {
   ...parentConfig,
   tsconfigFile: 'tsconfig.json',
-  mutate: [
-    'src/**/*.ts',
-    '!src/asserts.ts',
-    '!src/fuzzer/**',
-    '!src/tools/**',
-    '!src/index.ts',
-  ],
+  mutate: ['src/**/*.ts', '!src/asserts.ts', '!src/tools/**', '!src/index.ts'],
 };
