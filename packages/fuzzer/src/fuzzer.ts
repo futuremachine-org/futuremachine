@@ -22,7 +22,7 @@ type VisitorObject = Record<string, any>;
 
 // TODO: Update ExecutorBase's `run` to call visit on its events before
 // returning them. `Executor` should have a visit function, and `FutureExecutor`
-// should implement the visistors below.
+// should implement the visitors below.
 interface Visitor {
   visit<T extends VisitorObject>(obj: T, key: keyof T): void;
 }

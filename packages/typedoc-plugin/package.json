@@ -1,0 +1,36 @@
+{
+  "name": "@futuremachine/typedoc-plugin",
+  "version": "0.0.0",
+  "author": "Nathan Memmott <nathanmemmott@gmail.com>",
+  "license": "ISC",
+  "description": "TypeDoc plugin to support FutureMachine interfaces.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futuremachine-org/futuremachine.git",
+    "directory": "packages/typedoc-plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/futuremachine-org/futuremachine/issues"
+  },
+  "homepage": "https://futuremachine.org",
+  "keywords": [],
+  "type": "module",
+  "main": "out/src/index.js",
+  "types": "out/src/index.d.ts",
+  "files": [
+    "out/src",
+    "!out/src/**/*.map",
+    "!out/src/**/*.tsbuildinfo",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rimraf out",
+    "build": "tsc -b",
+    "test": "node --test out/test/**/*.test.js",
+    "test:stryker": "node --test out/test/**/*.test.js"
+  },
+  "devDependencies": {
+    "@futuremachine/core": "0.2.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "packages/core",
+    "packages/db-sqlite-node",
+    "packages/db-conformance-tests"
+  ],
+  "packageOptions": {
+    "entryPoints": ["src/index.ts"]
+  },
+  "out": "docs",
+  "navigation": {
+    "includeCategories": true
+  },
+  "plugin": ["@futuremachine/typedoc-plugin"]
+}

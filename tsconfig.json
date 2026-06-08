@@ -12,6 +12,9 @@
     },
     {
       "path": "./packages/fuzzer"
+    },
+    {
+      "path": "./packages/typedoc-plugin"
     }
   ]
 }
