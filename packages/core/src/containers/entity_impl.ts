@@ -47,6 +47,9 @@ export class State<T extends Record<string, Serializable>> {
   }
 }
 
+/**
+ * @category Containers
+ */
 export class StateBuilder {
   constructor(
     private futureMachine: FutureMachineImpl,

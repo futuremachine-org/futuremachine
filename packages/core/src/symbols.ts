@@ -3,6 +3,10 @@ export const FutureCreate = Symbol('FutureCreate');
 export const FutureGetImpl = Symbol('FutureGetImpl');
 
 // future_database.ts
+
+/**
+ * @category Database
+ */
 export const GetFutureDatabase = Symbol('GetFutureDatabase');
 
 // method.ts

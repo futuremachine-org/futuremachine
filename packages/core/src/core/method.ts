@@ -14,6 +14,9 @@ import {
 
 export type { MethodName } from './method_impl.js';
 
+/**
+ * @category Method
+ */
 export type Method<Impl extends AnyMethodImpl> = MethodClass<Impl> &
   Impl & {
     // TODO: Implement all of these:
@@ -79,4 +82,7 @@ class MethodClass<Impl extends AnyMethodImpl> implements SerializableObject {
   }
 }
 
+/**
+ * @category Method
+ */
 export const Method = MethodClass;

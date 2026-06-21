@@ -1,6 +1,9 @@
 import type { FutureMachineImpl } from '../core/future_machine_impl.js';
 import { FutureMachineDBToolsCreate } from '../symbols.js';
 
+/**
+ * @category Database
+ */
 export class FutureMachineDBTools {
   private constructor(private futureMachineImpl: FutureMachineImpl) {}
 

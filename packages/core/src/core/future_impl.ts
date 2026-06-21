@@ -17,22 +17,38 @@ import {
 } from './future_machine_impl.js';
 import type { Method } from './method.js';
 
+/**
+ * @category Future
+ */
 export type ValidResult<T extends Serializable> =
   | T
   | Future<T>
   | PromiseLike<Future<T>>
   | PromiseLike<T>;
 
+/**
+ * @category Future
+ */
 export type ResolveCallback<T extends Serializable> = Method<
   (result: ValidResult<T>) => void
 >;
+
+/**
+ * @category Future
+ */
 export type RejectCallback = Method<(reason?: Serializable) => void>;
 
+/**
+ * @category Future
+ */
 export type FutureId<T extends Serializable> = string & {
   readonly __brand: unique symbol;
   readonly __type: T;
 };
 
+/**
+ * @category Future
+ */
 export type FutureExecutor<T extends Serializable> = (
   id: FutureId<T>,
   resolve: ResolveCallback<T>,

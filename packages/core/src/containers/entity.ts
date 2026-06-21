@@ -7,6 +7,9 @@ import {
 } from '../symbols.js';
 import type { EntityImpl, State } from './entity_impl.js';
 
+/**
+ * @category Containers
+ */
 export abstract class Entity<
   T extends Record<string, Serializable>,
 > implements SerializableObject {

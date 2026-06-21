@@ -7,7 +7,9 @@
     "packages/db-conformance-tests"
   ],
   "packageOptions": {
-    "entryPoints": ["src/index.ts"]
+    "entryPoints": ["src/index.ts"],
+    "categoryOrder": ["API", "Future", "Method", "Containers", "Exceptions"],
+    "kindSortOrder": ["Function"]
   },
   "out": "docs",
   "navigation": {

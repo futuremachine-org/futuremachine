@@ -10,6 +10,9 @@ const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
 export default defineConfig([
   includeIgnoreFile(gitignorePath, 'Imported .gitignore rules.'),
+  {
+    ignores: ['docs/'],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   eslintPluginPrettierRecommended,

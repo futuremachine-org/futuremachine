@@ -10,6 +10,10 @@ import {
 // This implements the same interface as Entity but extends Error so that
 // Exception can extend Error. This makes it so that the console prints the
 // Error prettier when thrown.
+
+/**
+ * @category Exceptions
+ */
 export abstract class ExceptionEntity<T extends Record<string, Serializable>>
   extends Error
   implements SerializableObject

@@ -41,7 +41,7 @@ function injectTypeNotice(
 
   const noticeMarkdown = [
     `> **Actual Type**: ${typeLink}\\`,
-    `*Note: Defined as a \`${typeName}\` in the codebase. The wrapper was omitted here to generate better documentation.*`,
+    `<small>*Note: Stripped to generate better documentation.*</small>`,
     '\n',
   ].join('\n');
 

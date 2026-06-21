@@ -9,6 +9,10 @@ import {
 import type { DictionaryImpl } from './dictionary_impl.js';
 
 // TODO: Should we support having Keys of any serializable type?
+
+/**
+ * @category Containers
+ */
 export class Dictionary<T extends Serializable> implements SerializableObject {
   public [SerializableObjectBranding] = undefined;
 

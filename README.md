@@ -22,6 +22,7 @@
 | [`@futuremachine/core`](./packages/core) | [![npm version](https://img.shields.io/npm/v/@futuremachine/core.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/core) | The core FutureMachine engine. |
 | [`@futuremachine/db-sqlite-node`](./packages/db-sqlite-node) |  [![npm version](https://img.shields.io/npm/v/@futuremachine/db-sqlite-node.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/db-sqlite-node) | A node:sqlite implementation of the FutureDatabase. |
 | [`@futuremachine/db-conformance-tests`](./packages/db-conformance-tests) |  [![npm version](https://img.shields.io/npm/v/@futuremachine/db-conformance-tests.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/db-conformance-tests) | Utilities for testing FutureDatabase implementations. |
+| [`@futuremachine/typedoc-plugin`](./packages/typedoc-plugin) |  <!-- [![npm version](https://img.shields.io/npm/v/@futuremachine/typedoc-plugin.svg?style=flat-square)](https://www.npmjs.com/package/@futuremachine/typedoc-plugin) --> | TypeDoc plugin to support FutureMachine interfaces. |
 
 ## Quick start
 

@@ -4,6 +4,9 @@ import {
   type ExceptionState,
 } from './exception.js';
 
+/**
+ * @category Exceptions
+ */
 export class TypeException<
   T extends ExceptionState = ExceptionState,
 > extends Exception<T> {

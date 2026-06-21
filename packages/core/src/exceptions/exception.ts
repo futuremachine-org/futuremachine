@@ -5,13 +5,21 @@ import {
 } from './exception_boundary.js';
 import { ExceptionEntity } from './exception_entity.js';
 
+/**
+ * @category Exceptions
+ */
 export type ExceptionState = {
   message: string;
   cause: string | undefined;
   stack: string;
 };
 
+/**
+ * @category Exceptions
+ */
 export type ExceptionOptions = {
+  // TODO: The type should be Serializable, not string. And we should test what
+  // is printed when an Exception is thrown with this set.
   cause?: string;
 };
 
@@ -22,6 +30,9 @@ function getStack() {
   return error.stack!.split('\n').slice(1).join('\n');
 }
 
+/**
+ * @category Exceptions
+ */
 export class Exception<
   T extends ExceptionState = ExceptionState,
 > extends ExceptionEntity<T> {

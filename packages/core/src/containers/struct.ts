@@ -71,8 +71,14 @@ class StructClass<
   // works with this class correctly. Still we should look through them.
 }
 
+/**
+ * @category Containers
+ */
 export const Struct = StructClass;
 
+/**
+ * @category Containers
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RawStruct<T extends Struct<any>> =
   T extends Struct<infer R> ? R : never;

@@ -6,10 +6,16 @@ import {
   type ExceptionState,
 } from './exception.js';
 
+/**
+ * @category Exceptions
+ */
 export type AggregateExceptionState = ExceptionState & {
   errors: List<Serializable[]>;
 };
 
+/**
+ * @category Exceptions
+ */
 export class AggregateException<
   T extends AggregateExceptionState = AggregateExceptionState,
 > extends Exception<T> {

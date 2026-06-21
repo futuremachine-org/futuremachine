@@ -7,6 +7,9 @@ import { deserializeArgs, serializeArgs } from '../database/serialize_utils.js';
 import type { ValidResult } from './future_impl.js';
 import type { FutureMachineImpl } from './future_machine_impl.js';
 
+/**
+ * @category Method
+ */
 export type MethodName = string;
 
 // TODO: Should we make the return type any again?

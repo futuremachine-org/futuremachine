@@ -8,6 +8,9 @@ import {
 } from '../symbols.js';
 import type { ListImpl } from './list_impl.js';
 
+/**
+ * @category Containers
+ */
 export class List<T extends Serializable[]> implements SerializableObject {
   public [SerializableObjectBranding] = undefined;
 

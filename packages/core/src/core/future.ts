@@ -20,6 +20,9 @@ export type {
   ValidResult,
 } from './future_impl.js';
 
+/**
+ * @category Future
+ */
 export class Future<T extends Serializable> implements SerializableObject {
   public [SerializableObjectBranding] = undefined;
 

@@ -42,6 +42,10 @@ type FutureMapEntry = {
   rejectReactions: Reaction<any>[];
 };
 type FutureMap = Map<FutureId<Serializable>, FutureMapEntry>;
+
+/**
+ * @category Database
+ */
 export type SimpleFutureDatabaseState = {
   futureMap: FutureMap;
   idCounter: number;
@@ -440,6 +444,9 @@ class SimpleListDB<T extends SerializableDB[]>
   }
 }
 
+/**
+ * @category Database
+ */
 export class SimpleFutureDatabase implements FutureDatabase {
   private impl: SimpleFutureDatabaseImpl;
 

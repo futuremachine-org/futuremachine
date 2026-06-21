@@ -12,12 +12,18 @@ import type { SerializableObject } from './serializable_object.js';
 export { GetFutureDatabase } from '../symbols.js';
 export { FutureMachineDBTools } from './future_machine_db_tools.js';
 
+/**
+ * @category Database
+ */
 export enum FutureState {
   Pending,
   Fulfilled,
   Rejected,
 }
 
+/**
+ * @category Database
+ */
 export enum ObjectDBType {
   Aggregate,
   Dictionary,
@@ -28,6 +34,9 @@ export enum ObjectDBType {
   Future,
 }
 
+/**
+ * @category Database
+ */
 export type Serializable =
   | void
   | null
@@ -38,6 +47,9 @@ export type Serializable =
   | undefined
   | SerializableObject;
 
+/**
+ * @category Database
+ */
 export type SerializableDB =
   | void
   | null
@@ -48,27 +60,43 @@ export type SerializableDB =
   | undefined
   | ObjectDB;
 
+/**
+ * @category Database
+ */
 export type ToSerializableDB<T extends Serializable> =
   // TODO: Explicitly go through each type of SerializableObject and map it here
   // and in `FromSerializableDB`.
   T extends SerializableObject ? ObjectDB : T;
 
+/**
+ * @category Database
+ */
 export type FromSerializableDB<T extends SerializableDB> = T extends ObjectDB
   ? SerializableObject
   : T;
 
 // Needed so that implementers have to extend ObjectDB.
 const ObjectDBBranding = Symbol();
+
+/**
+ * @category Database
+ */
 export abstract class ObjectDB {
   public [ObjectDBBranding]: undefined;
   public abstract getObjectType(): ObjectDBType;
 }
 
+/**
+ * @category Database
+ */
 export type Reaction<T extends SerializableDB> = {
   nextFutureDb: FutureDB<T>;
   methodDb: MethodDB | undefined;
 };
 
+/**
+ * @category Database
+ */
 export interface FutureDB<T extends SerializableDB> extends ObjectDB {
   getObjectType(): ObjectDBType.Future;
 
@@ -133,11 +161,17 @@ export interface FutureDB<T extends SerializableDB> extends ObjectDB {
   ): void;
 }
 
+/**
+ * @category Database
+ */
 export enum MethodType {
   External,
   Internal,
 }
 
+/**
+ * @category Database
+ */
 export interface MethodDB extends ObjectDB {
   getObjectType(): ObjectDBType.Method;
 
@@ -153,6 +187,9 @@ export interface MethodDB extends ObjectDB {
   pushBounded(args: Iterable<SerializableDB>): MethodDB;
 }
 
+/**
+ * @category Database
+ */
 export interface AggregateDB<T extends SerializableDB> extends ObjectDB {
   getObjectType(): ObjectDBType.Aggregate;
 
@@ -162,6 +199,9 @@ export interface AggregateDB<T extends SerializableDB> extends ObjectDB {
   settleElement<U extends T>(index: number, value: U): ListDB<T[]> | undefined;
 }
 
+/**
+ * @category Database
+ */
 export interface DictionaryDB<T extends SerializableDB> extends ObjectDB {
   getObjectType(): ObjectDBType.Dictionary;
 
@@ -181,6 +221,9 @@ export interface DictionaryDB<T extends SerializableDB> extends ObjectDB {
   clear(): void;
 }
 
+/**
+ * @category Database
+ */
 export interface StructDB<
   T extends Record<string, SerializableDB>,
 > extends ObjectDB {
@@ -195,10 +238,16 @@ export interface StructDB<
   ownKeys(): (keyof T & string)[];
 }
 
+/**
+ * @category Database
+ */
 export type ListElement<T extends unknown[]> = T extends (infer U)[]
   ? U
   : never;
 
+/**
+ * @category Database
+ */
 export interface ListDB<T extends SerializableDB[]> extends ObjectDB {
   getObjectType(): ObjectDBType.List;
 
@@ -213,6 +262,9 @@ export interface ListDB<T extends SerializableDB[]> extends ObjectDB {
   set(elements: Iterable<ListElement<T>>, index: number): void;
 }
 
+/**
+ * @category Database
+ */
 export interface EntityDB<
   T extends Record<string, SerializableDB>,
 > extends ObjectDB {
@@ -226,6 +278,9 @@ export interface EntityDB<
   set<U extends keyof T>(key: U, value: T[U]): void;
 }
 
+/**
+ * @category Database
+ */
 export abstract class FutureDatabaseImpl {
   // Sets the FutureMachineDBTools which gives access to tools for Future
   public abstract setFutureMachineDBTools(
@@ -279,6 +334,10 @@ export abstract class FutureDatabaseImpl {
 
 // TODO: Should this be a class? Or should FutureDatabaseImpl be an interface?
 // Not that they have to be the same.
+
+/**
+ * @category Database
+ */
 export interface FutureDatabase {
   [GetFutureDatabase](): FutureDatabaseImpl;
 }
