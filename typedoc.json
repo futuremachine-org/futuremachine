@@ -12,6 +12,7 @@
     "kindSortOrder": ["Function"]
   },
   "out": "docs",
+  "cname": "futuremachine.org",
   "navigation": {
     "includeCategories": true
   },
