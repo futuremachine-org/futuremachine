@@ -37,7 +37,7 @@ export class Dictionary<T extends Serializable> implements SerializableObject {
   }
 
   /**
-   * Returns the {@link DictionaryImpl} backing for this {@link Dictionary}.
+   * Returns the {@link DictionaryImpl} backing for the {@link Dictionary}.
    * @hidden
    */
   public [DictionaryGetImpl](): DictionaryImpl<T> {
