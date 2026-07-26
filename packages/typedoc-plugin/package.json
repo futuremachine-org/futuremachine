@@ -31,6 +31,6 @@
     "test:stryker": "node --test out/test/**/*.test.js"
   },
   "devDependencies": {
-    "@futuremachine/core": "0.2.0"
+    "@futuremachine/core": "0.3.0"
   }
 }

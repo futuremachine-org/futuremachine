@@ -1,6 +1,6 @@
 {
   "name": "@futuremachine/fuzzer",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": true,
   "author": "Nathan Memmott <nathanmemmott@gmail.com>",
   "license": "ISC",
@@ -19,7 +19,7 @@
     "fuzz": "tsc -b && node out/fuzzer.js"
   },
   "dependencies": {
-    "@futuremachine/core": "0.2.0",
-    "@futuremachine/db-sqlite-node": "0.2.0"
+    "@futuremachine/core": "0.3.0",
+    "@futuremachine/db-sqlite-node": "0.3.0"
   }
 }

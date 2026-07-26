@@ -1,5 +1,18 @@
 # @futuremachine/db-sqlite-node
 
+## 0.3.0
+
+### Minor Changes
+
+- [`64614ae`](https://github.com/futuremachine-org/futuremachine/commit/64614ae229a528767f1f878c1303a452d331bc66) Thanks [@nathan-memmott](https://github.com/nathan-memmott)! - Add a struct for each container to the API to hold the container's "static" functions.
+
+- [`5f31a82`](https://github.com/futuremachine-org/futuremachine/commit/5f31a8202206dc13e98675833508144f21ee65b3) Thanks [@nathan-memmott](https://github.com/nathan-memmott)! - Update API surface to make more sense.
+
+### Patch Changes
+
+- Updated dependencies [[`64614ae`](https://github.com/futuremachine-org/futuremachine/commit/64614ae229a528767f1f878c1303a452d331bc66), [`5f31a82`](https://github.com/futuremachine-org/futuremachine/commit/5f31a8202206dc13e98675833508144f21ee65b3), [`f225151`](https://github.com/futuremachine-org/futuremachine/commit/f22515155f8ef37507731214def1ca16355e7e54)]:
+  - @futuremachine/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
